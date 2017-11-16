@@ -3,7 +3,7 @@ class VeReservation < ApplicationRecord
 	include DbChange::Track
 
 	has_many :ve_events, dependent: :destroy
-	belongs_to :user
+	belongs_to :user, optional: true
 	
 	validates_presence_of :description
 	
