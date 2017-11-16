@@ -1,0 +1,25 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID
+			<th width="1%" class="nobr">Act. Date</th>
+			<th width="1%" class="nobr">Initials</th>
+			<th width="1%" class="nobr">Created</th>
+			<th width="1%" class="nobr">Type</th>
+			<th width="99%" class="nobr">Facility Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= o.activity_date.d %></td>
+				<td class="nobr"><%= o.inspector_init %></td>
+				<td class="nobr"><%= o.created_at.d %></td>
+				<td class="nobr"><%= link_to blank_tag(o.inspection_type), controller: :fd_activities, action: :view, id: o.id %></td>
+				<td class="nobr"><%= o.fd_establishment.try(:facility_name) %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -1,0 +1,99 @@
+<% if @allow_edit_all != false %>
+	<div class="gutter" id="edit-all-form" style="display: none;">
+		<table class="form">
+			<th></th>
+			<td>Enter values ONLY for fields you want to update. To clear values, enter NULL in a field.</td>
+			<% @edit ||= (@model.new rescue @model.klass.new) # Quick hack here for through: associations that are read only %>
+			<%= fields_for(:obj, @edit, builder: TableFormBuilder) { |f| %>
+				<%= partial 'fields', f: f, o: @edit %>
+			<% } %>
+			<tr>
+				<th></th>
+				<td>
+					<button type="submit" name="process" value="edit_all" id="edit-all-submit"><i class="fa fa-save"></i> Update All</button>
+					<button type="button" id="edit-all-cancel"><i class="fa fa-close"></i> Cancel</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+<% end %>
+<% if @allow_delete_all != false %>
+	<div class="gutter" id="delete-all-form" style="display: none;">
+		<p>Are you sure you want to delete multiple items? This action is irreversible!<p>
+			<div class="btns">
+				<button type="submit" name="process" value="delete_all" id="delete-all-submit"><i class="fa fa-trash"></i> Yes, Delete!</button>
+				<button type="button" id="delete-all-cancel"><i class="fa fa-close"></i> No, Don't Delete!</button>
+			</div>
+	</div>		
+<% end %>
+<script>
+	var edit_open = false;
+	var delete_open = false;
+	$('#edit-all').click(function() {
+		$('#edit-all').blur();
+		if(edit_open) {
+			$('#edit-all-form').slideUp(200);
+			$('#edit-all').removeClass('dep');
+			edit_open = false;
+		}
+		else {
+			if(delete_open) {
+				$('#delete-all-form').hide();
+				$('#delete-all').removeClass('dep');
+				$('#edit-all-form').show();
+				delete_open = false;
+			}
+			else {
+				$('#edit-all-form').slideDown(200);
+			}
+			edit_open = true;	
+			$('#edit-all').addClass('dep');
+		}
+	});
+	$('#delete-all').click(function() {
+		$('#delete-all').blur();
+		if(delete_open) {
+			$('#delete-all-form').slideUp(200);
+			$('#delete-all').removeClass('dep');
+			delete_open = false;
+		}
+		else {
+			if(edit_open) {
+				$('#edit-all-form').hide();
+				$('#edit-all').removeClass('dep');
+				$('#delete-all-form').show();	
+				edit_open = false;		
+			}
+			else {
+				$('#delete-all-form').slideDown(200);
+			}
+			$('#delete-all').addClass('dep');
+			delete_open = true;
+		}
+	});			
+	$('#edit-all-cancel').click(function() {
+		$('#edit-all-form').slideUp(200);
+		$('#edit-all').removeClass('dep');
+		edit_open = false;
+	});
+	$('#delete-all-cancel').click(function() {
+		$('#delete-all-form').slideUp(200);
+		$('#delete-all').removeClass('dep');
+		delete_open = false;
+	});
+	$('#edit-all-submit').click(function(e) {
+		if(!confirm('Are you sure you want to update all records?')) {
+			e.preventDefault();
+			return false;
+		}
+	});
+	$('#delete-all-submit').click(function(e) {
+		if(!confirm('Are you sure you want to delete all records?')) {
+			e.preventDefault();
+			return false;
+		}
+	});	
+	$(function() {
+		$('#edit-all-form input.date').datepicker('option', 'constrainInput', false);
+	});
+</script>

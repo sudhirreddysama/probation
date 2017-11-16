@@ -1,0 +1,86 @@
+<div class="btns">
+	<%= link_to fa('check-square-o', 'New Activity'), context: o.class.to_s.underscore, context_id: o.id, controller: :tr_activities, action: :new %>
+	<% if !o.is_a? TrDaycare %>
+		<%= link_to fa('certificate', 'Print Permit'), {action: :permit, id: o.id}, target: '_blank' %>
+	<% end %>
+</div>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'No.', o.fac_no %>
+	<%= dl 'Active', yn(o.active) %>
+	<%= dl 'Facility Name', o.facility_name %>
+	<%= dl 'Facility Type', o.facility_type %>
+</div>
+<div class="view">
+	<%= dl 'Facility Address', [o.facility_address, [o.location, o.fac_zip].reject(&:blank?) * ' '].reject(&:blank?) * ', ' %>
+	<%= dl 'Phone', o.phone %>
+	<% if o.has_attribute? :town %>
+		<%= dl 'Town', o.town %>
+	<% end %>
+</div>
+<div class="view">
+	<%= dl 'Operator/Owner', o.operator_owner %>
+	<%= dl 'Operator Address', [o.operator_addr, [o.operator_city, o.operator_zip].reject(&:blank?) * ' '].reject(&:blank?) * ', ' %>
+</div>
+<div class="view">
+	<%= dl 'Operator Phone', o.operator_phone %>
+	<%= dl 'Contact', o.contact %>
+	<% if o.has_attribute? :ein_ss %>
+		<%= dl 'EIN/SS', o.ein_ss %>
+	<% end %>
+	<% if o.has_attribute? :email1 %>
+		<%= dl 'Email', o.email1 %>
+	<% end %>
+	<% if o.has_attribute? :email2 %>
+		<%= dl 'Email 2', o.email2 %>
+	<% end %>
+</div>
+<div class="view">
+	<% if o.has_attribute? :permit_issue %>
+		<%= dl 'Permit Issued', o.permit_issue.d4 %>
+	<% end %>
+	<% if o.has_attribute? :permit_exp %>
+		<%= dl 'Permit Expires', o.permit_exp.d4 %>
+	<% end %>
+	<% if o.has_attribute? :permit_sent %>
+		<%= dl 'Permit Sent', o.permit_sent.d4 %>
+	<% end %>
+	<% if o.has_attribute? :appl_sent %>
+		<%= dl 'Appl. Sent', o.appl_sent.d4 %>
+	<% end %>
+	<% if o.has_attribute? :appl_recd %>
+		<%= dl 'Appl Recv\'d', o.appl_recd.d4 %>
+	<% end %>
+	<% if o.has_attribute? :activation_date %>
+		<%= dl 'Activate', o.activation_date.d4 %>
+	<% end %>
+	<% if o.has_attribute? :deactivation_date %>
+		<%= dl 'Deactivate', o.deactivation_date.d4 %>
+	<% end %>
+	<% if o.has_attribute? :open_date %>
+		<%= dl 'Open', o.open_date.d4 %>
+	<% end %>
+	<% if o.has_attribute? :close_date %>
+		<%= dl 'Close', o.close_date.d4 %>
+	<% end %>
+</div>
+<% if o.class.in?([TrDaycare, TrOther]) %>
+	<div class="view">
+		<%= dl 'Capacity', n0(o.capacity) %>
+		<% if o.has_attribute? :profit %>
+			<%= dl 'Profit', yn(o.profit) %>
+		<% end %>
+		<%= dl 'Fee Code', o.fee_code %>
+		<%= dl 'Fee', o.fee %>
+		<% if o.is_a? TrOther %>
+			<%= dl 'Fee Paid', n2(o.fee_paid) %>
+			<%= dl 'Date Paid', o.date_paid.d4 %>
+		<% end %>
+	</div>
+<% end %>
+<% if o.has_attribute?(:wc_expiration_date) && o.has_attribute?(:disability_expiration_date)  %>
+	<div class="view">
+		<%= dl 'Wrk. Comp. Exp', o.wc_expiration_date.d4 %>
+		<%= dl 'Disa. Exp.', o.disability_expiration_date.d4 %>
+	</div>
+<% end %>

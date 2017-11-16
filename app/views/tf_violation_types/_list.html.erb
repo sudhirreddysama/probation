@@ -1,0 +1,21 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %>&nbsp;ID</th>
+			<th width="1%">RB</th>
+			<th width="1%">Code</th>
+			<th width="99%">Violation</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %>&nbsp;<%= o.id %></td>
+				<td class="nobr"><%= lbl 'viol_rb', o.red_blue %></td>
+				<td class="nobr"><%= link_to o.code_section, controller: :tf_violation_types, action: :view, id: o.id %></td>
+				<td><%= o.violation %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

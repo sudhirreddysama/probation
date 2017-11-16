@@ -1,0 +1,13 @@
+<% if !content_for?(:pages) %>
+	<% content_for(:pages) { %>
+		<div class="pages">
+			<% if objs.respond_to? :total_pages %>
+				<%= will_paginate objs, previous_label: '<i class="fa fa-chevron-left"></i>', next_label: '<i class="fa fa-chevron-right"></i>' %>
+				<span class="pages-total">Total: <%= nwd objs.total_entries %></span>
+			<% else %>
+				<span class="pages-total">Total: <%= nwd objs.length %></span>
+			<% end %>
+		</div>
+	<% } %>
+<% end %>
+<%= yield :pages %>

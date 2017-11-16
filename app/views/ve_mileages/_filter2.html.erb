@@ -1,0 +1,26 @@
+<% if params.context.blank? %>
+	<tr>
+		<th>Active/Inactive</th>
+		<td class="nobr" id="filter_active">
+			<label class="yes"><%= check_box_tag 'filter[active][]', '1', '1'.in?(@filter.active) %> Active Vehicles</label>&nbsp;&nbsp;&nbsp;
+			<label class="no"><%= check_box_tag 'filter[active][]', '0', '0'.in?(@filter.active) %> Inactive Vehicles</label>
+		</td>
+	</tr>
+	<%= partial 've_vehicles/filter_ve_vehicle_ids', f: f %>
+<% end %>
+<tr>
+	<th>Mileage Year</th>
+	<td>
+		<%= f.text_field :year, style: 'width: 80px;', class: 'tr' %>
+		<% y = Time.now.year; y.downto(y - 4) { |i| %>
+			&nbsp;&nbsp;<a href="#" class="year-value"><%= i %></a>
+		<% } %>
+	</td>
+</tr>
+<script>
+	$('.year-value').click(function(e) {
+		e.preventDefault();
+		$('#filter_year').val($(this).text());
+		$('#filter-form').submit();
+	});
+</script>

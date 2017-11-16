@@ -1,0 +1,29 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID
+			<th width="1%">Facility Type</th>
+			<th width="1%">Code</th>
+			<th width="1%">Fee</th>
+			<th width="1%">Add'l</th>
+			<th width="1%">Min</th>
+			<th width="1%">Max</th>
+			<th width="99%">Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= o.facility_type %></td>
+				<td class="nobr"><%= link_to o.fee_code, controller: :tr_fee_schedules, action: :view, id: o.id %></td>
+				<td class="nobr tr"><%= n2 o.fee%></td>
+				<td class="nobr tr"><%= n2 o.additional_fee %></td>
+				<td class="nobr tr"><%= n0 o.min %></td>
+				<td class="nobr tr"><%= n0 o.max %></td>
+				<td class="nobr"><%= o.description %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

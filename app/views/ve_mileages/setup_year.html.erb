@@ -1,0 +1,11 @@
+<%= partial 'errors', :errors => @errors %>
+<p>Use the form below to create new mileage records for every active vehicle in the database. The December mileage of the previous year will be used for the year-start mileage. If the records already exist, their start-year mileage will be updated.</p>
+<%= table_form_for(:data) { |f| %>
+	<%= f.tr_text_field :year, label: 'Year', req: true, style: 'width: 60px;' %>
+	<tr>
+		<th></th>
+		<td class="btns">
+			<button type="submit"><i class="fa fa-save"></i> Setup Year</button>
+		</td>
+	</tr>	
+<% } %>

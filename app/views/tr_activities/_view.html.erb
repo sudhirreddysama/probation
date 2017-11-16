@@ -1,0 +1,19 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Fac. No.', o.fac_no %>
+	<%= dl 'Fac. Type', o.facility_type %>
+	<%= dl 'Facility Name', o.obj ? link_to(blank_tag(o.facility_name), controller: o.obj_type.tableize, action: :view, id: o.obj_id) : o.facility_name %>
+</div>
+<div class="view">
+	<%= dl 'Activity Date', o.activity_date.d4 %>
+	<%= dl 'S/U', lbl('su', o.s_u) %>
+	<%= dl 'Staff', o.staff_initials %>
+	<%= dl 'Activity Type', o.activity_type %>
+</div>
+<div class="view">
+	<%= dl 'Daycare Red Viol\'s', o.daycare_red_violations %>
+	<%= dl 'Reinspection Due', o.reinspection_due.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Notes', o.notes %>
+</div>

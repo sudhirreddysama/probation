@@ -1,0 +1,66 @@
+<% o = @obj %><!DOCTYPE html>
+<html>
+<head>
+<style>
+html, body { margin: 0; padding: 0; box-sizing: border-box; width: 8in; height: 10.5in; font: bold 20px/1.3 "Times New Roman"; }
+* { box-sizing: inherit; font-family: inherit; font-size: inherit; }
+#wrap:before { content: ""; width: 100%; height: 100%; position: absolute; left: 0; top: 0; opacity: .1; z-index: -1;
+	background: url(<%= Rails.root %>/public/mc-logo-high-res.png) no-repeat;
+	background-size: 80%;
+	background-position: center;
+}
+#wrap { height: 100%; width: 100%; border: 2px solid #000; position: relative; padding: .3in; }
+.tl { text-align: left; }
+.tc { text-align: center; }
+.tr { text-align: right; }
+p { margin: .6em 0; }
+.left { float: left; }
+.right { float: right; }
+.clear { clear: both; }
+.nobr { white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="wrap">
+<p class="tc" style="margin-top: 0;">Monroe County Department of Public Health</p>
+<p class="tc" style="font-size: 30px;">PERMIT</p>
+
+<p class="left" style="width: 2in;">To Operate a</p>
+<p class="left"><u><%= o.facility_type %></u></p>
+<div class="clear"></div>
+
+<p class="left" style="width: 2in;">This is to certify that</p>
+<p class="left"><u><%= o.operator_owner %></u></p>
+<div class="clear"></div>
+
+<p style="margin-bottom: 0;">The operator of</p>
+<p class="tc" style="margin-top: 0;"><%= o.facility_name %><br><%= o.facility_address %><br><%= o.location %> <%= o.fac_zip %><br>&nbsp;</p>
+
+<p>Located in the <u>(T)</u> (V) (C) of <u><%= o.town %></u> in MONROE COUNTY is granted permission to operate said establishment in compliance with 
+the provisions of <u class="nobr">Part <%= o.code %></u> of the State Sanitary Code and under the following conditions:</p>
+<p>(1) This permit is granted subject to any and all applicable State, Local and Municipal Laws, Ordinances, Codes, Rules and Regulations.</p>
+
+<div class="left">
+	<% if o.has_attribute? :num_units %>
+		<p># OF UNITS: <%= o.num_units %></p>
+	<% else %>
+		<p>CAPACITY: <%= o.capacity %></p>
+	<% end %>
+</div>
+<div class="right" style="width: 3in;">
+	<p>&nbsp;</p>
+	<p style="padding-left: .25in; margin-bottom: 0;"><img src="<%= Rails.root %>/public/mendoza-signature.png" style="width: 2.25in; height: auto;"></p>
+	<p style="font-size: 16px; margin-top: 0;">Michael D. Mendoza, MD, MPH, MS<br>
+	Commissioner of Public Health<br>
+	Permit Issuing Official</p>
+</div>
+<div class="clear"></div>
+
+<p>Date of Issue <u><%= o.permit_issue.d4 %></u></p>
+<p>This Permit Expires on <u><%= o.permit_exp.d4 %></u> and may be revoked or suspended for cause.</p>
+<p class="tc">Permit is Non-Transferable</p>
+<p class="tc">THIS PERMIT SHOULD BE POSTED CONSPICUOUSLY</p>
+<p class="tc">Facility Code or Permit No. <u><%= o.fac_no %></u></p>
+</div>
+</body>
+</html>

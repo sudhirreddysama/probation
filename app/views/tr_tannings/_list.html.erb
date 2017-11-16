@@ -1,0 +1,24 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID<br>No.</th>
+			<th width="1%">Active<br>Units</th>
+			<th width="1%">Issued<br>Expires</th>
+			<th width="1%">Activate<br>Deactivate</th>
+			<th width="49%">Facility Name &middot; Address &middot; Town<br>Operator/Owner &middot; Contact</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %><br><%= o.fac_no %></td>
+				<td class="nobr"><%= yn o.active %>&nbsp;<br><%= o.num_units.n0 %></td>
+				<td class="nobr"><%= o.permit_issue.d %>&nbsp;<br><%= o.permit_exp.d %></td>
+				<td class="nobr"><%= o.activation_date.d %>&nbsp;<br><%= o.deactivation_date.d %></td>
+				<td><%= link_to blank_tag(o.facility_name), controller: :tr_tannings, action: :view, id: o.id %> &middot; <%= blank_tag o.facility_address %> &middot; <%= blank_tag o.town %><br>
+					<%= blank_tag o.operator_owner %> &middot; <%= blank_tag o.contact %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -1,0 +1,25 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<th width="1%">Type</th>
+			<th width="1%" class="nobr">Fac. Code</th>
+			<th width="1%">Code</th>
+			<th width="99%">Name &middot; Address</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= o.type %></td>
+				<td class="nobr"><%= o.fac_code %></td>
+				<td class="nobr"><%= o.code %></td>
+				<td><%= link_to blank_tag(o.facility_name), controller: :fd_towns, action: :view, id: o.id %> &middot; 
+					<%= blank_tag([[o.street_no, o.street_name, o.street_type, o.street_dir].reject(&:blank?) * ' ', o.city, "#{o.state} #{o.zip}".strip].reject(&:blank?) * ', ') %>
+				</td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -1,0 +1,77 @@
+<div class="btns">
+	<%= tab 'calendar', 'View Calendar', controller: :ve_reservations, action: :calendar, 'filter[ve_vehicle_ids][]' => o.id  %>
+	<%= tab 'calendar', 'Reserve Vehicle', controller: :ve_reservations, action: :new, 'obj[new_schedules][0][ve_vehicle_ids][]' => o.id  %>
+</div>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<dl>
+		<dt>Color</dt>
+		<dd><% if !o.color.blank? %><span style="color: <%= o.color %>;"><%= o.color %></span><% end %></dd>
+	</dl>
+	<%= dl 'Active', yn(o.active) %>
+	<%= dl 'Year', o.year %>
+	<%= dl 'Make', o.make %>
+	<%= dl 'Model', o.model %>
+</div>
+<div class="view">
+	<%= dl '#', o.vehicle_no %>
+	<%= dl 'License', o.license %>
+	<%= dl 'Assignment', o.assignment %>
+	<%= dl 'Budget Account', o.account %>
+</div>
+<% if !@mileages.empty? %>
+	<div class="view">
+		<dl><dt>Mileage (last 2 years, editable) &middot; <%= link_to 'View Full Mileage History', context: :ve_vehicle, context_id: o.id, controller: :ve_mileages, action: :grid  %></dt></dl>
+	</div>
+	<div class="form" id="mileages">
+		<table class="sheet">
+			<tr>
+				<th>Year</th>
+				<th>Yr Start</th>
+				<% VeMileage::MONTHS.each { |m| %>
+					<th><%= m.to_s.titleize %></th>
+				<% } %>
+			</tr>
+			<% @mileages.each { |mi| %>
+				<tr>
+					<th class="tr" style="width: 50px;"><%= mi.year %></th>
+					<td><%= text_field_tag "ve_mileages[#{mi.id}][year_start]", mi.year_start, style: 'width: 50px', class: 'n0' %></td>
+					<% VeMileage::MONTHS.each { |m| %>
+						<td><%= text_field_tag "ve_mileages[#{mi.id}][#{m}]", mi.send(m), style: 'width: 50px', class: 'n0' %></td>
+					<% } %>
+				</tr>
+			<% } %>
+		</table>
+	</div>
+	<script>
+		$('#mileages input').change(function(e) {
+			window._input_dirty = true;
+			var $this = $(this);
+			$this.addClass('busy-bg');
+			$.ajax({
+				url: '<%= url_for action: :update_mileages, id: o.id %>',
+				data: $this.serialize(),
+				method: 'POST',
+				success: function(data, status, xhr) {
+					$this.effect('highlight');
+				},
+				complete: function(xhr, status) {
+					window._input_dirty = false;
+					$this.removeClass('busy-bg');
+				},
+				error: function(xhr, status, error) {
+					alert('Error saving data');
+				}
+			});
+		});
+	</script>
+<% else %>
+	<div class="view">
+		<dl>
+			<dt>Mileage</dt>
+			<dd>No mileage record has been created for this vehicle yet. 
+				<%= link_to 'Create new mileage record.', context: :ve_vehicle, context_id: o.id, controller: :ve_mileages, action: :new, 'obj[year]' => Time.now.year %>
+			</dd>
+		</dl>
+	</div>
+<% end %>

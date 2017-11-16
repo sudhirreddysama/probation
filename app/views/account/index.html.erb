@@ -1,0 +1,17 @@
+<%= partial 'errors', errors: @errors %>
+<%= form_for(:login) { |f| %>
+	<table class="form">
+		<tr><th><label>Login*:</label></th></tr>
+		<tr><td><%= f.text_field :username, :placeholder => 'Username' %></td></tr>
+		<tr><td><%= f.password_field :password, :placeholder => 'Password' %></td></tr>
+		<tr><td class="tc"><button type="submit" name="submit"><i class="fa fa-sign-in"></i> Login</button></td></tr>
+	</table>
+<% } %>
+<%= form_for(:lost) { |f| %>
+	<table class="form">
+		<tr><th><label>Lost Password? Enter Your Username or Email:</label></th></tr>
+		<tr><td><%= f.text_field :username, :placeholder => 'Username or Email' %></td></tr>
+		<tr><td class="tc"><button type="submit" name="submit"><i class="fa fa-life-ring"></i> Recover Account</button></tr>		
+	</table>
+<% } %>
+<p>* County users should login with their network/PC username and password. Access to this application must be granted before you can login. <a href="https://passreset.mc.ad.monroecounty.gov:9251/showLogin.cc" target="_blank">Click here to update your county login.</a></p>

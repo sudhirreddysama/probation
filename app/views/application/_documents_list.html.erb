@@ -1,0 +1,6 @@
+<% if !o.documents.empty? %>
+	<tr class="documents-list">
+		<td></td>
+		<td colspan="100"><%= raw o.documents.map { |d| link_to(file_icon(d.name) + ' ' + h(d.name), {sc: params.controller.singularize, sid: params.id, controller: :documents, id: d.id, action: :download}, class: 'noul nobr', target: '_blank') }.join(' &nbsp; '.html_safe) %></td>
+	</tr>
+<% end %>

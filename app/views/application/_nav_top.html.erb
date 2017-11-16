@@ -1,0 +1,106 @@
+<% 
+	c = params.controller
+	ct = params.context
+	is_ve = c.start_with?('ve_') && ct.blank? || ct.to_s.start_with?('ve_')
+	is_fd = c.start_with?('fd_') && ct.blank? || ct.to_s.start_with?('fd_')
+	is_pl = c.start_with?('pl_') && ct.blank? || ct.to_s.start_with?('pl_')
+	is_tf = c.start_with?('tf_') && ct.blank? || ct.to_s.start_with?('tf_')
+	is_tr = c.start_with?('tr_') && ct.blank? || ct.to_s.start_with?('tr_')
+	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
+	other = %w{documents doc_templates doc_bulks saved_filters db_changes}
+	is_other = ct ? ct.pluralize.in?(other) : c.in?(other)
+%>
+<div id="tabs" class="tabs">
+	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params.context == 'home' ? 'active' : '') %>
+	<%= tab 'truck', 'Vehicles', {controller: :ve_reservations, context: nil, action: :availability}, {}, class: (is_ve ? 'active' : '') %>
+	<% if false %>
+		<%= tab 'cutlery', 'Food', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_fd ? 'active' : '') %>
+		<%= tab 'birthday-cake', 'Temp Food', {controller: :tf_facilities, context: nil, action: :index}, {}, class: (is_tf ? 'active' : '') %>
+		<%= tab 'child', 'Temp Residence', {controller: :tr_tannings, context: nil, action: :index}, {}, class: (is_tr ? 'active' : '') %>
+		<%= tab 'life-ring', 'Pool', {controller: :pl_pools, context: nil, action: :index}, {}, class: (is_pl ? 'active' : '') %>
+	<% end %>
+	<%= tab 'database', 'Other', {controller: :documents, context: nil}, {}, class: (is_other ? 'active' : '') %>
+	<% if @current_user.admin? %>
+		<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params.context == 'user' ? 'active' : '') %>
+	<% end %>
+	<div class="right">
+		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>
+		<%= tab 'sign-out', 'Logout', db: nil, context: nil, controller: :account, action: :logout %>
+	</div>		
+<div class="clear"></div>
+</div>
+
+<% if is_ve %>
+	<div class="tabs">
+
+		<%= tab 'calendar', 'Schedule', {controller: :ve_reservations, context: nil}, {action: :availability}, class: (ct == 've_reservation' ? 'active' : '') %>
+		<%= tab 'truck', 'Vehicles', {controller: :ve_vehicles, context: nil}, {}, class: (ct == 've_vehicle' ? 'active' : '') %>
+		<%= tab 'road', 'Mileage', {controller: :ve_mileages, context: nil}, {}, class: (ct == 've_mileage' ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_fd %>
+	<div class="tabs">
+
+		<%= tab 'building', 'Establishments', {controller: :fd_establishments, context: nil}, {}, class: (ct == 'fd_establishment' ? 'active' : '') %>
+		<%= tab 'circle-o', 'Churches', {controller: :fd_churches, context: nil}, {}, class: (ct == 'fd_church' ? 'active' : '') %>
+		<%= tab 'check-square-o', 'Activity', {controller: :fd_activities, context: nil}, {}, class: (ct == 'fd_activity' ? 'active' : '') %>
+		<%= tab 'map-signs', 'Towns', {controller: :fd_towns, context: nil}, {}, class: (ct == 'fd_town' ? 'active' : '') %>
+		<%= tab 'dollar', 'Fee Schedule', {controller: :fd_fee_schedules, context: nil}, {}, class: (ct == 'fd_fee_schedule' ? 'active' : '') %>
+		<%= tab 'tags', 'Inspection Codes', {controller: :fd_inspection_codes, context: nil}, {}, class: (ct == 'fd_inspection_code' ? 'active' : '') %>
+		
+		<% if false %>
+		<%= tab '', 'Activity', {controller: :fd_activities, context: nil}, {}, class: (ct == 'fd_activity' ? 'active' : ''), title: 'Food Activity' %>
+		<%= tab '', 'Carts', {controller: :fd_carts, context: nil}, {}, class: (ct == 'fd_cart' ? 'active' : ''), title: 'Food Carts' %>		
+		<%= tab '', 'Fee Sched', {controller: :fd_fee_schedules, context: nil}, {}, class: (ct == 'fd_fee_schedule' ? 'active' : ''), title: 'Food Fee Schedule' %>
+		<%= tab '', 'Insp Codes', {controller: :fd_inspection_codes, context: nil}, {}, class: (ct == 'fd_inspection_code' ? 'active' : ''), title: 'Food Inspection Codes' %>
+		<%= tab '', 'Plans', {controller: :fd_plan_reviews, context: nil}, {}, class: (ct == 'fd_plan_review' ? 'active' : ''), title: 'Food Plan Reviews' %>
+		<%= tab '', 'Train', {controller: :fd_trainings, context: nil}, {}, class: (ct == 'fd_training' ? 'active' : ''), title: 'Food Worker Training' %>
+		<%= tab '', 'Viols', {controller: :fd_violations, context: nil}, {}, class: (ct == 'fd_violation' ? 'active' : ''), title: 'Food Violations' %>
+		<%= tab '', 'Cmplnts', {controller: :fd_complaints, context: nil}, {}, class: (ct == 'fd_complaint' ? 'active' : ''), title: 'Food Complaints' %>
+		<% end %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_tf %>
+	<div class="tabs">
+		<%= tab 'truck', 'Facilities', {controller: :tf_facilities, context: nil}, {}, class: (ct == 'tf_facility' ? 'active' : '') %>
+		<%= tab 'exclamation-triangle', 'Violation Types', {controller: :tf_violation_types, context: nil}, {}, class: (ct == 'tf_violation_type' ? 'active' : '') %>
+		<%= tab 'thumbs-down', 'Violations', {controller: :tf_violations, context: nil}, {}, class: (ct == 'tf_violation' ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_tr %>
+	<div class="tabs">
+		<%= tab 'tree', 'Child Camps', {controller: :tr_child_camps, context: nil}, {}, class: (ct == 'tr_child_camp' ? 'active' : '') %>
+		<%= tab 'child', 'Daycare', {controller: :tr_daycares, context: nil}, {}, class: (ct == 'tr_daycare' ? 'active' : '') %>	
+		<%= tab 'sun-o', 'Tanning', {controller: :tr_tannings, context: nil}, {}, class: (ct == 'tr_tanning' ? 'active' : '') %>
+		<%= tab 'building', 'Other', {controller: :tr_others, context: nil}, {}, class: (ct == 'tr_other' ? 'active' : '') %>
+		<%= tab 'check-square-o', 'Activity', {controller: :tr_activities, context: nil}, {}, class: (ct == 'tr_activity' ? 'active' : '') %>
+		<%= tab 'dollar', 'Fee Schedule', {controller: :tr_fee_schedules, context: nil}, {}, class: (ct == 'tr_fee_schedule' ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_pl %>
+	<div class="tabs">
+		<%= tab 'tint', 'Pools', {controller: :pl_pools, context: nil}, {}, class: (ct == 'pl_pool' ? 'active' : '') %>
+		<%= tab 'user-circle-o', 'Supervision Levels', {controller: :pl_supervision_levels, context: nil}, {}, class: (ct == 'pl_supervision_level' ? 'active' : '') %>	
+		<%= tab 'dollar', 'Fee Schedule', {controller: :pl_fee_schedules, context: nil}, {}, class: (ct == 'pl_fee_schedule' ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_other %>
+	<div class="tabs">
+		<%= tab 'file-text-o', 'Documents', {controller: :documents, context: nil}, {}, class: (params.context == 'document' ? 'active' : '') %>
+		<%= tab 'files-o', 'Bulk Documents', {controller: :doc_bulks, context: nil}, {}, class: (params.context == 'doc_bulk' ? 'active' : '') %>
+		<%= tab 'file-code-o', 'Document Templates', {controller: :doc_templates, context: nil}, {}, class: (params.context == 'doc_template' ? 'active' : '') %>
+		<%= tab 'filter', 'Filters', {controller: :saved_filters, context: nil}, {}, class: (params.context == 'saved_filter' ? 'active' : '') %>
+		<%= tab 'filter', 'DB Changes', {controller: :db_changes, context: nil}, {}, class: (params.context == 'db_change' ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<% end %>

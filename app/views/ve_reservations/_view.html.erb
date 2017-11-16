@@ -1,0 +1,23 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Begin', o.begin.d %>
+	<%= dl 'end', o.end.d %>
+	<%= dl 'Name/Description', o.description %>
+</div>
+<div class="view">
+	<%= dl 'Created By', o.user.try(:name) %>
+	<%= dl 'Created At', o.created_at.dt %>
+</div>
+<div class="view">
+	<%= dl 'Notes', nl2br_h(o.notes) %>
+</div>
+<div class="view">	
+	<dl>
+		<dt>Dates/Times/Vehicles</dt>
+		<dd>
+			<% o.ve_events.order('date, begin_time').each { |e| %>
+				<div><%= [e.date.d, [e.begin_time.t, e.end_time.t].reject(&:blank?) * '-'].reject(&:blank?) * ' ' %> &middot; <%= link_to e.ve_vehicle.label, controller: :ve_vehicles, action: :view, id: e.ve_vehicle_id %></div>
+			<% } %>
+		</dd>
+	</dl>
+</div>

@@ -1,0 +1,10 @@
+<tr>
+	<th>Status(es)</th>
+	<td><%= partial 'field_chk_lbls', opts: FdEstablishment::STATUSES, field: 'filter[status][]', vals: @filter.status || [], lbl: 'fdstat' %></td>
+</tr>
+<%= f.tr_select :estab_type, FdEstablishment.where('estab_type != ""').order('estab_type').pluck('distinct estab_type').map { |t| [t, {title: ' '}] }, {label: 'Type(s)', include_hidden: false}, multiple: true, style: 'width: 600px;' %>
+<script>
+	$('#filter_estab_type').select2({
+		closeOnSelect: false
+	});
+</script>

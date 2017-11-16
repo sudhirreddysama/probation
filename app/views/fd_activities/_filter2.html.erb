@@ -1,0 +1,7 @@
+<tr>
+	<th>Activity Type(s)</th>
+	<td><%= f.select :inspection_type, @model.where('inspection_type != ""').order('inspection_type').pluck('distinct inspection_type').map { |t| [t, {title: ' '}] }, {include_hidden: false}, style: 'width: 600px;', multiple: true %></td>
+</tr>
+<script>
+	$('#filter_inspection_type').select2({closeOnSelect: false});
+</script>

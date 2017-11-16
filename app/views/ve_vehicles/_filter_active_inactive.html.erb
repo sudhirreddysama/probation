@@ -1,0 +1,7 @@
+<tr>
+	<th>Active/Inactive</th>
+	<td class="nobr" id="filter_active">
+		<label class="yes"><%= check_box_tag 'filter[active][]', '1', '1'.in?(@filter.active) %> Active</label>&nbsp;&nbsp;&nbsp;
+		<label class="no"><%= check_box_tag 'filter[active][]', '0', '0'.in?(@filter.active) %> Inactive</label>
+	</td>
+</tr>

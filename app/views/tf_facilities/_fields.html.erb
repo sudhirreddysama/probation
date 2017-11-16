@@ -1,0 +1,308 @@
+<%= f.tr_text_field :operator_name, label: 'Operator Name', req: true, placeholder: 'Type to search...' %>
+<%= f.tr_text_field :food_stand, label: 'Food Stand Name' %>
+<tr>
+	<td>Operator Address</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Street Address</th>
+				<th>City</th>
+				<th>Zip</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :operator_address, style: 'width: 250px;' %></td>
+				<td><%= f.text_field :operator_city, style: 'width: 200px;' %></td>
+				<td><%= f.text_field :operator_zip, style: 'width: 80px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_field :operator_phone, label: 'Operator Phone' %>
+<%= f.tr_text_area :food_items, label: 'Food Items' %>
+<tr>
+	<th>Risk Class <span class="req">*</span></th>
+	<td class="nobr">
+		<% ['', 'L', 'M', 'H'].each { |v| %>
+			<label class="lbl-chk"><%= f.radio_button :risk_class, v %><span class="lbl lbl-risk-<%= v.to_s.downcase %>"><%= v.presence || 'NA' %></span></label>
+		<% } %>
+	</td>
+</tr>
+<%= f.tr_text_field :event_name, label: 'Event Name', placeholder: 'Type to search...' %>
+<tr>
+	<th>Event Address</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Event Street Address</th>
+				<th>Event City</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :event_booth_site, style: 'width: 250px;' %></td>
+				<td><%= f.text_field :event_town, style: 'width: 200px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Inspection</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Duration</th>
+				<th>Date</th>
+				<th>Inspector Initials</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :inspect_duration, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :inspect_date, class: 'date', value: o.inspect_date.d4 %></td>
+				<td><%= f.text_field :inspector, style: 'width: 100px;' %></td>
+				<td>&nbsp;&nbsp;<a href="#" id="inspect"><i class="fa fa-fw fa-arrow-left">&nbsp;&nbsp;</i><%= Time.now.to_date.d %> &middot; <%= @current_user.initials %></a></td>
+				<script>
+					$('#inspect').click(function(e) { 
+						$('#obj_inspect_date').val('<%= Time.now.to_date.d %>').effect('highlight');
+						$('#obj_inspector').val('<%= @current_user.initials %>').effect('highlight');
+						e.preventDefault(); 
+					});
+				</script>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Violations</th>
+	<td class="subform">
+		<% @tf_violation_types = TfViolationType.order('code_section') %>
+		<%= select_tag 'new_violation', options_for_select([['Add Violation...', nil], ['Custom (Blank)', 'BLANK']] + @tf_violation_types.map { |t| ["#{t.code_section} - #{t.violation}", t.id] }), style: 'width: 400px;' %>
+		<div id="violations">
+			<% o.tf_violations.sort_by { |v| v.sort.to_i }.each_with_index { |v, i| %>
+				<%= partial 'field_violation', v: v, i: i %>
+			<% } %>
+		</div>
+	</td>
+</tr>
+<%= f.tr_text_field :violations_cited, label: 'Violations Cited' %>
+<tr>
+	<th>Permit</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>No.</th>
+				<th>Issued</th>
+				<th>Expires</th>
+				<th>Type</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :temp_permit_number, style: 'width: 150px;' %></td>
+				<td><%= f.text_field :issue_date, class: 'date', value: o.issue_date.d4 %></td>
+				<td><%= f.text_field :expire_date, class: 'date', value: o.expire_date.d4 %></td>
+				<td><%= f.text_field :type_of_facility, style: 'width: 200px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Payment</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Amount</th>
+				<th>Date Paid</th>
+				<th>Receipt No.</th>
+				<th>Check No.</th>
+				<th>Waiver</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :amount_paid, class: 'n2', style: 'width: 100px;' %></td>
+				<td><%= f.text_field :date_paid, class: 'date', value: o.date_paid.d4 %></td>
+				<td><%= f.text_field :receipt_number, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :check_number, style: 'width: 100px;' %></td>
+				<td class="nobr">
+					<% %w{N R Y}.each { |v| %>
+						<label class="lbl-chk"><%= f.radio_button :waiver, v %><span class="lbl lbl-waiv-<%= v.downcase %>"><%= v %></span></label>
+					<% } %>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_area :file_notes, label: 'File Notes' %>
+<tr>
+	<th>Insurance Dates</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Work Comp Exp</th>
+				<th>Disa Exp</th>
+				<th>Exempt Cert Exp</th>
+				<th>Wrk Comp Cancl</th>
+				<th>Disa Cancl</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :workers_comp_exp, class: 'date', value: o.workers_comp_exp.d4 %></td>
+				<td><%= f.text_field :disability_exp, class: 'date', value: o.disability_exp.d4 %></td>
+				<td><%= f.text_field :exemption_cert_exp, class: 'date', value: o.exemption_cert_exp.d4 %></td>
+				<td><%= f.text_field :wrkrs_comp_cancellation_date, class: 'date', value: o.wrkrs_comp_cancellation_date.d4 %></td>
+				<td><%= f.text_field :disability_cancellation_date, class: 'date', value: o.disability_cancellation_date.d4 %></td>
+			</tr>
+		</table>
+	</td>	
+</tr>
+
+
+<script>
+	var field_violation = <%= partial('field_violation', v: {}, i: '__NEW__').to_json.html_safe %>;
+	var violation_count = <%= o.tf_violations.size %>;
+	var violation_types = <%= raw @tf_violation_types.index_by(&:id).transform_values { |v| v.attributes.slice(*%w{code_section violation red_blue}) }.to_json %>;
+	
+	var violations_set_sort = function() {
+		var sort = 0;
+		$('.field-violation').each(function(i, f) {
+			var $f = $(f);
+			$f.find('[name$="[sort]"]').val(sort);
+			if(!$f.find('[name$="[_destroy]"]').is(':checked')) {
+				sort++;
+			}
+		});
+	}
+
+	var set_violations_cited = function() {
+		var violations_cited = $('#obj_violations_cited');
+		var val = $.trim(violations_cited.val());
+		if(!val || val.match(/\d? RED, \d? BLUE/) || val == '0 VIOLATIONS') {
+			var r = 0;
+			var b = 0;
+			$('.field-violation').each(function(i, el) {
+				el = $(el);
+				if(!el.find('[name$="[_destroy]"]').is(':checked')) {
+					var rb = el.find('.red_blue:checked').val();
+					if(rb == 'R') {
+						r++;
+					}
+					else if(rb == 'B') {
+						b++;
+					}
+				}
+			});			
+			var new_val = r || b ? r + ' RED, ' + b + ' BLUE' : '0 VIOLATIONS';
+			if(new_val != val) {
+				violations_cited.val(new_val).effect('highlight');
+			}
+		}
+	}
+	
+	var set_delete_style = function() {
+		$('.field-violation').each(function(i, el) {
+			el = $(el);
+			el.toggleClass('dim-bg', !!el.find('[name$="[_destroy]"]:checked')[0])
+		});
+	}
+	set_delete_style();
+	
+	var operator_name = $('#obj_operator_name');
+	var set_operator = function(e, ui) {
+		operator_name.val(ui.item.operator_name);
+		$('#obj_operator_address').val(ui.item.operator_address);
+		$('#obj_operator_city').val(ui.item.operator_city);
+		$('#obj_operator_zip').val(ui.item.operator_zip);
+		$('#obj_operator_phone').val(ui.item.operator_phone);
+		$('#obj_food_stand').val(ui.item.food_stand);
+		$('#obj_food_items').val(ui.item.food_items);
+		$('[name$="[risk_class]"][value="' + (ui.item.risk_class || '') + '"]').prop('checked', true);
+		e.preventDefault();
+	}
+	
+	var event_name = $('#obj_event_name');
+	var set_event = function(e, ui) {
+		event_name.val(ui.item.event_name);
+		$('#obj_event_booth_site').val(ui.item.event_booth_site);
+		$('#obj_event_town').val(ui.item.event_town);
+		e.preventDefault();
+	}	
+		
+	$('#new_violation').change(function(e) {
+		var $this = $(this);
+		var el = $(field_violation.replace(/__NEW__/g, violation_count));
+		violation_count++;
+		var val = $this.val();
+		var vt = violation_types[val];
+		if(vt) {
+			el.find('[name$="[violation]"]').val(vt.violation);
+			el.find('[name$="[tf_violation_type_id]"]').val(val);
+			el.find('[name$="[code_section]"]').val(vt.code_section);
+			el.find('[name$="[red_blue]"][value="' + vt.red_blue + '"]').prop('checked', true);
+		}
+		$('#violations').append(el);
+		el.find('textarea').effect('highlight');
+		violations_set_sort();
+		set_violations_cited();
+		this.selectedIndex = 0;
+	});
+	
+	$('#violations').sortable({handle: '.sort', update: violations_set_sort});
+	
+	$('#violations [name$="[_destroy]"]').change(function(e) {
+		violations_set_sort();
+		set_violations_cited();		
+		set_delete_style();
+	});
+	
+	$('#violations').on('click', '.delete-violation', function(e) {
+		if(confirm('Are you sure you want to remove this item?')) {
+			$(this).closest('.field-violation').remove();
+			set_violations_cited();
+			violations_set_sort();
+		}
+	});
+	
+	operator_name.autocomplete({
+		source: function(req, res) {
+			operator_name.addClass('busy-bg');
+			$.ajax({
+				url: '<%= url_for action: :autocomplete_operator %>',
+				data: {term: req.term},
+				success: function(data) {
+					res(data.data);
+				},
+				complete: function() {
+					operator_name.removeClass('busy-bg');
+				}
+			});
+		},
+		minLength: 2,
+		focus: set_operator,
+		select: set_operator
+	}).autocomplete('instance')._renderItem = function(ul, item) {
+		return $('<li>').append(item.operator_name + ' - ' + item.food_stand).appendTo(ul);
+	};
+	
+	event_name.autocomplete({
+		source: function(req, res) {
+			event_name.addClass('busy-bg');
+			$.ajax({
+				url: '<%= url_for action: :autocomplete_event %>',
+				data: {term: req.term, group_site: 1},
+				success: function(data) {
+					res(data.data);
+				},
+				complete: function() {
+					event_name.removeClass('busy-bg');
+				}
+			});
+		},
+		minLength: 2,
+		focus: set_event,
+		select: set_event
+	}).autocomplete('instance')._renderItem = function(ul, item) {
+		return $('<li>').append(item.event_name + ' - ' + item.event_booth_site).appendTo(ul);
+	};
+	
+	$('#obj_type_of_facility').autocomplete({
+		source: <%= raw TfFacility.where('type_of_facility != ""').group('type_of_facility').order('count(*) desc').pluck('type_of_facility').to_json %>,
+		minLength: 0,
+	}).focus(function() {
+    $(this).autocomplete('search', $(this).val());
+	});
+	
+	$('#violations').on('change', '.red_blue', set_violations_cited);
+	
+</script>

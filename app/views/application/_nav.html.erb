@@ -1,0 +1,9 @@
+<% if @context_obj %>
+	<% tmp = lookup_context.prefixes[0] %>
+	<% lookup_context.prefixes[0] = params.context.pluralize %>
+	<%= partial 'nav_obj', obj: @context_obj, model: @context_model, context: nil, controller: params.context.pluralize, context_obj: nil %>
+	<% lookup_context.prefixes[0] = tmp %>
+<% end %>
+<% if @model %>
+	<%= partial 'nav_obj', obj: @obj, model: @model, context: params.context, controller: params.controller, context_obj: @context_obj %>
+<% end %>

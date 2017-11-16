@@ -1,0 +1,9 @@
+<tr>
+	<th>Risk</th>
+	<td class="nobr">
+		<% %w{L M H}.each { |v| %>
+			<label class="lbl-chk"><%= check_box_tag 'filter[risk_class][]', v, v.in?(@filter.risk_class) %><span class="lbl lbl-risk-<%= v.to_s.downcase %>"><%= v.presence %></span></label>
+		<% } %>
+	</td>
+</tr>
+<%= partial 'tf_facilities/filter_event' %>

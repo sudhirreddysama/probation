@@ -1,0 +1,150 @@
+<% @documents_once = true %>
+<%= f.tr_text_field :name, req: true, label: 'Name', tr: {class: 'generate'} %>
+<tr class="generate">
+	<th>Margins</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Top</th>
+				<th>Bottom</th>
+				<th>Left</th>
+				<th>Right</th>
+			</tr>
+			<tr id="margins">
+				<td><%= f.text_field :margin_top, style: 'width: 50px;' %> in.&nbsp;&nbsp;</td>
+				<td><%= f.text_field :margin_bottom, style: 'width: 50px;' %> in.&nbsp;&nbsp;</td>
+				<td><%= f.text_field :margin_left, style: 'width: 50px;' %> in.&nbsp;&nbsp;</td>
+				<td><%= f.text_field :margin_right, style: 'width: 50px;' %> in.&nbsp;&nbsp;</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_area :body, label: 'Body', tr: {class: 'generate'} %>
+<style>
+.custom-fields td.cke_dialog_contents_body,
+.custom-fields .cke_dialog_ui_vbox_child { padding: 0; box-sizing: border-box; }
+.custom-fields td.cke_dialog_contents_body div,
+.custom-fields td.cke_dialog_contents_body table,
+.custom-fields td.cke_dialog_contents_body td { height: 100%; width: 100%; padding: 0; margin: 0; overflow: hidden; box-sizing: border-box; }
+#custom-fields-list { height: 0; padding: 10px; overflow: scroll; height: 400px; box-sizing: border-box; }
+#custom-fields-list h2 { font-weight: bold; padding-bottom: 10px; font-size: 12px; }
+#custom-fields-list ul { margin: 0; float: left; width: 25%; overflow: hidden; }
+#custom-fields-list ul a { display: block; font-size: 10px; }
+#custom-fields-list ul a:hover { text-decoration: underline; }
+#custom-fields-list div.fields-section { padding-bottom: 10px; overflow: auto; height: auto; width: 100%; }
+</style>
+<script>
+
+function set_margins() {
+	var t = $('#obj_margin_top').val();
+	var b = $('#obj_margin_bottom').val();
+	var l = $('#obj_margin_left').val();
+	var r = $('#obj_margin_right').val();
+	if(cke.document) {
+		$(cke.document.$.body).css({
+			'padding-top': t ? t + 'in' : '',
+			'padding-bottom': b ? b + 'in' : '',
+			'padding-left': l ? l + 'in' : '',
+			'padding-right': r ? r + 'in' : ''
+		});
+	}
+}
+	
+CKEDITOR.dialog.add('custom_fields_dialog', function (editor) {
+	return {
+		title: 'Insert Custom Fields',
+		resizable: CKEDITOR.DIALOG_RESIZE_BOTH,
+		minWidth: 800,
+		minHeight: 400,
+		onLoad: function () {
+			this.getElement().addClass('custom-fields');
+			$('#custom-fields-list').css({'height': '100%'});
+		},
+		contents: [{
+			id: 'tab1',
+			label: 'Custom Fields',
+			title: 'Custom Fields',
+			accessKey:  'F',
+			elements: [{
+				type: 'html',
+				html: <%= partial('doc_templates/fields_list').to_json.html_safe %>
+			}]
+		}]
+	};
+});
+CKEDITOR.plugins.add('custom_fields', {
+	icons: 'custom_fields',
+	init: function(editor) {
+
+	editor.addCommand('custom_fields', new CKEDITOR.dialogCommand('custom_fields_dialog'));		
+	editor.ui.addButton('CustomFields', {
+		label: 'Insert Custom Fields',
+		command: 'custom_fields',
+		toolbar: 'custom',
+		icon: '<%= root_path %>money.png'
+	});
+	
+	}
+});
+CKEDITOR.stylesSet.add('custom', [
+	{name: 'Special Container', element: 'div', styles: {padding: '5px 5px', background: '#eee', border: '1px solid #ccc'}},
+	{name: 'Marker', element: 'span', styles: {background: '#ffe'}},
+	{name: 'Big', element: 'big'},
+	{name: 'Small', element: 'small'},
+	{name: 'Typewriter', element: 'tt'},
+	{name: 'Computer Code', element: 'code'},
+	{name: 'Keyboard Phrase', element: 'kbd'},
+	{name: 'Sample Text', element: 'samp'},
+	{name: 'Variable', element: 'var'},
+	{name: 'Deleted Text', element: 'del'},
+	{name: 'Inserted Text', element: 'ins'},
+	{name: 'Cited Work', element: 'cite'},
+	{name: 'Inline Quotation', element: 'q'},
+	{name: 'Styled Image (left)', element: 'img', attributes: {'class': 'imgleft'}},
+	{name: 'Styled Image (right)', element: 'img', attributes: {'class': 'imgright'}},
+	{name: 'Square Bulleted List',	element: 'ul', styles: {'list-style-type': 'square'}},
+]);
+	
+var cke;
+$(function() {
+	cke = CKEDITOR.replace('obj_body', {
+		contentsCss: [ /*'<%= root_path %>ckeditor/contents.css',*/ '<%= root_path %>ckeditor.css' ],
+		bodyClass: 'document-editor',
+		filebrowserBrowseUrl : '<%= root_path %>elfinder',
+		title: false,
+		extraPlugins: 'custom_fields',
+		styleSet: 'custom',
+		width: '9in',
+		resize_dir: 'both',
+		toolbar: [
+			{name: 'document', items: ['Source', '-', 'Save', 'Preview', 'Print']},
+			{name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+			{name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']},
+			{name: 'basicstyles2', items: ['CopyFormatting', 'RemoveFormat']},
+			'/',
+			{name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']},
+			{name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+			{name: 'links', items: ['Link', 'Unlink', 'Anchor']},
+			{name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar', 'PageBreak']},
+			'/',
+			{name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize']},
+			{name: 'colors', items: ['TextColor', 'BGColor']},
+			{name: 'tools', items: ['Maximize', 'ShowBlocks']},
+			{name: 'custom', items: ['CustomFields']}
+	]
+	});
+	cke.on('mode', function(e) {	
+		set_margins();
+	});
+	cke.on('instanceReady', function(e) {
+		set_margins();
+		$('#margins input').change(function() { set_margins(); });
+		$(document).on('click', '#custom-fields-list a', function(e) {
+			var $this = $(this);
+			cke.insertText($this.text());
+			$this.effect('highlight');
+		});		
+	});
+});
+		
+</script>

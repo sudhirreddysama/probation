@@ -1,0 +1,3 @@
+class TfRecordsController < CrudController
+
+end

@@ -1,0 +1,79 @@
+<div class="btns">
+	<%= link_to fa('check-square-o', 'New Activity'), context: o.class.to_s.underscore, context_id: o.id, controller: :fd_activities, action: :new %>
+	<%= link_to fa('certificate', 'Print Permit'), {action: :permit, id: o.id}, target: '_blank' %>
+</div>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Gaz #', o.gaz_number %>
+	<%= dl 'Status', lbl('fdstat', o.status, FdEstablishment::STATUSES.rassoc(o.status).try(:first)) %>
+	<%= dl 'Risk', lbl('risk', o.risk) %>
+	<%= dl 'Type', [o.estab_type_code, o.estab_type].reject(&:blank?) * ' - ' %>
+	<%= dl 'Mobile Type', o.mobtype %>
+</div>
+<div class="view">
+	<%= dl 'Permit Issue', o.date_permit.d4 %>
+	<%= dl 'Permit Expire', o.permit_exp.d4 %>
+	<%= dl 'Appl. Recv\'d', o.date_application_recvd.d4 %>
+	<%= dl 'Permit Sent', o.permit_sent_date.d4 %>
+	<%= dl 'Prev. Issue', o.prev_issue_date.d4 %>
+	<%= dl 'Prev. Expire', o.prev_expire_date.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Facility Name', o.facility_name %>
+	<%= dl 'Facility Address', [[o.street_number, o.street_name, o.street_type, o.street_direction].reject(&:blank?) * ' ', o.fac_city, "#{o.estab_state} #{o.fac_zip}".strip].reject(&:blank?) * ', ' %>
+</div>
+<div class="view">
+	<%= dl 'Estab. Name', o.estab_name %>
+	<%= dl 'Estab. Address', [o.estab_address, "#{o.estab_city} #{o.estab_zip}".strip].reject(&:blank?) * ', ' %>
+</div>
+<div class="view">
+	<%= dl 'Owner Name', o.owner_name %>
+	<%= dl 'Owner Address', [o.owner_addr, o.owner_city, "#{o.owner_state} #{o.owner_zip}".strip].reject(&:blank?) * ', ' %>
+</div>
+<div class="view">
+	<%= dl 'Estab. Phone', o.estab_phone %>
+	<%= dl 'Email 1', o.email1 %>
+	<%= dl 'Email 2', o.email2 %>
+</div>
+<div class="view">
+	<%= dl 'Capacity', o.seating_cap %>
+	<%= dl 'Fee Type', lbl('fdfeetyp', o.fee_type) %>
+	<%= dl 'Fee Code', o.capacity_rate %>
+	<%= dl 'Fee', '$' + n2(o.fd_fee_schedule.try(:fee).to_f) %>
+</div>
+<div class="view">
+	<%= dl 'Open Date', o.date_estab_open %>
+	<%= dl 'Date Obsolete', o.date_ob.d4 %>
+	<%= dl 'Ob. to EHIPS', yn(o.ob_to_ehips) %>
+</div>
+<div class="view">
+	<%= dl 'Certificate', lbl('fdcert', o.certificate) %>
+	<%= dl 'Initials', o.san_init %>
+	<%= dl 'Last Inspection', o.last_insp %>
+</div>
+<div class="view">
+	<%= dl 'Wrk. Comp. Exp.', o.workers_comp_exp.d4 %>
+	<%= dl 'Disa. Exp', o.disability_exp.d4 %>
+	<%= dl 'Exmpt. Cert. Exp.', o.exemption_cert_exp.d4 %>
+	<%= dl 'Time Tab.', o.timetab.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Bill. Date', o.billing_date.d4 %>
+	<%= dl 'Date Paid', o.date_paid.d4 %>
+	<%= dl 'Check #', o.check_no %>
+	<%= dl 'CC Info to Billing', o.date_cc_info_to_billing.d4 %>
+	<%= dl 'Bill/Pay Comment', o.fee_receipt_comment %>
+</div>
+<div class="view">
+	<%= dl 'Fac. Code', o.facility_code %>
+	<%= dl 'Water ID', o.water_id %>
+	<%= dl 'Rec. #', o.rec_no %>
+	<%= dl 'Cust. Acct. #', o.customer_acct_no %>	
+	<%= dl 'Operation ID', o.operation_id %>
+	<%= dl 'Primary Op.', o.primary_op %>
+	<%= dl 'Gaz. Code', o.gazcode %>	
+</div>
+<div class="view">
+	<%= dl 'Exclue Permit Print 1', o.exclude_permit_print %>
+	<%= dl 'Exclue Permit Print 2', o.exclude_permit_print2 %>
+</div>

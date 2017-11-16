@@ -1,0 +1,77 @@
+<% if o.respond_to?(:documents) && !@documents_once %>
+	<% @documents_once = true %>
+	<tr>
+		<th>Documents</th>
+		<td>
+			<div id="uploading">
+				<% Document.where(user_id: @current_user.id, temporary: true).order('documents.created_at asc').each { |d| %>
+					<%= partial 'document_temp', :d => d %>
+				<% } %>
+			</div>
+			<label class="btn">
+				<i class="fa fa-upload"></i> Upload New File(s)
+				<input type="file" name="upload" multiple id="document-new" title="Select Files to Upload" style="display: none;">
+			</label>
+			<span>Documents uploaded here will be attached to this record once saved.</span>
+		</td>
+	</tr>	
+	<script>
+		var documents = $('#uploading');
+		documents.on('click', '.document-delete', function(e) {
+			e.preventDefault();
+			var div = $(this).closest('div');
+			div.addClass('busy-bg');
+			setTimeout(function() {
+				if(confirm('Are you sure you want to delete this document?')) {
+					$.ajax({
+						url: '<%= url_for controller: :documents, action: :delete %>/' + div.data('id'),
+						method: 'POST',
+						success: function(data, status, xhr) {
+							div.remove();
+						},
+						error: function(xhr, status, error) {
+							alert('Error deleting document.');
+						},
+						complete: function(xhr, status) {
+							div.removeClass('busy-bg');
+						}
+					});
+				}
+				else {
+					div.removeClass('busy-bg');
+				}
+			}, 1);
+		});
+		$('#document-new').fileupload({
+			url: '<%= url_for controller: :documents, action: :new %>',
+			paramName: 'obj[upload]',
+			formData: {'obj[temporary]': 1},
+			submit: function(e, data) {
+				data.progress_row = $(
+					'<div class="busy-bg">' + data.files[0].name + ' (<span>0</span>%) <a href="#" class="cancel">cancel</a></div>'
+				);
+				data.progress_row.find('a.cancel').click(function(e) {
+					e.preventDefault();
+					if(confirm('Are you sure you want to cancel the upload?')) {
+						data.jqXHR.abort();
+					}
+				});
+				documents.prepend(data.progress_row);
+			},
+			progress: function(e, data) {
+				data.progress_row.find('span').text(parseInt(data.loaded / data.total * 100, 10));
+			},	
+			done: function(e, data) {
+				data.progress_row.replaceWith(data.result);
+			},
+			fail: function(e, data) {
+				if(data.errorThrown !== 'abort') {
+					alert('Error Uploading File: ' + data.files[0].name);
+				}
+			},
+			always: function(e, data) {
+				data.progress_row.remove();
+			}
+		});
+	</script>
+<% end %>

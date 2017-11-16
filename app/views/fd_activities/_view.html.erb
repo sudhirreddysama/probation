@@ -1,0 +1,24 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Activity Date', o.activity_date.d4 %>
+	<%= dl 'Created At', o.created_at.dt4 %>
+	<%= dl 'Initials', o.inspector_init %>	
+	<%= dl 'Insp. Length', o.length %>
+	<%= dl 'Reinspection Due', o.reinspection_due_date.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Activity Type', o.fd_inspection_code ? link_to(blank_tag(o.fd_inspection_code.name), controller: :fd_inspection_codes, action: :view, id: o.fd_inspection_code_id) : o.inspection_type %>
+	<%= dl 'Gaz Number', o.gaz_number %>
+	<%= dl 'Establishment Name', o.fd_establishment ? link_to(blank_tag(o.fd_establishment.facility_name), controller: :fd_establishments, action: :view, id: o.fd_establishment_id) : '' %>
+</div>
+<div class="view">
+	<%= dl 'Complaint Received', o.complaint_received.d4 %>
+	<%= dl 'Complaint Abate', o.complaint_abate.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Notes', nl2br_h(o.notes) %>
+</div>
+<div class="view">
+	<%= dl 'Operation ID', o.operation_id %>
+	<%= dl 'EHIPS Sent', o.ehipssent %>
+</div>

@@ -1,0 +1,27 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'When', o.created_at.dt4 %>
+	<%= dl 'User', o.user.try(:username) %>
+	<%= dl 'Action', o.action %>
+</div>
+<div class="view">
+	<%= dl 'Record', o.obj ? link_to(o.obj.label, context: nil, controller: o.obj_type.underscore.pluralize, action: :view, id: o.obj_id) : blank_tag %>
+</div>
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%">Field</th>
+			<th width="49%">Before</th>
+			<th width="49%">After</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% o.values.each { |f, v| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= f %></td>
+				<td class="nobr"><%= nl2br_h v[0] %></td>
+				<td class="nobr"><%= nl2br_h v[1] %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

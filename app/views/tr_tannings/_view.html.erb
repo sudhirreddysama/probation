@@ -1,0 +1,24 @@
+<%= partial 'tr_others/view_common', o: o %>
+<div class="view">
+	<%= dl 'Preop. Insp.', o.preop_insp.d4 %>
+	<%= dl 'Annual Insp.', o.annual_insp.d4 %>
+	<%= dl 'S/U', lbl('su', o.s_u) %>
+	<%= dl 'Reinsp.', o.reinspection.d4 %>
+	<%= dl 'Partial S/U', lbl('su', o.partial_s_u) %>
+	<%= dl '2nd Reinsp.', o.reinspection_2nd.d4 %>
+	<%= dl '2nd S/U', lbl('su', o.reinspection_2nd_s_u) %>
+	<%= dl 'Last Annual Insp.', o.last_annual_insp.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Complaint Date', o.complaint_date.d4 %>
+	<%= dl 'Abate Date', o.abate_date.d4  %>
+</div>
+<div class="view">
+	<%= dl 'No. Units', n0(o.num_units) %>
+	<%= dl 'Total Fee', n2(o.total_fee) %>
+	<%= dl 'Fee Paid', n2(o.fee_paid) %>
+	<%= dl 'Date Paid', o.date_paid.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Comments', nl2br_h(o.comments) %>
+</div>

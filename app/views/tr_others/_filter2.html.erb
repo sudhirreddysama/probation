@@ -1,0 +1,21 @@
+<tr>
+	<th>Active/Inactive</th>
+	<td class="nobr">
+		<label class="yes"><%= check_box_tag 'filter[active][]', '1', '1'.in?(@filter.active) %> Active</label>&nbsp;&nbsp;&nbsp;
+		<label class="no"><%= check_box_tag 'filter[active][]', '0', '0'.in?(@filter.active) %> Inactive</label>
+	</td>
+</tr>
+<% if params.controller.in?(['tr_others', 'tr_child_camps']) %>
+	<tr>
+		<th>Facility Type</th>
+		<td>
+			<%= select_tag 'filter[tr_facility_type][]', 
+				options_for_select(@model.order('typ').pluck("distinct #{@model.table_name}.facility_type typ").map { |o| [o, {title: ' '}] }, @filter.tr_facility_type),
+				multiple: true, id: 'filter-tr_facility_type', style: 'width: 600px;' 
+			%>
+		</td>
+	</tr>
+	<script>
+		$('#filter-tr_facility_type').select2({closeOnSelect: false});
+	</script>
+<% end %>

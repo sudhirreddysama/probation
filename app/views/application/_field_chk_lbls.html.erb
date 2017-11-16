@@ -1,0 +1,16 @@
+<% if local_assigns[:vals] %>
+	<span class="lbl-chk-grp">
+		<% opts.each { |v| %>
+			<% label, val = v.is_a?(Array) ? v : [v, v] %>
+			<label class="lbl-chk"><%= check_box_tag field, val, vals && vals.include?(val) %><span class="lbl lbl-<%= lbl %>-<%= val.to_s.downcase %>"><%= label %></span></label>
+		<% } %>
+	</span>
+<% else %>
+	<%= f.hidden_field field, value: '' %>
+	<span class="lbl-chk-grp">
+		<% opts.each { |v| %>
+			<% label, val = v.is_a?(Array) ? v : [v, v] %>
+			<label class="lbl-chk"><%= f.check_box field, {include_hidden: false, class: 'radio'}, val %><span class="lbl lbl-<%= lbl %>-<%= val.to_s.downcase %>"><%= label %></span></label>
+		<% } %>
+	</span>
+<% end %>

@@ -1,0 +1,56 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Created', o.created_at.dt %>
+	<%= dl 'Permit No.', o.temp_permit_number %>
+	<%= dl 'Issue', o.issue_date.d %>
+	<%= dl 'Expire', o.issue_date.d %>
+</div>
+<div class="view">
+	<%= dl 'Operator Name', o.operator_name %>
+	<%= dl 'Operator Address', [o.operator_address, o.operator_city, o.operator_zip].reject(&:blank?).join(', ') %>
+	<%= dl 'Operator Phone', o.operator_phone %>
+</div>
+<div class="view">
+	<%= dl 'Food Stand', o.food_stand %>
+	<%= dl 'Event Name', o.event_name %>
+	<%= dl 'Event Booth Site', [o.event_booth_site, o.event_town].reject(&:blank?).join(', ') %>
+	<%= dl 'Type', o.type_of_facility %>
+</div>
+<div class="view">
+	<%= dl 'Risk', lbl('risk', o.risk_class) %>
+	<%= dl 'Inspector', o.inspector %>
+	<%= dl 'Inspect Date', o.inspect_date.d %>
+	<%= dl 'Duration', o.inspect_duration %>
+	<%= dl 'Waiver', lbl('waiv', o.waiver) %>
+	<%= dl 'Receipt No.', o.receipt_number %>
+	<%= dl 'Date Paid', o.date_paid.d %>
+	<%= dl 'Amount Paid', o.amount_paid.n2 %>
+	<%= dl 'Check No.', o.check_number %>
+</div>
+<div class="view">
+	<%= dl 'Violations Cited', o.violations_cited %>
+</div>
+<div class="view">
+	<%= dl 'Food Items', o.food_items %>
+</div>
+<div class="view">
+	<%= dl 'File Notes', o.file_notes %>
+</div>
+<div class="view">
+	<%= dl 'Work Comp Exp.', o.workers_comp_exp %>
+	<%= dl 'Disa Exp.', o.disability_exp %>
+	<%= dl 'Exem Cert Exp.', o.exemption_cert_exp %>
+	<%= dl 'Work Comp Cancel', o.wrkrs_comp_cancellation_date.d %>
+	<%= dl 'Disa Cancel', o.disability_cancellation_date.d %>
+</div>
+<% o.tf_violations.order('sort').each_with_index { |v, i| %>
+	<div class="view">
+		<%= dl "Violation ##{i + 1}", link_to_if(!@print, v.code_section, controller: :tf_violations, action: :view, id: v.id, context: :tf_facility, context_id: o.id) %>
+		<%= dl 'Red/Blue', lbl('viol_rb', v.red_blue) %>
+		<%= dl 'Corrected?', yn(v.corrected) %>
+		<%= dl 'Created', o.created_at.dt %>
+	</div>
+	<div class="view">
+		<%= v.violation %>
+	</div>
+<% } %>

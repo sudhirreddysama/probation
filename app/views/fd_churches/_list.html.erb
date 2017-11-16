@@ -1,0 +1,21 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<th width="1%">Issue</th>
+			<th width="1%">Expire</th>
+			<th>Name, Address</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= o.issue_date.d %></td>
+				<td class="nobr"><%= o.expiration_date.d %></td>
+				<td><%= link_to blank_tag([o.church_name, o.address, [o.city, o.zipcode].reject(&:blank?) * ' '].reject(&:blank?) * ', '), controller: :fd_churches, action: :view, id: o.id %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

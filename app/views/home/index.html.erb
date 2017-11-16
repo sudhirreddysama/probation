@@ -1,0 +1,27 @@
+<% content_for(:head) { %>
+	<style>
+		#home-btns { display: table; margin: 100px auto; border-collapse: separate; border-spacing: 8px; 
+			font-size: 16px; line-height: 24px;
+		}
+		#home-btns a { white-space: nowrap; display: table-cell; border: 2px solid #888; text-decoration: none; text-align: center; 
+			background: linear-gradient(#fff, #ddd); color: #444; width: 200px; height: 200px; vertical-align: middle; border-radius: 16px; 
+			transition: background-position .2s; background-position: 0 0;
+			background-repeat: repeat-x;
+		}
+		#home-btns a:hover { color: #000; background-position: 0 200px; }
+		#home-btns a:active, #home-btns a:focus { border-color: #07f; }
+		#home-btns i { font-size: 48px; line-height: 70px; }
+		#home-btns b { font-size: 24px; line-height: 36px; }
+		#home-btns span { font-size: 12px; line-height: 18px; }
+	</style>
+<% } %>
+<div id="home-btns">
+	<a href="<%= url_for context: nil, context_id: nil, controller: :ve_reservations, action: :availability %>">
+		<i class="fa fa-fw fa-3x fa-truck"></i><br>
+		Vehicle Scheduling<br>&amp; Mileage<br>&nbsp;
+	</a>
+	<a href="#" style="pointer-events: none; cursor: default; color: #888;">
+		<i class="fa fa-fw fa-3x fa-book"></i><br>
+		Environmental<br>Health Permits<br>(Coming Soon)
+	</a>
+</div>

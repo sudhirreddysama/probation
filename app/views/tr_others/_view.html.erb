@@ -1,0 +1,19 @@
+<%= partial 'tr_others/view_common', o: o %>
+<div class="view">
+	<%= dl 'In Operation', o.in_operation %>
+	<%= dl 'Code', o.code %>
+	<%= dl 'Phone No.', o.phoneno %>
+	<%= dl 'Cust. Acct. No.', o.customer_acct_no %>
+	<%= dl 'Last Annual Insp.', o.last_annual_insp %>
+	<%= dl 'Has Pool', yn(o.pool) %>
+</div>
+<div class="view">
+	<%= dl 'NY Fac. Key', o.fac_key %>
+	<%= dl 'NY Oper. ID', o.operation_id %>
+	<%= dl 'Category', o.cat %>
+	<%= dl 'Subcategory', o.subcat %>
+	<%= dl 'Primary Operation', yn(o.primaryop) %>
+</div>
+<div class="view">
+	<%= dl 'Comments', nl2br_h(o.comments) %>
+</div>

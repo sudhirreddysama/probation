@@ -1,0 +1,24 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%"><%= check_box_tag 'list_select_all', 1, false %><br>ID</th>
+			<th width="1%">RB<br>Crct?</th>
+			<th width="1%">Code<br>Date</th>
+			<th width="99%" class="nobr">Violation<br>Operator &middot; Food Stand &middot; Event</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %><br><%= o.id %></td>
+				<td class="nobr tc"><%= lbl 'viol_rb', o.red_blue %><%= yn o.corrected %></td>
+				<td class="nobr"><%= link_to o.code_section, controller: :tf_violations, action: :view, id: o.id %>&nbsp;<br><%= o.action_date.d %></td>
+				<td>
+					<%= o.violation %>&nbsp;<br>
+					<%= o.tf_facility.try :operator_name %> &middot; <%= o.tf_facility.try :food_stand %> &middot; <%= o.tf_facility.try :event_name %>
+				</td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -1,0 +1,5 @@
+<div id="document-<%= d.id %>" data-id="<%= d.id %>">
+	<%= link_to d.name, {controller: :documents, action: :download, id: d.id}, class: 'document-download', target: '_blank' %>
+	<input type="hidden" name="upload_ids[]" value="<%= d.id %>" />
+	<a href="#" class="document-delete dim">delete</a>
+</div>

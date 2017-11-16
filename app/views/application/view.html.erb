@@ -1,0 +1,8 @@
+<h1 id="print-title"><%= @obj.label %></h1>
+<% if @print_button != false %>
+	<div class="btns right">
+		<%= tab 'print', 'Print PDF', {action: :print, id: @obj.id}, {}, target: '_blank' %>
+	</div>
+<% end %>
+<%= partial 'view', :o => @obj %>
+<%= partial 'documents', :o => @obj %>

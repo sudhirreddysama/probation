@@ -1,0 +1,14 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Type', o.type %>
+	<%= dl 'Fac. Code', o.fac_code %>
+	<%= dl 'Code', o.code %>
+</div>
+<div class="view">
+	<%= dl 'Facility Name', o.facility_name %>
+	<%= dl 'Address', [[o.street_no, o.street_name, o.street_type, o.street_dir].reject(&:blank?) * ' ', o.city, "#{o.state} #{o.zip}".strip].reject(&:blank?) * ', ' %>
+</div>
+<div class="view">
+	<%= dl 'Town', o.town %>
+	<%= dl 'Name', o.name %>
+</div>

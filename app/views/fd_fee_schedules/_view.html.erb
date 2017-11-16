@@ -1,0 +1,13 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Type', o.type %>
+	<%= dl 'Facility Type', [o.facility_type_code, o.facility_type].reject(&:blank?) * ' - ' %>
+	<%= dl 'Code', o.fee_code %>
+	<%= dl 'Description', o.description %>
+</div>
+<div class="view">
+	<%= dl 'Fee', n2(o.fee) %>
+	<%= dl 'Late Fee', n2(o.late_fee) %>
+	<%= dl 'Min', n0?(o.min) %>
+	<%= dl 'Max', n0?(o.max) %>
+</div>

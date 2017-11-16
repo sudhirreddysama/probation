@@ -1,0 +1,97 @@
+<% o = @obj; church = o.is_a?(FdChurch) %><!DOCTYPE html>
+<html>
+<head>
+<style>
+html, body { margin: 0; padding: 0; box-sizing: border-box; width: 8in; height: 10.5in; font: 10.1pt/1.3 "Courier New"; }
+body * { box-sizing: inherit; font-family: inherit; font-size: inherit; }
+.tl { text-align: left; }
+.tc { text-align: center; }
+.tr { text-align: right; }
+#wrap { position: relative; width: 8in; height: 10.5in; 
+	/*background: url(<%= Rails.root %>/public/permit-tpl2.gif) no-repeat; background-size: 8in 10.5in; */
+}
+#p1, #p2, #p3, #p4, #hr { padding: 0 .62in; position: absolute; width: 100%;}
+#p1 { top: 1.43in; padding-right: .8in; }
+#p2 { top: 2.38in; font-size: 14pt; padding-left: 2.71in; }
+#p3 { top: 3.23in; padding-right: .5in; }
+#hr { top: 5.06in; border-top: 1px solid #000; }
+#p4 { top: 5.88in; font-family: "Times New Roman", serif; font-size: 9.1pt; }
+#p4a { font-family: Helvetica, sans-serif; font-size: 10.1pt; }
+</style>
+</head>
+<body>
+<div id="wrap">
+
+<div id="p1">
+	<div class="tr">
+	<% if church %>
+		&nbsp;No: <%= o.id %><br>
+		&nbsp;
+	<% else %>
+		&nbsp;<%= o.gaz_number %><br>
+		&nbsp;<%= o.risk %> <%= o.operation_id %>
+	<% end %>
+	</div>
+	<div>
+	<% if church %>
+		AS PROVIDED IN CHAPTER 1, PART 14 OF THE NEW YORK STATE SANITARY<br>
+		CODE THIS PERMIT IS GRANTED TO OPERATE A FOOD SERVICE ESTABLISHMENT KNOWN AS:
+	<% else %>
+		AS PROVIDED IN CHAPTER 1, PART 14 OF THE NEW YORK STATE SANITARY<br>
+		CODE THIS PERMIT IS GRANTED TO <b><%= o.owner_name %></b><br>
+		TO OPERATE A FOOD SERVICE ESTABLISHMENT KNOWN
+	<% end %>
+	</div>
+</div>
+<div id="p2">
+	<% if church %>
+		<b><%= o.church_name %><br>
+		<%= o.address %><br>
+		<%= o.city %>, NY <%= o.zipcode %></b>
+	<% else %>
+		<b><%= o.estab_name %><br>
+		<%= o.estab_address %><br>
+		<%= o.fac_city %>, <%= o.estab_state %> <%= o.fac_zip %></b>
+	<% end %>
+</div>
+<div id="p3">
+	<div>
+	PART 14 OF THE NEW YORK STATE SANITARY CODE REQUIRES THAT THIS PERMIT BE PROMINENTLY<br>
+	DISPLAYED AT EACH FOOD SERVICE ESTABLISHMENT WHERE IT CAN BE SEEN BY THE CONSUMER<br>
+	&nbsp;<br>
+	ISSUE DATE: <%= church ? o.issue_date.d4 : o.date_permit.d4 %>
+	</div>
+	<div style="padding-left: 1in;"><%= church ? o.expiration_date.d4 : o.permit_exp.d4 %></div>
+</div>
+<div id="hr">&nbsp;</div>
+<div id="p4">
+	<div class="tc"><b>IMPORTANT!</b><br>
+	&nbsp;</div>
+	<div>
+	<b><u>HEALTH PERMITS ARE NOT TRANSFERABLE</u></b> FROM ONE OPERATOR TO ANOTHER. PLEASE
+	NOTIFY THE FOOD PROTECTION SECTION OF ANY CHANGES IN OPERATOR OR NAME OF
+	ESTABLISHMENT, INCLUDING ADDITIONS/DELETIONS OF OPERATORS/PARTNERS.<br>
+	&nbsp;<br>
+	<b>NEW YORK STATE HAS SMOKING REGULATIONS THAT WENT INTO EFFECT ON JULY 24, 2003.
+	RESTAURANTS AND BARS ARE NOW REQUIRED TO PROHIBIT SMOKING IN <u>ALL AREAS</u> INSIDE THE
+	FACILITY. DESIGNATED OUTDOOR DINING AREAS WITH AN OVERHEAD COVERING (EXCLUDING TABLE
+	UMBRELLAS) MUST ALSO BE SMOKE FREE. IN UNCOVERED OUTDOOR DINING AREAS, SMOKING MAY BE
+	ALLOWED IN NO MORE THAN 25% OF THE SEATING WITH A 3 FOOT BUFFER BETWEEN SMOKING AND
+	NON-SMOKING AREAS. SMOKING IS ALLOWED IN OUTDOOR AREAS OF BARS AND RESTAURANTS THAT
+	ARE NOT DESIGNATED FOR DINING. FOR MORE INFORMATION CALL 753-5064.</b><br>
+	&nbsp;
+	<div id="p4a">
+		<b>Please note: The Food Worker Training requirements are as follows:<br>
+		All establishments classified as &quot;High Risk&quot; ( H ) or &quot;Medium Risk&quot; ( M ) must have a Level I 
+		certified food handler in charge and enough Level II trained employees to have one present at all 
+		operating times. &quot;Low Risk&quot; ( L ) classified establishments must have enough Level II trained 
+		employees at all operating times.<br>
+		If you have any questions concerning training, please contact our office at 753-5869.</b><br>
+		&nbsp;<br>
+		<b>REMEMBER: <u>YOU MUST</u> POST YOUR TRAINING CERTIFICATE(S) ALONG WITH YOUR PERMIT TO OPERATE.</b>
+	</div>
+</div>
+
+</div>
+</body>
+</html>

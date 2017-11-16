@@ -1,0 +1,11 @@
+<tr>
+	<th>Date Range</th>
+	<td class="nobr inp-row">
+		<%= f.select :date_type, @date_types, {}, style: 'width: 150px;' %>
+		<span>&nbsp;&nbsp;From: </span>
+		<%= f.text_field :from_date, value: o.from_date.d4, class: 'date' %>
+		<span>&nbsp;&nbsp;To:</span>
+		<%= f.text_field :to_date, value: o.to_date.d4, class: 'date' %>
+		<%= partial 'date_presets', :f => f, :o => o %>
+	</td>
+</tr>

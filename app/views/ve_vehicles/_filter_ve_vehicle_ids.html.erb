@@ -1,0 +1,41 @@
+<tr>
+	<th>Vehicles</th>
+	<td class="inp-row">
+		<%= f.select :ve_vehicle_ids, VeVehicle.order('ve_vehicles.vehicle_no').map { |v| [v.vehicle_no, v.id, {data: {no: v.vehicle_no}, title: "#{v.vehicle_no} #{v.year} #{v.make} #{v.model}"}] }, {include_hidden: false}, multiple: true, style: 'width: 400px;' %>
+	</td>
+</tr>
+<script>
+	var select = $('#filter_ve_vehicle_ids');
+	select.select2({
+		ajax: {
+			url: '<%= url_for controller: :ve_vehicles, action: :autocomplete %>?',
+			delay: 250,
+			complete: function(xhr, status) {
+				select.parent().children('.select2').removeClass('busy-bg');
+			},
+			beforeSend: function(xhr, settings) {
+				select.parent().children('.select2').addClass('busy-bg');
+			},
+			data: function(params) {	
+				var data = {term: params.term, page: params.page || 1}
+				var active_checked = $('#filter_active input:checked');
+				if(active_checked.length == 1) {
+					data.active = active_checked.val();
+				}
+				return data;
+			},
+			processResults: function(data, params) {
+				return {
+					results: $.map(data.data, function(d) {
+						return {title: ' ', id: d.id, text: d.vehicle_no + ' ' + d.year + ' ' + d.make + ' ' + d.model, data: {no: d.vehicle_no}};
+					}), 
+					pagination: {more: data.page < data.pages}
+				};
+			},
+			templateSelection: function(data, li) {
+				return $(data.element).data('no');
+			}
+		},
+		closeOnSelect: false,
+	});
+</script>

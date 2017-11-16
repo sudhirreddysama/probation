@@ -1,0 +1,76 @@
+<%= f.tr_text_field :fee_code, label: 'Code', req: true, style: 'width: 80px;' %>
+<tr>
+	<th>Facility Type</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Code</th>
+				<th>Name <span class="req">*</span></th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :facility_type_code, style: 'width: 70px;' %></td>
+				<td><%= f.text_field :facility_type, style: 'width: 300px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<script>
+	var set_fac_type = function(item) {
+		$('#obj_facility_type_code').val(item.facility_type_code);
+		$('#obj_facility_type').val(item.facility_type);
+	}
+	$('#obj_facility_type_code, #obj_facility_type').autocomplete({
+		source: <%= FdFeeSchedule.where('facility_type != ""').order('facility_type_code').select('distinct facility_type_code, facility_type').map { |e| 
+			e.attributes.slice('facility_type_code', 'facility_type') + {label: "#{e.facility_type_code} - #{e.facility_type}"}
+		}.to_json.html_safe %>,
+		minLength: 0,
+		select: function(e, ui) { 
+			e.preventDefault();
+			set_fac_type(ui.item); 
+		},
+		focus: function(e, ui) { 
+			e.preventDefault();
+			set_fac_type(ui.item); 
+		}
+	}).focus(function(e) { 
+		$(this).autocomplete('search'); 
+	});
+</script>
+<tr>
+	<th>Type</th>
+	<td>
+		<%= partial 'field_chk_lbls', f: f, opts: FdFeeSchedule::TYPES, field: 'type', lbl: 'fdfeetyp' %>
+	</td>
+</tr>
+<tr>
+	<th>Fee Info</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th class="tr">Base Fee</th>
+				<th class="tr">Late Fee</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :fee, class: 'n2', style: 'width: 80px;' %></td>
+				<td><%= f.text_field :late_fee, class: 'n2', style: 'width: 80px;' %></td>
+				<td></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Capacity</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th class="tr">Min</th>
+				<th class="tr">Max</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :min, class: 'n0', style: 'width: 80px;' %></td>
+				<td><%= f.text_field :max, class: 'n0', style: 'width: 80px;' %></td>
+				<td></td>
+			</tr>
+		</table>
+	</td>
+</tr>

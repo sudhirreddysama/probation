@@ -1,0 +1,27 @@
+<tr>
+	<th>Supv/Active</th>
+	<td class="inp-row">
+		<%= f.select :supervision, PlSupervisionLevel.order('code').map { |s| [s.name, s.code, {title: ' '}] }, {include_hidden: false}, multiple: true, style: 'width: 300px;' %>
+		<%= partial 'field_chk_lbls', opts: %w{Y N P}, field: 'filter[active][]', vals: @filter.active || [], lbl: 'plactive' %>
+	</td>
+</tr>
+<tr>
+	<th>Code/Type
+	<td class="inp-row">
+		<%= f.select :facility_code, @model.where('facility_code != ""').order('facility_code').pluck('distinct facility_code').map { |c| [c, {title: ' '}] }, {include_hidden: false}, multiple: true, style: 'width: 300px;' %>
+		<%= f.select :facility_type, PlFeeSchedule.order('facility_type').map { |s| [s.facility_type, {title: ' '}] }, {include_hidden: false}, multiple: true, style: 'width: 300px;' %>
+	</td>
+	<script>
+		$('#filter_supervision').select2({
+			closeOnSelect: false,
+			placeholder: 'Supervision Level(s)'
+		});
+		$('#filter_facility_code').select2({
+			closeOnSelect: false,
+			placeholder: 'Facility Code(s)'
+		});
+		$('#filter_facility_type').select2({
+			closeOnSelect: false,
+			placeholder: 'Facility Type(s)'
+		});
+	</script>

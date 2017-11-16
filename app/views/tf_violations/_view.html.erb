@@ -1,0 +1,17 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Red/Blue', lbl('viol_rb', o.red_blue) %>
+	<%= dl 'Corrected', yn(o.corrected) %>
+	<%= dl 'Code/Section', o.code_section %>
+	<%= dl 'Action Date', o.action_date.d %>
+	<%= dl 'Created At', o.created_at.dt %>
+</div>
+<% f = o.tf_facility %>
+<div class="view">
+	<%= dl 'Operator Name', f ? link_to(f.operator_name, controller: :tf_facilities, action: :view, id: f.id, context: nil, context_id: nil) : ''  %>
+	<%= dl 'Food Stand', f.try(:food_stand) %>
+	<%= dl 'Event Name', f.try(:event_name) %>
+</div>
+<div class="view">
+	<%= dl 'Violation', o.violation %>
+</div>

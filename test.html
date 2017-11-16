@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Environmental Health</title>
+  <link rel="stylesheet" media="all" href="https://ehpermits.monroecounty.gov/dev/font-awesome-4.7.0/css/font-awesome.css" />
+  <link rel="stylesheet" media="all" href="https://ehpermits.monroecounty.gov/dev/jquery-ui-1.11.4.custom/jquery-ui.css" />
+  <script src="https://ehpermits.monroecounty.gov/dev/jquery-1.12.3.js"></script>
+  <script src="https://ehpermits.monroecounty.gov/dev/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+  <link rel="stylesheet" media="all" href="https://ehpermits.monroecounty.gov/dev/style.css?v4" />
+
+	<link rel="stylesheet" media="all" href="https://ehpermits.monroecounty.gov/dev/fullcalendar-3.6.2/fullcalendar.css" />
+	<script src="https://ehpermits.monroecounty.gov/dev/fullcalendar-3.6.2/lib/moment.min.js"></script>
+<script src="https://ehpermits.monroecounty.gov/dev/fullcalendar-3.6.2/fullcalendar.min.js"></script>
+	<style>
+		.fc-scroller { height: auto !important; }
+		.fc-toolbar.fc-header-toolbar { margin-bottom: 8px; }
+		.fc .fc-toolbar > * > * { margin-left: 8px; }
+		.fc-left, .fc-right { display: none; }
+		* { overflow: visible !important; }
+		.fc-content { overflow: hidden !important; page-break-inside: avoid; }
+			body { width: 16.5in; }
+		.fc-event-container { page-break-inside: avoid; }
+		.fc-toolbar { margin-bottom: 0; }
+		.fc-toolbar h2 { font-size: 1em; font-weight: bold; }
+	</style>
+</head>
+<body id="app">asdf
+<div id="calendar"></div>
+<script>
+	$(function() {
+		var cal = $('#calendar');
+		cal.fullCalendar({
+			header: {
+				left: '',
+				center: 'title',
+				right: ''
+			},
+			weekNumbers: true,
+			eventLimit: false,
+			height: 'auto',
+			contentHeight: 'auto',
+			events: [{"id":1,"title":"Test Schedule 2","start":"2017-11-22","end":"2017-11-23","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/1","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":4,"title":"Test Schedule 2","start":"2017-11-22","end":"2017-11-23","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/1","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":10,"title":"Test Schedule 2","start":"2017-11-03","end":"2017-11-04","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/1","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":11,"title":"Test Schedule 2","start":"2017-11-06","end":"2017-11-07","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/1","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":12,"title":"Test Schedule 2","start":"2017-11-01","end":"2017-11-02","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/1","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":13,"title":"Another Test Reservation","start":"2017-11-28","end":"2017-11-29","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/2","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":14,"title":"Another Test Reservation","start":"2017-11-29","end":"2017-11-30","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/2","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":15,"title":"Another Test Reservation","start":"2017-11-01","end":"2017-11-02","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/2","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":16,"title":"Another Test Reservation","start":"2017-11-28","end":"2017-11-29","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/2","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":17,"title":"Another Test Reservation","start":"2017-11-29","end":"2017-11-30","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/2","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true},{"id":18,"title":"Another Test Reservation","start":"2017-11-30","end":"2017-12-01","className":"cal-ve_event","url":"https://ehpermits.monroecounty.gov/dev/ve_reservations/view/2","type":"ve_event","startEditable":true,"durationEditable":false,"allDay":true}],
+			defaultDate: '11/6/2017',
+			defaultView: 'month'
+		});
+	});
+</script>DONE!!!!
+</body>
+</html>

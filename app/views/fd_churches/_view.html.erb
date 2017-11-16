@@ -1,0 +1,12 @@
+<div class="btns">
+	<%= link_to fa('certificate', 'Print Permit'), {action: :permit, id: o.id}, target: '_blank' %>
+</div>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Issue', o.issue_date.d4 %>
+	<%= dl 'Expire', o.expiration_date.d4 %>
+</div>
+<div class="view">
+	<%= dl 'Name', o.church_name %>
+	<%= dl 'Address', [o.address, [o.city, o.zipcode].reject(&:blank?) * ' '].reject(&:blank?) * ', ' %>
+</div>

@@ -1,0 +1,116 @@
+<%= f.hidden_field :obj_type %>
+<%= f.tr_select :obj_id, o.obj ? [["#{o.obj.facility_name} - #{o.obj.facility_type}", o.obj_id, {title: ' '}]] : [], {label: 'Facility Record'}, style: 'width: 400px;' %>
+<script>
+	var select = $('#obj_obj_id');
+	select.select2({
+		ajax: {
+			url: '<%= url_for controller: :tr_others, action: :autocomplete_facility %>',
+			delay: 250,
+			complete: function(xhr, status) {
+				select.parent().children('.select2').removeClass('busy-bg');
+			},
+			beforeSend: function(xhr, settings) {
+				select.parent().children('.select2').addClass('busy-bg');
+			},
+			data: function(params) {
+				return {term: params.term, page: params.page || 1};
+			},
+			processResults: function(data, params) {
+				return {
+					results: data.data,
+					pagination: {more: data.page < data.pages}
+				};
+			}
+		},
+		templateSelection: function(d) {
+			if(d.facility_name) {
+				return d.facility_name + ' - ' + d.facility_type;
+			}
+			return d.text;
+		},
+		templateResult: function(d) {
+			if(d.facility_name) {
+				return d.facility_name + ' - ' + d.facility_type;
+			}
+			return d.text;
+		}
+	}).change(function(e) {
+		var d = $(this).select2('data')[0];
+		if(d) {
+			$('#obj_obj_type').val(d.obj_type);
+			$('#obj_fac_no').val(d.fac_no).effect('highlight');
+			$('#obj_facility_name').val(d.facility_name).effect('highlight');
+			$('#obj_facility_type').val(d.facility_type).effect('highlight');
+		}
+	});
+</script>
+<tr>
+	<th>Facility No./Name</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>No.</th>
+				<th>Name</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :fac_no, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :facility_name, style: 'width: 400px;' %></td>
+			</tr>
+		</table>
+	</td>
+	</td>
+</tr>
+<%= f.tr_text_field :facility_type, label: 'Facility Type' %>
+<script>
+	$('#obj_facility_type').autocomplete({
+		minLength: 0, source: <%= raw @model.where('facility_type != ""').order('facility_type').pluck('distinct facility_type').to_json %>,
+	}).focus(function() { $(this).autocomplete('search', $(this).val()); });
+</script>
+<%= f.tr_text_field :activity_type, label: 'Activity Type', req: true %>
+<script>
+	$('#obj_activity_type').autocomplete({
+		minLength: 0, source: <%= raw @model.where('activity_type != ""').order('activity_type').pluck('distinct activity_type').to_json %>,
+	}).focus(function() { $(this).autocomplete('search', $(this).val()); });
+</script>
+<tr>
+	<th>Dates/Staff</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Activity Date <span class="req">*</span></th>
+				<th>Staff Initials</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :activity_date, class: 'date', value: o.activity_date.d4 %></td>
+				<td><%= f.text_field :staff_initials, style: 'width: 100px;' %></td>
+				<td>&nbsp;&nbsp;<a href="#" id="inspect"><i class="fa fa-fw fa-arrow-left">&nbsp;&nbsp;</i><%= Time.now.to_date.d %> &middot; <%= @current_user.initials %></a></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Result</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Reinsp. Due</th>
+				<th>DC. Red Viol's</th>
+				<th>S/U</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :reinspection_due, class: 'date', value: o.reinspection_due.d4 %></td>
+				<td><%= f.text_field :daycare_red_violations, style: 'width: 100px;', class: 'n0' %></td>
+				<td><%= partial 'tr_others/field_s_u', f: f, field: :s_u %></td>
+			</tr>
+			<script>
+				$('#inspect').click(function(e) { 
+					$('#obj_activity_date').val('<%= Time.now.to_date.d %>').effect('highlight');
+					$('#obj_staff_initials').val('<%= @current_user.initials %>').effect('highlight');
+					e.preventDefault(); 
+				});
+			</script>			
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_area :notes, label: 'Notes' %>

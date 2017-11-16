@@ -1,0 +1,57 @@
+<%= f.tr_select :tf_facility_id, o.tf_facility ? [["#{o.tf_facility_id} - #{o.tf_facility.food_stand.presence || '(BLANK)'} - #{o.tf_facility.event_name || '(BLANK)'}", o.tf_facility_id, title: ' ']] : [], {include_blank: true, label: 'TF Facility'}, style: 'width: 400px;' %>
+<% @tf_violation_types = TfViolationType.order('code_section') %>
+<%= f.tr_select :tf_violation_type_id, @tf_violation_types.map { |t| ["#{t.code_section} - #{t.violation}", t.id] }, {include_blank: true, label: 'Violation Type'}, style: 'width: 400px;' %>
+<%= f.tr_text_field :code_section, label: 'Code/Section', style: 'width: 100px;' %>
+<tr>
+	<th>Red/Blue</th>
+	<td class="nobr">
+		<% ['R', 'B'].each { |v| %>
+			<label class="lbl-chk"><%= f.radio_button :red_blue, v %><span class="lbl lbl-viol_rb-<%= v.to_s.downcase %>"><%= v %></span></label>
+		<% } %>
+	</td>
+</tr>
+<%= f.tr_text_area :violation, label: 'Violation' %>
+<%= f.tr_check_box :corrected, text: 'Corrected?', label: '' %>
+<script>
+var violation_types = <%= raw @tf_violation_types.index_by(&:id).transform_values { |v| v.attributes.slice(*%w{code_section violation red_blue}) }.to_json %>;
+$('#obj_tf_violation_type_id').change(function(e) {
+	var $this = $(this);
+	var vt = violation_types[$this.val()];
+	console.log(vt);
+	console.log(this);
+	if(vt) {
+		$('[name$="[violation]"]').val(vt.violation);
+		$('[name$="[code_section]"]').val(vt.code_section);
+		$('[name$="[red_blue]"][value="' + vt.red_blue + '"]').prop('checked', true);
+	}
+});
+var select = $('#obj_tf_facility_id');
+select.select2({
+	ajax: {
+		url: '<%= url_for controller: :tf_facilities, action: :autocomplete %>',
+		delay: 250,
+		complete: function(xhr, status) {
+			select.parent().children('.select2').removeClass('busy-bg');
+		},
+		beforeSend: function(xhr, settings) {
+			select.parent().children('.select2').addClass('busy-bg');
+		},
+		data: function(params) {
+			return {term: params.term, page: params.page || 1};
+		},
+		processResults: function(data, params) {
+			return {
+				results: $.map(data.data, function(d) {
+					d.title = ' ';
+					d.text = d.id + ' - ' + (d.food_stand || '(BLANK)') + ' - ' + (d.event_name || '(BLANK)');
+					return d;
+				}), 
+				pagination: {more: data.page < data.pages}
+			};
+		}
+	}
+}).change(function(e) {
+	var d = select.select2('data')[0];
+	//$('#obj_temp_permit_number').val(d.temp_permit_number);
+});
+</script>

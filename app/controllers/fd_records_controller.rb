@@ -1,0 +1,3 @@
+class FdRecordsController < CrudController
+
+end

@@ -1,0 +1,174 @@
+<% if o.respond_to?(:documents) && !@documents_once %>
+	<% @documents_once = true %>	
+	<%= form_tag context: o.class.to_s.underscore, controller: :documents, context_id: o.id, action: :all %>
+		<div class="view">
+			<dl>
+				<dt>Documents</dt>
+				<% if o.can_edit?(@current_user) && !@print %>
+					<dd class="btns">
+						<label class="btn">
+							<i class="fa fa-upload"></i> Upload New File(s)
+							<input type="file" name="obj[upload]" multiple id="document-new" title="Select Files to Upload" style="display: none;">
+						</label>
+						<% if @allow_generate_doc != false %>
+							<%= select_tag 'file_doc_template_id', options_for_select(DocTemplate.order('name').map { |t| [t.name, t.id, data: {margins: [t.margin_top, t.margin_bottom, t.margin_left, t.margin_right].join(',')}] }), {include_blank: 'New From Template...', class: 'left', style: 'margin-right: 2px;'} %>
+						<% end %>
+						<button id="download_all"><i class="fa fa-download"></i> Download Merged</a>
+						<% if false %><%= link_to fa('file-code-o', 'Generate File'), context: params.controller.singularize, context_id: o.id, controller: :documents, action: :new, 'obj[generated]' => 'pdf' %><% end %>
+						<%= partial 'documents_btns', o: o %>
+					</dd>
+				<% elsif o.documents.empty? %>
+					<dd>None</dd>
+				<% end %>
+			</dl>
+		</div>
+	</div>
+	<% if !(@print && o.documents.empty?) %>
+		<table class="data" id="documents-table">
+			<thead>
+				<tr>
+					<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+					<th width="97%">Document (click to download, drag to sort)</th>
+					<th width="1%">Created</th>
+					<th width="1%">User</th>
+				</tr>
+			</thead>
+			<tbody id="documents-queue"></tbody>
+			<tbody id="documents">
+				<% reset_cycle 'documents' %>
+				<% o.documents.reorder('documents.sort').each { |d| %>
+					<%= partial 'document', d: d %>
+				<% } %>
+			</tbody>
+		</table>
+	<% end %>
+	<% if !@print %>
+		<script>
+			var documents_url = '<%= url_for context: o.class.to_s.underscore, controller: :documents, context_id: o.id %>';
+			init_sortable('#documents', documents_url + '/sort');
+			function documents_visible() {
+				$('#documents-table')[$('#documents-table tbody tr').size() > 0 ? 'show' : 'hide']();
+				$('#download_all').prop('disabled', $('#documents tr').size() < 2);
+			}
+			documents_visible();
+			var documents = $('#documents');
+			documents.on('click', '.document-delete', function(e) {
+				e.preventDefault();
+				var tr = $(this).closest('tr');
+				tr.addClass('busy-bg');
+				if(confirm('Are you sure you want to delete this document?')) {
+					$.ajax({
+						url: documents_url + '/delete/' + tr.data('id'),
+						method: 'POST',
+						success: function(data, status, xhr) {
+							tr.remove();
+							documents_visible();
+							zebra(documents);
+						},
+						error: function(xhr, status, error) {
+							alert('Error deleting document.');
+						},
+						complete: function(xhr, status) {
+							tr.removeClass('busy-bg');
+						}
+					});
+				}
+				else {
+					tr.removeClass('busy-bg');
+				}
+			});
+			documents.on('click', '.document-edit', function(e) {
+				e.preventDefault();
+				var tr = $(this).closest('tr');
+				tr.addClass('busy-bg');
+				var old_name = tr.find('.document-download').text();
+				var name = prompt('Enter new file name:', old_name);
+				if(name && name != old_name) {
+					$.ajax({
+						url: documents_url + '/edit/' + tr.data('id'),
+						method: 'POST',
+						data: {obj: {name: name}},
+						success: function(data, status, xhr) {
+							tr.replaceWith(data);
+							zebra(documents);
+						},
+						error: function(xhr, status, error) {
+							alert('Error editing document.');
+						},
+						complete: function(xhr, status) {
+							tr.removeClass('busy-bg');
+						}
+					});
+				}
+				else {
+					tr.removeClass('busy-bg');
+				}
+			});
+			$('#file_doc_template_id').change(function(e) {
+				var $this = $(this);
+				var option = $this.find('option:selected')
+				var file_name = option.text() + '.pdf';
+				var temp_row = $('<tr class="busy-bg"><td></td><td colspan="3">' + file_name + '</td></tr>');
+				$('#documents-queue').prepend(temp_row);
+				documents_visible();
+				var margins = option.data('margins').split(',');
+				$.ajax({
+					url: documents_url + '/new',
+					data: {'obj[doc_template_id]': $this.val(), 'obj[name]': file_name, 'obj[generated]': 1, 
+						'obj[margin_top]': margins[0], 
+						'obj[margin_bottom]': margins[1], 
+						'obj[margin_left]': margins[2], 
+						'obj[margin_right]': margins[3]
+					},
+					method: 'POST',
+					success: function(data, status, xhr) {
+						$(data).appendTo(documents).effect('highlight');
+					},
+					complete: function(xhr, status) {
+						temp_row.remove();
+						documents_visible();
+						zebra(documents);
+					},
+					error: function(xhr, status, error) {
+						alert('Error generating document.');
+					}
+				});
+				$this.val(null);
+			});
+			$('#document-new').fileupload({
+				url: documents_url + '/new',
+				paramName: 'obj[upload]',
+				submit: function(e, data) {
+					data.progress_row = $(
+						'<tr class="busy-bg"><td></td><td colspan="3">' + data.files[0].name + ' (<span>0</span>%) <a href="#" class="cancel">cancel</a></td></tr>'
+					);
+					data.progress_row.find('a.cancel').click(function(e) {
+						e.preventDefault();
+						if(confirm('Are you sure you want to cancel the upload?')) {
+							data.jqXHR.abort();
+						}
+					});
+					$('#documents-queue').prepend(data.progress_row);
+					documents_visible();
+				},
+				progress: function(e, data) {
+					data.progress_row.find('span').text(parseInt(data.loaded / data.total * 100, 10));
+				},	
+				done: function(e, data) {
+					$(data.result).appendTo(documents).effect('highlight');
+					documents_visible();
+				},
+				fail: function(e, data) {
+					if(data.errorThrown !== 'abort') {
+						alert('Error uploading file: ' + data.files[0].name);
+					}
+				},
+				always: function(e, data) {
+					data.progress_row.remove();
+					documents_visible();
+					zebra(documents);
+				}
+			});
+		</script>
+	<% end %>
+<% end %>

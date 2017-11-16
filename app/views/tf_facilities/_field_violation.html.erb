@@ -1,0 +1,39 @@
+<%= fields_for('obj[tf_violations_attributes][]', v, index: i) { |ff| %>
+	<div style="padding-top: 2px;" class="field-violation">
+		<table style="margin-top: 0;">
+			<tr>
+				<td><%= ff.text_area :violation, style: 'resize: vertical;' %></td>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<%= ff.hidden_field :tf_violation_type_id %>
+								<%= ff.hidden_field :id %>
+								<%= ff.hidden_field :sort %>
+								<%= ff.text_field :code_section, placeholder: 'Code/Section', style: 'width: 100px;' %>
+							</td>
+							<td class="nobr">
+								<% ['R', 'B'].each { |v| %>
+									<label class="lbl-chk"><%= ff.radio_button :red_blue, v, class: 'red_blue' %><span class="lbl lbl-viol_rb-<%= v.to_s.downcase %>"><%= v %></span></label>
+								<% } %>
+								<span class="sort" style="display: inline-block; cursor: move; cursor: grab; line-height: 18px; padding: 0 4px;"><i class="fa fa-arrows fa-fw"></i></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label><%= ff.check_box :corrected %> Corrected?</label>
+							</td>
+							<td>
+								<% if v.id.present? %>
+									<label><%= ff.check_box :_destroy, include_hidden: false %> Delete</label>
+								<% else %>
+									<a href="#" class="delete-violation">Delete</a>
+								<% end %>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+<% } %>

@@ -1,0 +1,7 @@
+<%
+
+fields = @model.column_names - [@model.primary_key]
+
+%><% fields.each { |k| %>
+	<%= f.tr_text_field k, label: k.titleize %>
+<% } %>

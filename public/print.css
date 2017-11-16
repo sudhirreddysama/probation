@@ -1,0 +1,7 @@
+body { width: 8in; margin: 0 -8px; padding: 0; }
+.bar { display: none; }
+.tabs { display: none; }
+.btns { display: none; }
+a { color: #000; }
+#print-title { display: block; page-break-before: always; margin-top: 0; }
+table.sheet { max-width: 100% !important; }

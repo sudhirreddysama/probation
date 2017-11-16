@@ -1,0 +1,8 @@
+<%= partial 'filter' %>
+<%= partial 'pages', objs: @objs %>
+<% if @objs.empty? %>
+	<%= partial 'empty' %>
+<% else %>
+	<%= partial 'grid' %>
+<% end %>
+<%= partial 'pages', objs: @objs %>

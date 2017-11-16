@@ -1,0 +1,17 @@
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Active', yn(o.active) %>
+	<% l = User::LEVELS.rassoc(o.level) %>
+	<%= dl 'Level', l ? lbl('user', l[1], l[0]) : '' %>
+	<%= dl 'Username', o.username %>
+	<%= dl 'Name', o.name %>
+</div>
+<div class="view">
+	<%= dl 'Email', o.email %>
+	<%= dl 'Title', o.title %>
+	<%= dl 'Phone', o.phone %>
+</div>
+<div class="view">
+	<%= dl 'AD User', yn(o.auth_ldap) %>
+	<%= dl 'Last Login', o.last_login_at.dt %>
+</div>

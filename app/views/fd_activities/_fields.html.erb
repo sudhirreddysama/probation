@@ -1,0 +1,117 @@
+<tr>
+	<th>Activity</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Date <span class="req">*</span></th>
+				<th colspan="2">Initials</th>
+				<th>Length</th>
+				<th>Reinsp. Due</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :activity_date, class: 'date', value: o.activity_date.d %></td>
+				<td><%= f.text_field :inspector_init, style: 'width: 50px;' %></td>
+				<td>&nbsp;&nbsp;<a href="#" id="inspect"><i class="fa fa-fw fa-arrow-left">&nbsp;&nbsp;</i><%= Time.now.to_date.d %> &middot; <%= @current_user.initials %></a>&nbsp;&nbsp;</td>
+				<script>
+					$('#inspect').click(function(e) { 
+						$('#obj_activity_date').val('<%= Time.now.to_date.d %>').effect('highlight');
+						$('#obj_inspector_init').val('<%= @current_user.initials %>').effect('highlight');
+						e.preventDefault(); 
+					});
+				</script>
+				<td><%= f.text_field :length, style: 'width: 50px;' %></td>
+				<td><%= f.text_field :reinspection_due_date, class: 'date', value: o.reinspection_due_date.d %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_select :fd_inspection_code_id, FdInspectionCode.order('name').map { |c| [c.name, c.id, {title: ' '}] }, label: 'Inspection Code', include_blank: true %>
+<%= f.tr_text_field :inspection_type, label: 'Inspection Type', req: true %>
+<script>
+	$('#obj_fd_inspection_code_id').change(function(e) {
+		$('#obj_inspection_type').val($(this).find('option:selected').text()).effect('highlight');
+	});
+</script>
+<%= f.tr_select :fd_establishment_id, o.fd_establishment ? [[o.fd_establishment.facility_name, o.fd_establishment_id, {title: ' '}]] : [], {label: 'Establishment'}, style: 'width: 400px;' %>
+<tr>
+	<th>Gaz Number</th>
+	<td><%= f.text_field :gaz_number, label: 'Gaz Number', style: 'width: 100px;' %>&nbsp;&nbsp;<a href="#" id="nopermit"><i class="fa fa-arrow-left">&nbsp;&nbsp;</i>Unpermitted (123456789)</a></td>
+</tr>
+<script>
+	var select = $('#obj_fd_establishment_id');
+	select.select2({
+		allowClear: true,
+		placeholder: '',
+		ajax: {
+			url: '<%= url_for controller: :fd_establishments, action: :autocomplete %>',
+			delay: 250,
+			complete: function(xhr, status) {
+				select.parent().children('.select2').removeClass('busy-bg');
+			},
+			beforeSend: function(xhr, settings) {
+				select.parent().children('.select2').addClass('busy-bg');
+			},
+			data: function(params) {
+				return {term: params.term, page: params.page || 1};
+			},
+			processResults: function(data, params) {
+				return {
+					results: data.data,
+					pagination: {more: data.page < data.pages}
+				};
+			}
+		},
+		templateSelection: function(d) {
+			if(d.facility_name) {
+				return d.facility_name;
+			}
+			return d.text;
+		},
+		templateResult: function(d) {
+			if(d.facility_name) {
+				return d.facility_name;
+			}
+			return d.text;
+		}
+	}).change(function(e) {
+		var d = $(this).select2('data')[0];
+		if(d) {
+			$('#obj_gaz_number').val(d.gaz_number).effect('highlight');
+		}
+	});
+	$('#nopermit').click(function(e) {
+		$('#obj_fd_establishment_id').val(null).trigger('change');
+		$('#obj_gaz_number').val('123456789');
+	});
+</script>
+<tr>
+	<th>Complaint</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Received Date</th>
+				<th>Abate Date</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :complaint_received, class: 'date', value: o.complaint_received.d %></td>
+				<td><%= f.text_field :complaint_abate, class: 'date', value: o.complaint_abate.d %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>EHIPS Data</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Operation ID</th>
+				<th>EHIPS Sent</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :operation_id, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :ehipssent, style: 'width: 200px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_area :notes, label: 'Notes' %>

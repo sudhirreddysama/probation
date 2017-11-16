@@ -1,0 +1,9 @@
+<% o.attributes.keys.in_groups_of(5, false).each { |fields| %>
+	<div class="view clear-after">
+		<% fields.each { |f| %>
+			<% v = o.send f %>
+			<% l = f == 'id' ? 'ID' : f.titleize %>
+			<%= dl l, v %>
+		<% } %>
+	</div>
+<% } %>

@@ -1,0 +1,23 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<th width="1%">Code</th>
+			<th width="99%">Name</th>
+		</tr>
+	</thead>
+	<% reset_cycle %>
+	<% objs.each { |o| %>
+		<tbody class="<%= cycle 'odd', 'even' %>"
+			<tr>
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= o.code %></td>
+				<td><%= link_to o.name, controller: :pl_supervision_levels, action: :view, id: o.id %></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td colspan="2"><%= nl2br_h o.text %></td>
+			</tr>
+		</tbody>
+	<% } %>
+</table>

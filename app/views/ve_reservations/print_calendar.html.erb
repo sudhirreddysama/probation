@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Environmental Health</title>
+  <%= stylesheet_link_tag '/font-awesome-4.7.0/css/font-awesome.css', media: 'all' %>
+  <%= stylesheet_link_tag '/jquery-ui-1.11.4.custom/jquery-ui.css', media: 'all' %>
+  <script>
+  	// Polyfill to make fullcalendar work within wkhtmltopdf
+		Function.prototype.bind = Function.prototype.bind || function (thisp) {
+			var fn = this;
+			return function () {
+				return fn.apply(thisp, arguments);
+			};
+		};  
+  </script>
+  <%= javascript_include_tag '/jquery-1.12.3.js' %>
+  <%= javascript_include_tag '/jquery-ui-1.11.4.custom/jquery-ui.js' %>
+  <%= stylesheet_link_tag '/style.css', media: 'all' %>
+
+	<%= stylesheet_link_tag '/fullcalendar-3.7.0/fullcalendar.css', media: 'all' %>
+	<%= javascript_include_tag(
+		'/fullcalendar-3.7.0/lib/moment.min.js',
+		'/fullcalendar-3.7.0/fullcalendar.js'
+	) %>
+	<style>
+		.fc-scroller { height: auto !important; }
+		.fc-month-view .fc-row { height: auto !important; }
+		.fc-toolbar.fc-header-toolbar { margin-bottom: 8px; }
+		.fc .fc-toolbar > * > * { margin-left: 8px; }
+		.fc-left, .fc-right { display: none; }
+		* { overflow: visible !important; }
+		.fc-content { overflow: hidden !important; page-break-inside: avoid; }
+		<% if @filter.view.in?(['month', 'agendaWeek']) %>
+			body { width: 16.5in; }
+		<% else %>
+			body { width: 8in; }
+		<% end %>
+		.fc-event-container { page-break-inside: avoid; }
+		.fc-toolbar { margin-bottom: 0; }
+		.fc-toolbar h2 { font-size: 1em; font-weight: bold; }
+	</style>
+</head>
+<body id="app">
+<div id="calendar"></div>
+<script>
+	$(function() {
+		var cal = $('#calendar');
+		cal.fullCalendar({
+			header: {
+				left: '',
+				center: 'title',
+				right: ''
+			},
+			weekNumbers: true,
+			eventLimit: false,
+			height: 'auto',
+			contentHeight: 'auto',
+			events: <%= raw @data.to_json %>,
+			defaultDate: '<%= @filter.date %>',
+			defaultView: '<%= @filter.view %>'
+		});
+	});
+</script>
+</body>
+</html>

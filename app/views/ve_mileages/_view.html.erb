@@ -1,0 +1,17 @@
+<% v = o.ve_vehicle %>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Active', yn(v.active) %>
+	<%= dl 'No.', v.vehicle_no %>
+	<%= dl 'License', v.license %>
+	<%= dl 'Vehicle', link_to(blank_tag(v.year_make_model), controller: :ve_vehicles, action: :view, id: v.id, context: nil, context_id: nil) %>
+</div>
+<div class="view">
+	<%= dl 'Year', o.year %>
+	<%= dl 'Year Start', n0(o.year_start) %>
+</div>
+<div class="view">
+	<% %i{jan feb mar apr may jun jul aug sep oct nov dec}.each { |k| %>
+		<%= dl k.to_s.titleize, n0(o.send(k)) %>
+	<% } %>
+</div>

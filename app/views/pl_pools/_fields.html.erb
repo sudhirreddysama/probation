@@ -1,0 +1,319 @@
+<%= f.tr_text_field :pool_name, req: true, label: 'Pool Name' %>
+<%= f.tr_text_field :facility_name, label: 'Facility Name' %>
+<script>
+	var pool_name = $('#obj_pool_name');
+	var facility_name = $('#obj_facility_name');
+	var update_name = false;
+	pool_name.focus(function(e) {
+		var fn = facility_name.val();
+		update_name = !fn || fn == pool_name.val();
+	}).change(function(e) {
+		if(update_name) {
+			facility_name.val(pool_name.val()).effect('highlight');
+		}
+	});
+</script>
+<%= f.tr_text_field :pool_address, label: 'Address' %>
+<tr>
+	<th>City, State, ZIP</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<td><%= f.text_field :city, style: 'width: 300px;' %></td>
+				<td><%= f.select :state, Const::US_STATES.map(&:last), include_blank: true %></td>
+				<td><%= f.text_field :zip, style: 'width: 70px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_field :municipality, label: 'Municipality' %>
+<script>
+	$('#obj_municipality').autocomplete({
+		source: <%= raw PlPool.order('municipality').where('municipality != ""').pluck('distinct municipality').to_json %>,
+		minLength: 0
+	}).focus(function(e) { $(this).autocomplete('search', ''); });
+</script>
+<tr>
+	<th>Facility Code/Type</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Code</th>
+				<th>Type</th>
+				<th>Active</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :facility_code, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :facility_type, style: 'width: 200px;' %></td>
+				<td><%= partial 'field_chk_lbls', f: f, opts: %w{Y N P}, field: 'active', lbl: 'plactive' %></td>
+				<td><label><%= f.check_box :nonseasonal %>Nonseasonal</label></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<script>
+	$('#obj_facility_code').autocomplete({
+		source: <%= raw PlPool.order('facility_code').where('facility_code != ""').pluck('distinct facility_code').to_json %>,
+		minLength: 0
+	}).focus(function(e) { $(this).autocomplete('search', ''); });
+	$('#obj_facility_type').autocomplete({
+		source: <%= raw PlFeeSchedule.order('facility_type').pluck('facility_type').to_json %>,
+		minLength: 0
+	}).focus(function(e) { $(this).autocomplete('search', ''); });
+</script>
+<tr>
+	<th>Contact Person</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Title</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :contact_person, style: 'width: 250px;' %></td>
+				<td><%= f.text_field :title, style: 'width: 250px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_field :phone, label: 'Phone' %>
+<tr>
+	<th>Email(s)</th>
+	<td class="inp-row">
+		<%= f.text_field :email1, style: 'width: 250px;', placeholder: 'Email 1' %>
+		<%= f.text_field :email2, style: 'width: 250px;', placeholder: 'Email 2' %>
+	</td>
+</tr>
+<tr>
+	<th>Inspector</th>
+	<td>
+		<%= f.text_field :inspector, style: 'width: 100px;' %>
+		<a href="#" id="inspect"><i class="fa fa-fw fa-arrow-left">&nbsp;&nbsp;</i><%= @current_user.initials %></a>
+		<script>
+			$('#inspect').click(function(e) { 
+				$('#obj_inspector').val('<%= @current_user.initials %>').effect('highlight');
+				e.preventDefault(); 
+			});
+		</script>		
+	</td>
+</tr>
+<tr>
+	<th>Supervision Level</th>
+	<td><%= f.text_field :supervision, style: 'width: 100px;' %></td>
+</tr>
+<style>
+.supervision-ac { border: 1px solid #888 !important; display: table; width: 500px; border-collapse: collapse; max-height: 300px !important; }
+.supervision-ac b { display: table-cell; white-space: nowrap; padding: 2px; }
+.supervision-ac span { display: table-cell; white-space: pre-wrap; padding: 2px; }
+.supervision-ac li { display: table-row; border-bottom: 1px solid #888 !important; }
+.supervision-ac li:last-child { border-bottom: none !important; }
+</style>
+<script>
+	var test = <%= PlSupervisionLevel.find(19).text.to_json.html_safe %>;
+	var supervision_levels = <%= PlSupervisionLevel.order('code').map { |s| s.attributes.slice(*%w{code text}) }.to_json.html_safe %>;
+	$('#obj_supervision').autocomplete({
+		source: function(request, response) {
+			if(!request.term) {
+				response(supervision_levels);
+			}
+			var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+      response($.grep(supervision_levels, function(value) {
+				return matcher.test(value.code);
+      }));
+		},
+		select: function(e, ui) {
+			$(this).val(ui.item.code).effect('highlight').blur();
+			e.preventDefault();
+		},
+		minLength: 0,
+		classes: {'ui-autocomplete': 'custom'}
+	}).focus(function(e) {
+		$(this).autocomplete('search', '');
+	}).data('ui-autocomplete')._renderItem = function(ul, item) {
+		ul.addClass('supervision-ac');
+		return $('<li></li>').append(
+			$('<b></b>').text(item.code)
+		).append(
+			$('<span></span>').text(item.text)
+		).appendTo(ul);
+	};
+</script>
+<tr>
+	<th>Pool Info</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Size</th>
+				<th>Surface Area</th>
+				<th>Min Depth</th>
+				<th>Max Depth</th>
+				<td></td>
+			</tr>
+			<tr>
+				<td><%= f.text_field :size, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :surface_area, style: 'width: 100px;', class: 'n0' %></td>
+				<td><%= f.text_field :min_depth, style: 'width: 100px;', class: 'n2' %></td>
+				<td><%= f.text_field :max_depth, style: 'width: 100px;', class: 'n2' %></td>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Bather Load</th>
+				<th>Capacity (gal)</th>
+				<th colspan="2">Turnover Rate(min)</th>
+				<th>Board Approved</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :bather_load, style: 'width: 100px;', class: 'n0' %></td>
+				<td><%= f.text_field :capacity_gal, style: 'width: 100px;', class: 'n0' %></td>
+				<td><%= f.text_field :turnoverrate_min, style: 'width: 100px;', class: 'n0' %></td>
+				<td><label class="nobr"><%= f.check_box :diving_board %>Diving Board</label></td>
+				<td><%= partial 'field_chk_lbls', f: f, opts: %w{Y N R NA}, field: 'active', lbl: 'plboard' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th></th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Water Source</th>
+				<th>Make of Filter</th>
+				<th>Number</th>
+				<th>Filter Rate</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :water_source, style: 'width: 200px;' %></td>
+				<td><%= f.text_field :make_of_filter, style: 'width: 200px;' %></td>
+				<td><%= f.text_field :number, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :filter_rate, style: 'width: 100px;', class: 'n2' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_field :tile, label: 'Tile' %>
+<%= f.tr_text_field :concrete, label: 'Concrete' %>
+<%= f.tr_text_field :freshwater, label: 'Fresh Water' %>
+<%= f.tr_text_field :disinfection, label: 'Disinfection' %>
+<%= f.tr_text_field :waste_to, label: 'Waste To' %>
+<%= f.tr_text_field :coagulant, label: 'Coagulant' %>
+<%= f.tr_text_field :pool_opera, label: 'Pool Opera' %>
+<%= f.tr_text_area :comments, label: 'Comments', class: 'r3' %>
+<tr>
+	<th>Plan</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>#</th>
+				<th>Location</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :plan, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :plan_location, style: 'width: 300px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Fee Exempt</th>
+	<td><%= partial 'field_chk_lbls', f: f, opts: %w{Y H}, field: 'active', lbl: 'plexempt' %></td>
+</tr>
+<%= f.tr_text_field :bill_to, label: 'Bill To Name' %>
+<%= f.tr_text_field :bill_address, label: 'Bill To Address' %>
+<tr>
+	<th>Bill To CSZ</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<td><%= f.text_field :bill_city, style: 'width: 300px;' %></td>
+				<td><%= f.select :bill_state, Const::US_STATES.map(&:last), include_blank: true %></td>
+				<td><%= f.text_field :bill_zip, style: 'width: 70px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Dates</th>
+	<td class="subform">	
+		<table>
+			<tr>
+				<th>Issued</th>
+				<th>Expires</th>
+				<th>App. Rec'd</th>
+				<th>Perm. Mailed</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :issue_date, class: 'date' %></td>
+				<td><%= f.text_field :expiration_date, class: 'date' %></td>
+				<td><%= f.text_field :app_recd_date, class: 'date' %></td>
+				<td><%= f.text_field :perm_mail_date, class: 'date' %></td>
+			</tr>
+			<tr>
+				<th>Paid Date</th>
+				<th>Wrk. Cmp. OK</th>
+				<th>Disab. OK</th>
+				<th>Safety Plan Rec'd</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :paid_date, class: 'date' %></td>
+				<td><%= f.text_field :wc_recd_ok, class: 'date' %></td>
+				<td><%= f.text_field :db_recd_ok, class: 'date' %></td>
+				<td><%= f.text_field :safety_plan_recd, class: 'date' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>State/EHIPs Data</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>State ID</th>
+				<th>Operation ID</th>
+				<th>Operation Key</th>
+				<th>EHIPs OP Key</th>
+				<th>Category</th>
+				<th>Subcategory</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :state_id, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :ehips_operation_id, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :operation_key, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :ehips_op_key, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :category, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :subcategory, style: 'width: 100px;' %></td>
+			</tr>
+			<tr>
+				<th>Permit Key</th>
+				<th>Facility Key</th>
+				<th colspan="4"></th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :permit_key, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :facility_key, style: 'width: 100px;' %></td>
+				<td colspan="4">
+					<label><%= f.check_box :primary_op %>Primary OP</label>&nbsp;&nbsp;
+					<label><%= f.check_box :primary_pool_op %>Primary Pool OP</label>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Misc.</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Number</th>
+				<th>Update Val</th>
+				<th>Offline Sort</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :number2, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :update_val, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :offlinesort, style: 'width: 100px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>

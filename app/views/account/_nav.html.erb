@@ -1,0 +1,4 @@
+<div class="tabs">
+	<%= tab 'user', 'Edit Account', controller: :account, action: (params.action == 'login_edit' ? :login_edit : :edit) %>
+	<div class="clear"></div>
+</div>

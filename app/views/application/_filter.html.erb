@@ -1,0 +1,35 @@
+<% if @filter %>
+	<%= form_for(:filter, html: {class: 'filter', id: 'filter-form'}, builder: TableFormBuilder) { |f| %>
+		<table class="form">
+			<%= partial 'filter_search_sort', f: f %>
+			<% if @date_types && !@date_types.empty? %>
+				<%= partial 'filter_dates', f: f, o: @filter %>
+			<% end %>
+			<% if @no_types && !@no_types.empty? %>
+				<tr>
+					<th>Numeric Range</th>
+					<td class="nobr inp-row">
+						<%= f.select :no_type, @no_types %>
+						<span>&nbsp;&nbsp;Min: </span>
+						<%= f.text_field :no_min, style: 'width: 100px;' %>
+						<span>&nbsp;&nbsp;Max:</span>
+						<%= f.text_field :no_max, style: 'width: 100px;' %>
+					</td>			
+				</tr>
+			<% end %>		
+			<%= partial 'filter2', f: f %>
+			<%= partial 'adv_filter', f: f %>
+			<tr>
+				<th></th>
+				<td class="btns">
+					<%= partial 'filter_buttons', f: f %>
+					<% if @allow_edit_all != false || @allow_delete_all != false %>
+						<%= hidden_field_tag 'list_ids' %>
+					<% end %>
+				</td>
+			</tr>
+			<%= partial 'filter3', f: f %>
+		</table>
+		<%= partial 'filter_gutter' %>
+	<% } %>
+<% end %>

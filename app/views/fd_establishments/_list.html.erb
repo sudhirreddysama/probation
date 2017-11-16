@@ -1,0 +1,24 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%"><%= check_box_tag 'list_select_all', 1, false %><br>ID</th>
+			<th width="1%">Gaz#<br>Opened</th>
+			<th width="1%">Stat.<br>Cap.</th>
+			<th width="1%">Issue<br>Expire</th>
+			<th>Establishment Name &middot; Address<br>Type &middot; Owner</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %><br><%= o.id %></td>
+				<td class="nobr"><%= o.gaz_number %><br><%= o.date_estab_open.d %></td>
+				<td class="nobr tc"><% if o.status.blank? %><br><% else %><%= lbl 'fdstat', o.status %><% end %><%= o.seating_cap %></td>
+				<td class="nobr"><%= o.date_permit.d %><br><%= o.permit_exp.d %></td>
+				<td><%= link_to blank_tag(o.estab_name), controller: :fd_establishments, action: :view, id: o.id %> &middot; <%= blank_tag([o.estab_address, "#{o.estab_city} #{o.estab_zip}".strip].reject(&:blank?) * ', ') %><br>
+					<%= blank_tag(o.estab_type) %> &middot; <%= blank_tag(o.owner_name) %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

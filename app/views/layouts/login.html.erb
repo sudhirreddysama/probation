@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= APP_HUMAN_NAME %> (<%= Rails.env %>)</title>
+  <%= stylesheet_link_tag(
+  	'/style.css', 
+  	'/font-awesome-4.6.1/css/font-awesome.min.css',
+		media: 'all'
+	) %>
+  <%= javascript_include_tag(
+  	'/jquery-1.12.3.min.js',
+  	'/jquery-ui-1.11.4.custom/jquery-ui.min.js',
+  	'/jQuery-File-Upload-9.12.3/js/jquery.fileupload.js',
+  	'/jquery.stickytableheaders.min.js',
+  	'/script.js'
+  ) %>
+  <%= csrf_meta_tags %>
+</head>
+<body id="login"><%= partial 'env' %>
+	<div id="wrap">
+		<h1><%= APP_HUMAN_NAME %></h1>
+		<% if flash[:notice] %>
+			<div class="notice"><%= flash[:notice] %></div>
+		<% end %>
+		<% if flash[:errors] %>
+			<%= partial 'errors', errors: flash[:errors] %>
+		<% end %>
+		<%= yield %>
+	</div>
+</body>
+</html>

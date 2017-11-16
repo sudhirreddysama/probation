@@ -1,0 +1,27 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID<br>Active</th>
+			<th width="1%">#<br>License</th>
+			<th width="99%">Mileage Year<br>Year Make Model<br></th>
+			<th width="1%" class="nobr tr">Year<br>Start</th>
+			<% VeMileage::MONTHS.each { |k| %>
+				<th width="1%" class="nobr tr"><%= k.to_s.titleize %></th>
+			<% } %>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| v = o.ve_vehicle %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %><br><%= yn v.active %></td>
+				<td class="nobr"><%= v.vehicle_no %><br><%= v.license %></td>
+				<td><%= link_to blank_tag(o.year), controller: :ve_mileages, action: :view, id: o.id %><br><%= v.year_make_model %></td>
+				<td class="tr nobr"><%= n0 o.year_start %></td>
+				<% VeMileage::MONTHS.each { |k| %>
+					<td class="tr nobr"><%= n0 o.send(k) %></td>
+				<% } %>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

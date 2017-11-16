@@ -1,0 +1,116 @@
+<%= table_form_for(:filter, html: {id: 'filter'}) { |f| %>
+	<tr>
+		<th>Date Range</th>
+		<td class="nobr">
+			<%= f.text_field :date_from, value: @filter.date_from.d, class: 'datepicker', style: 'width: 100px;' %>
+			&nbsp;&nbsp;To:
+			&nbsp;&nbsp;<%= f.text_field :date_to, value: @filter.date_to.d, class: 'datepicker', style: 'width: 100px;' %>
+			&nbsp;&nbsp;<%= partial 'date_presets', :f => f, :o => @filter, :from_date => 'date_from', :to_date => 'date_to' %>
+		</td>
+	</tr>
+	<tr>
+		<th>Search &amp; Sort</th>
+		<td class="inp-row">
+			<%= f.text_field :search, class: 'focus', style: 'width: 200px;', placeholder: 'Search Vehicles' %>
+			<%= partial 'filter_sorts', f: f %>
+		</td>
+	</tr>
+	<%= partial 've_vehicles/filter_active_inactive', f: f %>
+	<tr>
+		<th></th>
+		<td>
+			<button type="submit" name="apply" value="apply"><i class="fa fa-check"></i> Apply</button>
+			<button type="submit" name="clear" value="clear"><i class="fa fa-close"></i> Clear</button>
+		</td>
+	</tr>
+<% } %>
+<style>
+	#cols { table-layout: fixed; width: 100%; border-collapse: separate; margin: 0; border-spacing: 0; font-size: 10px; }
+	#left, #right { border: 1px solid #888; border-width: 0; padding: 0; }
+	#left { width: 201px; border-width: 1px 0 0 1px; }
+	#right { border-width: 1px 0 0 0; }
+	table.col { table-layout: fixed; border-collapse: separate; margin: 0; border-spacing: 0; }
+	table.col th, table.col td { width: 200px; border: 1px solid #888; border-width: 0 1px 1px 0; }
+	table.col th { background-color: #eee; }
+	#left table { width: 200px; }
+	#left th { overflow: hidden; white-space: nowrap; padding-left: 7px; }
+	#rscroll { overflow-x: scroll; }
+	table.col .park-row th { background: #d8d8d8; }
+	table.col .park-row td { background: #eee; }
+	#cols a { display: block; border-radius: 3px; padding: 0 2px; text-decoration: none; margin: 1px; }
+	a.av-event { background: #000; color: #fff; }
+	#cols a.av-event:hover { text-decoration: underline; }
+	a.av-add { visibility: hidden; display: inline-block; color: #aaa; }
+	#right td:hover a.av-add { visibility: visible; }
+	#right tr:hover td { background-color: #f0f0f0; }
+	#cols a.av-add { display: inline-block; }
+	a.av-add:hover { color: #08f; }
+	<% @vehicles.each { |v| %>
+		<% if !v.color.blank? %>
+			#ve-vehicle-<%= v.id %> a.av-event { background-color: <%= v.color %>; }
+		<% end %>
+	<% } %>
+</style>
+<% 
+d1 = @filter.date_from
+d2 = @filter.date_to
+%>
+<table id="cols">
+	<tr>
+		<td id="left">
+			<table class="col">
+				<thead><tr><th>Vehicles</th></tr></thead>
+				<tbody>
+					<% @vehicles.each { |v| %>
+						<tr><th class="fixed-left"><%= link_to "#{v.vehicle_no} (#{v.license}) #{v.year_make_model}", controller: :ve_vehicles, action: :view, id: v.id %></th></tr>
+					<% } %>
+				</tbody>
+			</table>
+		</td>
+		<td id="right">
+			<div id="rscroll">
+				<table class="col" style="width: <%= ((d2 - d1) * 200 + 200).to_i %>px;" >
+					<thead>
+						<tr>				
+							<% (d1..d2).each { |d| %>
+								<th style="width: 100px;"><%= d.d %></th>
+							<% } %>
+						</tr>
+					</thead>
+					<tbody>
+						<% @vehicles.each { |v| %>					
+							<% events = @events[v.id] %>
+							<tr id="ve-vehicle-<%= v.id %>">
+								<% (d1..d2).each { |d| %>
+									<td>
+										<% events[d].each { |e| %>
+											<% lbl = [[e.begin_time.t0, e.end_time.t0].reject(&:blank?) * "-", e.ve_reservation.description].reject(&:blank?) * " " %>
+											<%= link_to lbl, {controller: :ve_reservations, action: :view, id: e.ve_reservation_id}, target: '_blank', class: "av-event" %>
+										<% } %>
+										<%= link_to fa('plus', 'Reserve'), {controller: :ve_reservations, action: :new, 'obj[new_schedules][0][ve_vehicle_ids][]' => v.id, 'obj[new_schedules][0][dates]' => d.to_s}, target: '_blank', class: 'av-add' %>
+									</td>
+								<% } %>
+							</tr>
+						<% } %>
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+</table>
+<script>
+	$(function() {
+		var lt = $('#left .col');
+		var rt = $('#right .col');
+		lt.floatThead({position: 'auto'} /*{useAbsolutePositioning: false}*/);
+		rt.floatThead({position: 'absolute'} /*{useAbsolutePositioning: true}*/);
+		//lt.stickyTableHeaders();
+		//rt.stickyTableHeaders();
+		$('#rscroll').floatingScroll();
+		var rt_cells = rt.find('tr > :first-child');
+		lt.find('tr > :first-child').each(function(i, el) {
+			var h = rt_cells[i].offsetHeight;
+			$(el).height(h - 1);
+		});
+	});
+</script>

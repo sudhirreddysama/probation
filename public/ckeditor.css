@@ -1,0 +1,17 @@
+html, body { background: transparent; margin: 0; padding: 0; }
+body { font: 12px/1.1 "Trebuchet MS", Tahoma, sans-serif; box-sizing: border-box; }
+body *, body *:before, body *:after { font-size: inherit; line-height: inherit; font-family: inherit; box-sizing: inherit; }
+body.document-editor { box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); border-radius: 3px; margin: 10px auto; min-height: 11in; background: #fff; padding: 1in; width: 8.5in; }
+
+p, h1, h2, h3, h4, h5, h6, ul, ol, table { margin: 1em 0; padding: 0; }
+ol, ul { padding-left: 20px; }
+
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
+h3 { font-size: 18px; }
+h4 { font-size: 16px; }
+h5 { font-size: 14px; }
+h6 { font-size: 12px; }
+
+.imgleft { float: left; clear: left; margin: 4px 4px 4px 0; }
+.imgright { float: right; clear: right; margin: 4px 0 4px 4px; }

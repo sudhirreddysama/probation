@@ -1,0 +1,3 @@
+class PlRecordsController < CrudController
+	
+end

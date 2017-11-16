@@ -1,0 +1,66 @@
+html, body { padding: 0; margin: 0; box-sizing: border-box; font: 12px/1.5 Arial, sans-serif; }		
+*, *:before, *:after { box-sizing: inherit; font-size: inherit; line-height: inherit; font-family: inherit; }
+strong, b { font-weight: bold; }
+body.cke_editable { width: 8.2in; padding: .1in; }
+html.view-iframe { overflow: hidden; max-width: 8in;  }
+body.view-iframe { max-width: 8in; overflow: hidden; }
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 { font-weight: bold; margin: 1em 0; }
+h1, .h1 { font-size: 17px; }
+h2, .h2 { font-size: 16px; }
+h3, .h3 { font-size: 15px; }
+h4, .h4 { font-size: 14px; }
+h5, .h5 { font-size: 13px; }
+h6, .h6 { font-size: 12px; }
+
+p { margin: 1em 0; padding: 0; }
+
+.tr { text-align: right !important; }
+.tl { text-align: left !important; }
+.tc { text-align: center !important; }
+.left { float: left; }
+.right { float: right; }
+.clear { clear: both; }
+
+img.left { margin: 0 10px 10px 0; }
+img.right { margin: 0 0 10px 10px; }
+
+body > :first-child { margin-top: 0; }
+
+.t1 { border-collapse: collapse; margin: 1em 0; width: 100%; border-right: 1px solid transparent; }
+.t1 th, .t1 td { padding: 1px 2px; vertical-align: top; text-align: right; font-weight: normal; }
+.t1 td { border: 1px solid #000; }
+.t1.th-border th { border: 1px solid #000; }
+.t1.th-border td { border: none; }
+.grey { background-color: #f0f0f0; }
+tr.bt td, tr.bt th { border-top: 1px solid #000 !important; }
+.small { font-size: 10px; }
+.xsmall { font-size: 9px; }
+.caps { text-transform: uppercase; }
+.blue { color: #00a; border-color: #00a !important; }
+.red { color: #a00; }
+.green { color: #0a0; }
+
+dl.pinfo { margin: 1em 0; padding: 0; }
+dl.pinfo dt { float: left; width: 20%; font-weight: bold; margin: 0; padding: 0; clear: both; }
+dl.pinfo dd { float: left; width: 80%; margin: 0; padding: 0; }
+dl.pinfo table { margin: 0; }
+dl.pinfo2 dt { width: 30%; }
+dl.pinfo2 dd { widtH: 70%; }
+
+.project, table, tr { page-break-inside: avoid; }
+
+h1 { text-align: center; }
+.break { page-break-before: always; }
+
+ul, ol { overflow: auto; }
+
+.fmt-pdf { max-width: 8in; }
+.fmt-pdf.ori-landscape { max-width: 10.5in; }
+.fmt-pdf.psize-ppt { max-width: 7in; }
+.fmt-pdf.psize-ppt.ori-landscape { max-width: 9.5in; }
+.fmt-html { padding: 5px; }
+
+.cbr dl.pinfo { margin: 1px 0; }
+.cbr .project { margin-bottom: 25px; }

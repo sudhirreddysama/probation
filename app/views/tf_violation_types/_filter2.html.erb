@@ -1,0 +1,8 @@
+<tr>
+	<th>Red/Blue</th>
+	<td class="nobr">
+		<% ['R', 'B'].each { |v| %>
+			<label class="lbl-chk"><%= check_box_tag 'filter[red_blue][]', v, v.in?(@filter.red_blue) %><span class="lbl lbl-viol_rb-<%= v.to_s.downcase %>"><%= v %></span></label>
+		<% } %>
+	</td>
+</tr>

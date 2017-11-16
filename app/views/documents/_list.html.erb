@@ -1,0 +1,32 @@
+<table class="data" id="documents-table">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<% if params.context.nil? || params.context == 'doc_bulk' %>	
+				<th width="1%" class="nobr">Type &middot; ID</th>
+			<% end %>
+			<th width="97%">Document</th>
+			<th width="1%">Created</th>
+			<th width="1%">User</th>
+		</tr>
+	</thead>
+	<% reset_cycle %>
+	<% objs.each { |o| %>
+		<tbody class="<%= cycle 'odd', 'even' %>">
+			<tr>
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<% if params.context.nil? || params.context == 'doc_bulk' %>	
+					<td class="nobr"><%= o.obj_type %> &middot; <%= o.obj_id %></td>
+				<% end %>
+				<td>
+					<div class="right">
+						<%= link_to 'download', {action: :download, id: o.id}, class: 'tr-hover dim' %>
+					</div>
+					<%= link_to o.name, action: :view, id: o.id %>
+				</td>
+				<td class="nobr"><%= o.created_at.dt %></td>
+				<td class="nobr"><%= o.user.try(:username) %>
+			</tr>
+		</tbody>
+	<% } %>
+</table>

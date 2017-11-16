@@ -1,0 +1,120 @@
+<%= partial 'tr_others/fields_common', f: f, o: o %>
+<tr>
+	<th>Sessions/Fee</th>
+	<td class="subform">
+		<table class="form">
+			<tr>
+				<th>Capacity</th>
+				<th>Sessions</th>
+				<th>Fee</th>
+				<th>Fee Paid</th>
+				<th>Permit</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :capacity, style: 'width: 100px;', class: 'n0' %></td>
+				<td><%= f.text_field :sessions, style: 'width: 100px;', class: 'n0' %></td>
+				<td><%= f.text_field :fee, style: 'width: 100px;', class: 'n2' %></td>
+				<td><%= f.text_field :fee_paid, style: 'width: 100px;' %></td>
+				<td>&nbsp;<label><%= f.radio_button :permit, false %> No</label>&nbsp;
+					<label><%= f.radio_button :permit, true %> Yes</label>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th>Inspect/Review</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th colspan="2">Reviewed By: <%= f.text_field :reviewed_by, style: 'width: 50px;' %> <a href="#" id="reviewed_by"><i class="fa fa-fw fa-arrow-left">&nbsp;&nbsp;</i><%= @current_user.initials %></a></th>
+				<th colspan="4">Inspector: <%= f.text_field :inspector, style: 'width: 50px;' %> <a href="#" id="inspector"><i class="fa fa-fw fa-arrow-left">&nbsp;&nbsp;</i><%= @current_user.initials %></a></th>
+				<script>
+					$('#inspector').click(function(e) {
+						$('#obj_inspector').val('<%= @current_user.initials %>').effect('highlight');
+						e.preventDefault();
+					});
+					$('#reviewed_by').click(function(e) {
+						$('#obj_reviewed_by').val('<%= @current_user.initials %>').effect('highlight');
+						e.preventDefault();
+					});
+				</script>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Preop Status</th>
+				<th>Preop Insp</th>
+				<th>S/U</th>
+				<th>Oper Insp</th>
+				<th>S/U</th>
+				<th>Oper Reinsp</th>
+			</tr>
+			<tr>
+				<td><%= f.select :preop_status, ['PENDING', 'ACCEPTABLE'], include_blank: true, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :preop_insp, class: 'date', value: o.preop_insp.d4 %></td>
+				<td><%= partial 'tr_others/field_s_u', o: o, f: f, field: :preop_s_u %></td>
+				<td><%= f.text_field :oper_insp, class: 'date', value: o.oper_insp.d4 %></td>
+				<td><%= partial 'tr_others/field_s_u', o: o, f: f, field: :oper_s_u %></td>		
+				<td><%= f.text_field :oper_reinsp, class: 'date', value: o.oper_insp.d4 %></td>		
+			</tr>
+		</table>
+	</td>
+</tr>
+<style>
+	.camp-chks label { min-width: 110px; float: left; }
+</style>
+<tr>
+	<th>Forms</th>
+	<td class="camp-chks">
+		<label><%= f.check_box :doh_3965 %> DOH 3965</label>
+		<label><%= f.check_box :wc_db_recd %> WC/DB Rec'd</label>
+		<label><%= f.check_box :doh_2271 %> DOH-2271</label>
+		<label><%= f.check_box :ldss_3370 %> LDSS-3370</label>
+		<label><%= f.check_box :dss_ans %> DSS-ANS</label>
+		<div class="clear"></div>
+		<label><%= f.check_box :doh_367 %> DOH-367</label>
+		<label><%= f.check_box :manual_ok %> Manual OK</label>
+		<label><%= f.check_box :manual_update %> Manual Update</label>
+		<label><%= f.check_box :safety_plan_disability_adn %> SP Disability ADN</label>
+		<div class="clear"></div>
+		<label style="min-width: 220px;"><%= f.check_box :covered_amusement_devices %> Covered Amusement Devices</label>
+		<label><%= f.check_box :amusement_devices_form %> Amusement Devices Form</label>
+		<div class="clear"></div>
+	</td>
+</tr>
+<tr>
+	<th>Directors</th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Camp Dir.</th>
+				<th>Health Dir.</th>
+				<th>Aquatics Dir.</th>
+				<th>Aqu. Dir. Required?</th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :camp_director, style: 'width: 150px;' %></td>
+				<td><%= f.text_field :health_director, style: 'width: 150px;' %></td>
+				<td><%= f.text_field :aquatics_director, style: 'width: 150px;' %></td>
+				<td>&nbsp;<label><%= f.radio_button :aquatics_dir_required, false %> No</label>&nbsp;
+					<label><%= f.radio_button :aquatics_dir_required, true %> Yes</label>
+				</td>
+			</tr>
+		</table>	
+	</td>
+</tr>
+<%= f.tr_text_field :pool_operator, label: 'Pool Operator' %>
+<tr>
+	<th>Certifications</th>
+	<td class="camp-chks">
+		<label><%= f.check_box :first_aid_certifications_received %> First Aid Cert.</label>
+		<label><%= f.check_box :cpr_cert %> CPR Cert.</label>
+		<label><%= f.check_box :lifeguard_psi_certifications %> Lifeguard PSI Cert.</label>
+		<div class="clear"></div>
+		<label style="min-width: 220px;"><%= f.check_box :aquatics_director_certs %> Aquatics Dir. Cert.</label>
+		<label><%= f.check_box :counselor_to_camper_ratio %> Counselor/Camper Ratio</label>
+		<div class="clear"></div>
+	</td>
+</tr>
+<%= f.tr_text_field :food_service, label: 'Food Service' %>
+<%= f.tr_text_area :comments, class: 'r6', label: 'Comments' %>

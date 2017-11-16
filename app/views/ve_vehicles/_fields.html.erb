@@ -1,0 +1,36 @@
+<tr>
+	<th>Vehicle Info<span class="req">*</span></th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Year<span class="req">*</span></th>
+				<th>Make<span class="req">*</span></th>
+				<th>Model<span class="req">*</span></th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :year, style: 'width: 50px;' %></td>
+				<td><%= f.text_field :make, style: 'width: 200px;' %></td>
+				<td><%= f.text_field :model, style: 'width: 200px;' %></td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th></th>
+	<td class="subform">
+		<table>
+			<tr>
+				<th>Vehicle #<span class="req">*</span></th>
+				<th colspan="2">License Plate #<span class="req">*</span></th>
+			</tr>
+			<tr>
+				<td><%= f.text_field :vehicle_no, style: 'width: 100px;' %></td>
+				<td><%= f.text_field :license, style: 'width: 100px;' %></td>
+				<td><label><%= f.check_box :active%> Active</label></td>
+			</tr>
+		</table>	
+	</td>
+</tr>
+<%= f.tr_text_field :account, label: 'Budget Account' %>
+<%= f.tr_text_field :assignment, label: 'Person Assigned To' %>
+<%= f.tr_text_field :color, label: 'Calendar Color', type: 'color', style: 'width: 60px;' %>
