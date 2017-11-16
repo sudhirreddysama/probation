@@ -3,8 +3,8 @@ class DocBulk < ApplicationRecord
 	include DbChange::Track
 	
 	has_many :documents, class_name: 'Document', foreign_key: 'doc_bulk_id'
-	belongs_to :user
-	belongs_to :doc_template
+	belongs_to :user, optional: true
+	belongs_to :doc_template, optional: true
 	
 	validates_presence_of :name
 	

@@ -3,9 +3,9 @@ class Document < ApplicationRecord
 	include DbChange::Track
 
 	belongs_to :obj, polymorphic: true
-	belongs_to :user
-	belongs_to :doc_template
-	belongs_to :doc_bulk
+	belongs_to :user, optional: true
+	belongs_to :doc_template, optional: true
+	belongs_to :doc_bulk, optional: true
 	
 	default_scope { order 'documents.created_at desc' }
 	
