@@ -10,9 +10,12 @@ class VeReservationsController < CrudController
 	end
 	
 	def calendar
+		logger.info params.filter.inspect
+		logger.info '???'
 		@filter = params.filter || {
 			active: '1'
 		}
+		logger.info @filter
 		@filter.active ||= []
 		if @filter.print
 			@filter.date_to = Date.parse(@filter.date_to) rescue nil

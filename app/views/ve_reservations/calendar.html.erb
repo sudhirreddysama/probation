@@ -89,6 +89,8 @@
 			});
 		}
 		cal.fullCalendar({
+			defaultView: $('#filter_view').val() || 'month',
+			defaultDate: $('#filter_date').val() || null,
 			customButtons: {
 				print: {
 					text: 'print',

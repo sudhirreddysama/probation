@@ -37,13 +37,14 @@
 	#left th { overflow: hidden; white-space: nowrap; padding-left: 7px; }
 	#right th { padding-left: 4px; }
 	#rscroll { overflow-x: scroll; }
-	#cols a { display: block; border-radius: 3px; padding: 0 2px; text-decoration: none; margin: 1px; }
+	#cols a, #cols span.a { display: block; border-radius: 3px; padding: 0 2px; text-decoration: none; margin: 1px; }
 	a.av-event { background: #000; color: #fff; }
 	#cols a.av-event:hover { text-decoration: underline; }
 	a.av-add { visibility: hidden; display: inline-block; color: #aaa; }
 	#right td:hover a.av-add { visibility: visible; }
 	#right th.wend { background: #ddd; }
 	#right td.wend { background: #eee; }
+	#right td.today { background: #fcf8e3; }
 	#right tr:hover td { background-color: #f0f8ff; }
 	#cols a.av-add { display: inline-block; }
 	a.av-add:hover { color: #08f; }
@@ -56,12 +57,13 @@
 <% 
 d1 = @filter.date_from
 d2 = @filter.date_to
+today = Date.today
 %>
 <table id="cols">
 	<tr>
 		<td id="left">
 			<table class="col">
-				<thead><tr><th>Vehicles</th></tr></thead>
+				<thead><tr><th><span class="a">Vehicles</span></th></tr></thead>
 				<tbody>
 					<% @vehicles.each { |v| %>
 						<tr><th class="fixed-left"><%= link_to "#{v.vehicle_no} (#{v.license}) #{v.year_make_model}", controller: :ve_vehicles, action: :view, id: v.id %></th></tr>
@@ -75,7 +77,7 @@ d2 = @filter.date_to
 					<thead>
 						<tr>				
 							<% (d1..d2).each { |d| %>
-								<th class="<% if d.wday.in?([0, 6]) %>wend<% end %>"><%= d.strftime '%a, %b %-d, %Y' %></th>
+								<th class="<% if d.wday.in?([0, 6]) %>wend<% end %>"><a href="<%= url_for controller: :ve_reservations, action: :calendar %>?<%= {filter: {date: d.d, view: 'agendaDay', active: @filter.active}}.to_query %>"><%= d.strftime('%a, %b %-d, %Y') %></a></th>
 							<% } %>
 						</tr>
 					</thead>
@@ -84,7 +86,7 @@ d2 = @filter.date_to
 							<% events = @events[v.id] %>
 							<tr id="ve-vehicle-<%= v.id %>">
 								<% (d1..d2).each { |d| %>
-									<td class="<% if d.wday.in?([0, 6]) %>wend<% end %>">
+									<td class="<% if d.wday.in?([0, 6]) %>wend <% end %><% if d == today %>today <% end %>">
 										<% events[d].each { |e| %>
 											<% lbl = [[e.begin_time.t0, e.end_time.t0].reject(&:blank?) * "-", e.ve_reservation.description].reject(&:blank?) * " " %>
 											<%= link_to lbl, {controller: :ve_reservations, action: :view, id: e.ve_reservation_id}, target: '_blank', class: "av-event" %>
