@@ -5,7 +5,7 @@ class ApplicationRecord < ActiveRecord::Base
   
   attr :current_user, true
   
-	def self.can_create? u, *args; u.admin?; end
+	def self.can_create? u, *args; true || u.admin?; end
 	def can_clone? u, *args; can_edit? u, *args; end
 	def can_edit? u, *args; self.class.can_create? u, *args; end
 	def can_destroy? u, *args; can_edit? u, *args; end
