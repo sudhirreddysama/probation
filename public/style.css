@@ -363,6 +363,10 @@ fieldset legend { margin-left: 8px; }
 #app .mcal table a:hover { background: #aaa; }
 #app .mcal td.ui-state-highlight a,
 #app .mcal td.ui-state-highlight a:hover { background: #08f; color: #fff; }	
+#app .mcal select::-ms-expand { display: none; }
+#app .mcal .ui-datepicker-group .ui-datepicker-title { margin: 0; }
+#app .mcal .ui-datepicker-group-first .ui-datepicker-title { margin-left: 2em; }
+#app .mcal .ui-datepicker-group-last .ui-datepicker-title { margin-right: 2em; }
 
 .handsontable td.currentRow,
 .handsontable td.currentCol { background-color: #f0f0f0; }
