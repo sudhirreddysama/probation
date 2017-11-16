@@ -1,22 +1,25 @@
 <% name = 'date_presets' if local_assigns[:name].nil? %>
+<% t = Date.today %>
+<% m = t.beginning_of_month %>
+<% y = t.beginning_of_year %>
 <%= select_tag name, options_for_select([
-	['Date Ranges...'],
-	['Today', 'today'],
-	['Yesterday', 'yesterday'],
-	['Tommorrow', 'tommorrow'],
-	['This Month', 'month'],
-	['Last Month', 'last-month'],
-	['Next Month', 'next-month'],
-	['This Year', 'year'],
-	['Last Year', 'last-year'],
-	['Next Year', 'next-year'],
-]) %><i></i>
+	['Presets&hellip;'.html_safe],
+	['Today', t.d],
+	['Yesterday', (t - 1).d],
+	['Tommorrow', (t + 1).d],
+	['This Month', "#{m.d}-#{m.end_of_month.d}" ],
+	['Last Month', "#{m.last_month.d}-#{(m - 1).d}"],
+	['Next Month', "#{m.next_month.d}-#{m.next_month.end_of_month.d}"],
+	['This Year', "#{y.d}-#{y.end_of_year.d}"],
+	['Last Year', "#{y.last_year.d}-#{(y - 1).d}"],
+	['Next Year', "#{y.next_year.d}-#{y.next_year.end_of_year.d}"],
+]), style: 'width: 90px;' %><i></i>
 <script>
 	(function($) {
 		var name = '<%= name %>';
 		var date_presets_select = $('#' + name);
-		var d1 = date_presets_select.parent().find('input[name$="from_date]"]');
-		var d2 = date_presets_select.parent().find('input[name$="to_date]"]');
+		var d1 = date_presets_select.closest('form').find('input[name$="<%= local_assigns[:from_date] || 'from_date' %>]"]');
+		var d2 = date_presets_select.closest('form').find('input[name$="<%= local_assigns[:to_date] || 'to_date' %>]"]');
 		d1.change(function(e) {
 			if(!d2.val()) {
 				d2.val(d1.val());
@@ -26,55 +29,11 @@
 			return d.toString('M/d/yy');
 		}
 		date_presets_select.change(function(e) {
-			var v = date_presets_select.val();
-			if(v == 'today') {
-				var d = f(Date.parse('today'));
-				d1.val(d);
-				d2.val(d);
-			}
-			else if(v == 'yesterday') {
-				var d = f(Date.parse('today -1 day'));
-				d1.val(d);
-				d2.val(d);
-			}
-			else if(v == 'tommorrow') {
-				var d = f(Date.parse('today +1 day'));
-				d1.val(d);
-				d2.val(d);
-			}
-			else if(v == 'month') {
-				var d = Date.parse('today').moveToFirstDayOfMonth();
-				d1.val(f(d));
-				d = d.moveToLastDayOfMonth();
-				d2.val(f(d));
-			}
-			else if(v == 'last-month') {
-				var d = Date.parse('today').moveToFirstDayOfMonth().addMonths(-1);
-				d1.val(f(d));
-				d = d.moveToLastDayOfMonth();
-				d2.val(f(d));
-			}
-			else if(v == 'next-month') {
-				var d = Date.parse('today').moveToFirstDayOfMonth().addMonths(1);
-				d1.val(f(d));
-				d = d.moveToLastDayOfMonth();
-				d2.val(f(d));
-			}
-			else if(v == 'year') {
-				var y = (new Date()).getFullYear().toString();
-				d1.val('1/1/' + y);
-				d2.val('12/31/' + y);
-			}
-			else if(v == 'last-year') {
-				var y = ((new Date()).getFullYear() - 1).toString();
-				d1.val('1/1/' + y);
-				d2.val('12/31/' + y);
-			}
-			else if(v == 'next-year') {
-				var y = ((new Date()).getFullYear() + 1).toString();
-				d1.val('1/1/' + y);
-				d2.val('12/31/' + y);
-			}
+			var v = date_presets_select.val().split('-');
+			var v1 = v[0];
+			var v2 = v[1] || v1;
+			d1.val(v1);
+			d2.val(v2);
 			e.preventDefault();
 			date_presets_select[0].selectedIndex = 0;
 		});

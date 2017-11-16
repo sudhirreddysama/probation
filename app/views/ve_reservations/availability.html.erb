@@ -32,17 +32,19 @@
 	table.col { table-layout: fixed; border-collapse: separate; margin: 0; border-spacing: 0; }
 	table.col th, table.col td { width: 200px; border: 1px solid #888; border-width: 0 1px 1px 0; }
 	table.col th { background-color: #eee; }
+	#right td, #right th { width: 150px; }
 	#left table { width: 200px; }
 	#left th { overflow: hidden; white-space: nowrap; padding-left: 7px; }
+	#right th { padding-left: 4px; }
 	#rscroll { overflow-x: scroll; }
-	table.col .park-row th { background: #d8d8d8; }
-	table.col .park-row td { background: #eee; }
 	#cols a { display: block; border-radius: 3px; padding: 0 2px; text-decoration: none; margin: 1px; }
 	a.av-event { background: #000; color: #fff; }
 	#cols a.av-event:hover { text-decoration: underline; }
 	a.av-add { visibility: hidden; display: inline-block; color: #aaa; }
 	#right td:hover a.av-add { visibility: visible; }
-	#right tr:hover td { background-color: #f0f0f0; }
+	#right th.wend { background: #ddd; }
+	#right td.wend { background: #eee; }
+	#right tr:hover td { background-color: #f0f8ff; }
 	#cols a.av-add { display: inline-block; }
 	a.av-add:hover { color: #08f; }
 	<% @vehicles.each { |v| %>
@@ -69,11 +71,11 @@ d2 = @filter.date_to
 		</td>
 		<td id="right">
 			<div id="rscroll">
-				<table class="col" style="width: <%= ((d2 - d1) * 200 + 200).to_i %>px;" >
+				<table class="col" style="width: <%= ((d2 - d1) * 150 + 150).to_i %>px;" >
 					<thead>
 						<tr>				
 							<% (d1..d2).each { |d| %>
-								<th style="width: 100px;"><%= d.d %></th>
+								<th class="<% if d.wday.in?([0, 6]) %>wend<% end %>"><%= d.strftime '%a, %b %-d, %Y' %></th>
 							<% } %>
 						</tr>
 					</thead>
@@ -82,7 +84,7 @@ d2 = @filter.date_to
 							<% events = @events[v.id] %>
 							<tr id="ve-vehicle-<%= v.id %>">
 								<% (d1..d2).each { |d| %>
-									<td>
+									<td class="<% if d.wday.in?([0, 6]) %>wend<% end %>">
 										<% events[d].each { |e| %>
 											<% lbl = [[e.begin_time.t0, e.end_time.t0].reject(&:blank?) * "-", e.ve_reservation.description].reject(&:blank?) * " " %>
 											<%= link_to lbl, {controller: :ve_reservations, action: :view, id: e.ve_reservation_id}, target: '_blank', class: "av-event" %>
