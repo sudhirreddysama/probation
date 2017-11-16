@@ -1,12 +1,16 @@
 <% name = 'date_presets' if local_assigns[:name].nil? %>
 <% t = Date.today %>
 <% m = t.beginning_of_month %>
+<% w = t.beginning_of_week %>
 <% y = t.beginning_of_year %>
 <%= select_tag name, options_for_select([
 	['Presets&hellip;'.html_safe],
 	['Today', t.d],
 	['Yesterday', (t - 1).d],
 	['Tommorrow', (t + 1).d],
+	['This Week', "#{w.d}-#{(w + 6).d}" ],
+	['Last Week', "#{(w - 7).d}-#{(w - 1).d}"],
+	['Next Week', "#{(w + 7).d}-#{(w + 13).d}"],
 	['This Month', "#{m.d}-#{m.end_of_month.d}" ],
 	['Last Month', "#{m.last_month.d}-#{(m - 1).d}"],
 	['Next Month', "#{m.next_month.d}-#{m.next_month.end_of_month.d}"],

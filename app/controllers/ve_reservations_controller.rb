@@ -45,9 +45,9 @@ class VeReservationsController < CrudController
 		@vehicles = VeVehicle.order('ve_vehicles.vehicle_no').where(get_where(@cond))
 		o = get_order_auto
 		@vehicles = @vehicles.reorder(o) if o		
-		n = Time.now.to_date
-		@filter.date_from = Date.parse(@filter.date_from) rescue n.beginning_of_month
-		@filter.date_to = Date.parse(@filter.date_to) rescue n.end_of_month
+		n = Date.today.beginning_of_week
+		@filter.date_from = Date.parse(@filter.date_from) rescue n
+		@filter.date_to = Date.parse(@filter.date_to) rescue n + 28 - 1
 		@events = avail_events_data
 	end
 
