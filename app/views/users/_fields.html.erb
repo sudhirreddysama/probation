@@ -13,7 +13,7 @@
 <% end %>
 <%= f.tr_text_field :first_name, label: 'First Name', req: true %>
 <%= f.tr_text_field :last_name, label: 'Last Name', req: true %>
-<%= f.tr_text_field :email, label: 'Email', req: true %>
+<%= f.tr_text_field :email, label: 'Email', req: true, after: (admin ? '&nbsp;<a href="#" id="email-guess"><i class="fa fa-arrow-left">&nbsp;</i>Guess Email</a>' : '') %>
 <%= f.tr_text_field :phone, label: 'Phone' %>
 <%= f.tr_text_field :title, label: 'Title' %>
 <% str = (o.new_record? || params.action == 'login_edit') ? '' : '<div>Leave blank to keep current password.</div>' %>
@@ -38,6 +38,10 @@
 <% end %>
 <% if admin %>
 <script>
+$('#email-guess').click(function(e) {
+	e.preventDefault();
+	$('#obj_email').val($('#obj_first_name').val().toLowerCase() + $('#obj_last_name').val().toLowerCase() + '@monroecounty.gov').effect('highlight');
+});
 var toggle_password = function() {
 	var val = $('#obj_auth_ldap').is(':checked');
 	$('tr.password').toggle(!val);
@@ -50,6 +54,7 @@ var set_user = function(item) {
 	$('#obj_last_name').val(item.last_name);
 	$('#obj_phone').val(item.phone);
 	$('#obj_title').val(item.title);
+	$('#obj_email').val(item.mail);
 	$('#obj_auth_ldap').prop('checked', true);
 	toggle_password();
 }

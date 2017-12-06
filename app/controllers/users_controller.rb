@@ -16,7 +16,8 @@ class UsersController < CrudController
 			last_name: r[:sn][0],
 			username: r[:samaccountname][0],
 			title: r[:title][0],
-			phone: r[:telephonenumber][0]
+			phone: r[:telephonenumber][0],
+			mail: r[:mail][0]
 		}}
 		render json: results.to_json
 	end
