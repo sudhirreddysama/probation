@@ -6,3 +6,6 @@
 <% end %>
 <%= partial 'view', :o => @obj %>
 <%= partial 'documents', :o => @obj %>
+<% if params.popup %>
+	<%= partial 'close_popup' %>
+<% end %>

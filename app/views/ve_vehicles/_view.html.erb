@@ -12,12 +12,16 @@
 	<%= dl 'Year', o.year %>
 	<%= dl 'Make', o.make %>
 	<%= dl 'Model', o.model %>
+	<%= dl 'Name', o.name %>
 </div>
 <div class="view">
 	<%= dl '#', o.vehicle_no %>
 	<%= dl 'License', o.license %>
 	<%= dl 'Assignment', o.assignment %>
 	<%= dl 'Budget Account', o.account %>
+</div>
+<div class="view">
+	<%= dl 'Users', partial('users/user_list', users: o.users) %>
 </div>
 <% if !@mileages.empty? %>
 	<div class="view">

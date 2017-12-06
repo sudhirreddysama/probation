@@ -1,6 +1,8 @@
 <div class="btns">
 	<%= link_to fa('download', 'Download'), {action: :download, id: o.id}, target: '_blank' %>
-	<%= link_to fa('download', 'Download to Word'), {action: :word, id: o.id}, target: '_blank' %>
+	<% if !o.body.blank? %>
+		<%= link_to fa('download', 'Download to Word'), {action: :word, id: o.id}, target: '_blank' %>
+	<% end %>
 </div>
 <div class="view">
 	<%= dl 'ID', o.id %>

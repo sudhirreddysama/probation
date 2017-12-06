@@ -27,7 +27,7 @@ class VeVehiclesController < CrudController
 		params.page = params.page ? params.page.to_i : 1
 		objs = @model.where(get_where(cond)).order('ve_vehicles.vehicle_no').paginate(page: params.page, per_page: 50)
 		data = objs.map { |o|
-			o.attributes.slice(*%w{id vehicle_no year make model license})
+			o.attributes.slice(*%w{id vehicle_no year make model name})
 		}
 		render json: {data: data, page: params.page, per_page: 50, total: objs.total_entries, pages: objs.total_pages}
 	end	

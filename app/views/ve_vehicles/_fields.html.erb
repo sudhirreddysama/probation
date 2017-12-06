@@ -21,7 +21,7 @@
 		<table>
 			<tr>
 				<th>Vehicle #<span class="req">*</span></th>
-				<th colspan="2">License Plate #<span class="req">*</span></th>
+				<th>License Plate #<span class="req">*</span></th>
 			</tr>
 			<tr>
 				<td><%= f.text_field :vehicle_no, style: 'width: 100px;' %></td>
@@ -31,6 +31,48 @@
 		</table>	
 	</td>
 </tr>
+<%= f.tr_text_field :name, label: 'Name', after: '<div>Optional user friendly label for the vehicle.</div>' %>
 <%= f.tr_text_field :account, label: 'Budget Account' %>
 <%= f.tr_text_field :assignment, label: 'Person Assigned To' %>
 <%= f.tr_text_field :color, label: 'Calendar Color', type: 'color', style: 'width: 60px;' %>
+<tr>
+	<th>Users</th>
+	<td>
+		<%= hidden_field_tag 'obj[check_new_user_ids]', 1 %>
+		<%= f.select :new_user_ids, o.new_user_ids.empty? ? [] : User.where(id: o.new_user_ids).map { |u| [u.username, u.id, title: "#{u.first_name} #{u.last_name}"] }, {include_hidden: false}, multiple: true, style: 'width: 400px;' %></td>
+	</td>
+</tr>
+
+<script>
+	var select = $('#obj_new_user_ids');
+	select.select2({
+		ajax: {
+			url: '<%= url_for controller: :users, action: :autocomplete, context: nil %>',
+			delay: 250,
+			complete: function(xhr, status) {
+				select.parent().children('.select2').removeClass('busy-bg');
+			},
+			beforeSend: function(xhr, settings) {
+				select.parent().children('.select2').addClass('busy-bg');
+			},
+			processResults: function(data, params) {
+				return {
+					results: $.map(data.data, function(o) {
+						name = o.first_name + ' ' + o.last_name;
+						return {
+							title: name, 
+							id: o.id, 
+							text: name, 
+							username: o.username
+						};
+					}), 
+					pagination: {more: data.page < data.pages}
+				};
+			},
+		},
+		templateSelection: function(data, li) {
+			return data.username || data.text;
+		},
+		closeOnSelect: false,
+	});
+</script>

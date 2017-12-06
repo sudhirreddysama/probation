@@ -1,3 +1,10 @@
 <%= f.tr_text_field :description, label: 'Name/Description', req: true %>
+<tr>
+	<th>Users</th>
+	<td>
+		<%= hidden_field_tag 'obj[check_new_user_ids]', '1' %>
+		<%= partial 'users/user_ids_field', value: o.new_user_ids, field: 'obj[new_user_ids]' %>
+	</td>
+</tr>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= partial 've_reservations/schedule_builder', f: f %>

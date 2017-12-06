@@ -15,13 +15,20 @@
 <% } %>
 <%= table_form_for(:filter, html: {id: 'filter'}) { |f| %>
 	<%= f.tr_text_field :search, label: 'Search', placeholder: 'Search Vehicles/Reservations' %>
-	<%= partial 've_vehicles/filter_active_inactive', f: f %>
 	<%= partial 've_vehicles/filter_ve_vehicle_ids', f: f %>
+	<tr>
+		<th>Users</th>
+		<td class="nobr">
+			<%= partial 'users/user_ids_field', field: 'filter[user_ids]', value: @filter.user_ids %>
+			<a href="#" onclick="$('#filter_user_ids').val(<%= @current_user.id %>).change(); return false;">My Reservations</a>
+		</td>
+	</tr>
 	<tr>
 		<th>Go To Date</th>
 		<td class="inp-row">
 			<%= f.text_field :date, class: 'date', value: @filter.date.class == String ? @filter.date : @filter.date.d %>
 			<%= link_to fa('plus-circle', 'New Vehicle Reservation'), {controller: :ve_reservations, action: :new}, id: 'new-res', class: 'btn', target: '_blank' %>
+			<%= link_to fa('close', 'Clear Filter'), {controller: :ve_reservations, action: :calendar}, class: 'btn' %>
 			<%= f.hidden_field :date_from, value: @filter.date_from.class == String ? @filter.date_from : @filter.date_from.d %>
 			<%= f.hidden_field :date_to, value: @filter.date_to.class == String ? @filter.date_to : @filter.date_to.d %>
 			<%= f.hidden_field :view %>
@@ -76,7 +83,7 @@
 			}
 			toolbar.addClass('busy-bg');
 			$.ajax({
-				url: '<%= url_for action: :data_edit %>/' + event.type + '/' + event.id,
+				url: '<%= url_for action: :data_edit %>/' + event.id,
 				data: {obj: data},
 				success: function(data, status, xhr) {
 				},
@@ -145,8 +152,8 @@
 			},
 			eventDrop: edit_event,
 			eventResize: edit_event,
-			eventClick: function(event, e, view) {
-				window.open(event.url, '_blank');
+			eventClick: function(event, e, view) {				
+				_open_popup('<%= url_for popup: true, controller: :ve_events, action: :view %>/' + event.id);
 				return false;
     	},
     	viewRender: function(view, element) {
@@ -162,8 +169,15 @@
 		});
 		var set_new_res_link = function() {
 			var d = moment(date.val());
+			var q_vids = ($('#filter_ve_vehicle_ids').val() || []).join(',');
+			var q_uids = ($('#filter_user_ids').val() || []).join(',');
+			var q_date = d.isValid() ? d.format('YYYY-MM-DD') : '';
+			var q = []
+			if(q_vids) q.push('vids=' + q_vids);
+			if(q_uids) q.push('uids=' + q_uids);
+			if(q_date) q.push('date=' + q_date);
 			$('#new-res').prop('href',
-				$('#new-res').prop('href').split('?')[0] + (d.isValid() ? '?obj%5Bnew_schedules%5D%5B0%5D%5Bdates%5D=' + d.format('YYYY-MM-DD') : '')
+				$('#new-res').prop('href').split('?')[0] + (q.length ? '?' + q.join('&') : '')
 			);
 		}
 		set_new_res_link();
@@ -182,5 +196,9 @@
 				cal.fullCalendar('refetchEvents');
 			}
 		});
+		window._handle_popup_refresh = function() {			
+			$('#pop1').hide();
+			cal.fullCalendar('refetchEvents');
+		}
 	});
 </script>

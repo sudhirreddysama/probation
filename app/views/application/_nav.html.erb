@@ -1,9 +1,17 @@
-<% if @context_obj %>
-	<% tmp = lookup_context.prefixes[0] %>
-	<% lookup_context.prefixes[0] = params.context.pluralize %>
-	<%= partial 'nav_obj', obj: @context_obj, model: @context_model, context: nil, controller: params.context.pluralize, context_obj: nil %>
-	<% lookup_context.prefixes[0] = tmp %>
+<% if !params.popup %>
+	<% if @context_obj %>
+		<% tmp = lookup_context.prefixes[0] %>
+		<% lookup_context.prefixes[0] = params.context.pluralize %>
+		<% vars = {obj: @context_obj, model: @context_model, context: nil, controller: params.context.pluralize, context_obj: nil} %>
+		<%= partial 'nav_objs', vars %>
+		<%= partial 'nav_obj', vars %>
+		<% lookup_context.prefixes[0] = tmp %>
+	<% end %>
 <% end %>
 <% if @model %>
-	<%= partial 'nav_obj', obj: @obj, model: @model, context: params.context, controller: params.controller, context_obj: @context_obj %>
+	<% vars = {obj: @obj, model: @model, context: params.context, controller: params.controller, context_obj: @context_obj} %>
+	<% if !params.popup %>
+		<%= partial 'nav_objs', vars %>
+	<% end %>
+	<%= partial 'nav_obj', vars %>
 <% end %>

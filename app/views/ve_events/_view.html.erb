@@ -1,0 +1,18 @@
+<% v = o.ve_vehicle %>
+<% r = o.ve_reservation %>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Reservation', r ? link_to(r.description, {context: nil, context_id: nil, controller: :ve_reservations, action: :view, id: r.id, popup: nil}, target: '_top') : '' %>
+	<%= dl 'Vehicle', o.ve_vehicle ? link_to(o.ve_vehicle.label, {context: nil, context_id: nil, controller: :ve_vehicles, action: :view, id: o.ve_vehicle_id, popup: nil}, target: '_top') : '' %>
+</div>
+<div class="view">
+	<%= dl 'Date', o.date.d %>
+	<%= dl 'Begin Time', o.begin_time.t %>
+	<%= dl 'End Time', o.end_time.t %>
+</div>
+<div class="view">
+	<%= dl 'Users', r && (r.users.map { |u| link_to(u.name, {context: nil, context_id: nil, controller: :users, action: :view, id: u.id, popup: nil}, target: '_top') } * ', ').html_safe %>
+</div>
+<div class="view">
+	<%= dl 'Notes', nl2br_h(o.ve_reservation.notes) %>
+</div>

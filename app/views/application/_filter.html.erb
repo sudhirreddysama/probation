@@ -23,9 +23,7 @@
 				<th></th>
 				<td class="btns">
 					<%= partial 'filter_buttons', f: f %>
-					<% if @allow_edit_all != false || @allow_delete_all != false %>
-						<%= hidden_field_tag 'list_ids' %>
-					<% end %>
+					<%= hidden_field_tag 'list_ids' %>
 				</td>
 			</tr>
 			<%= partial 'filter3', f: f %>

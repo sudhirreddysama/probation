@@ -17,6 +17,13 @@
 	</tr>
 	<%= partial 've_vehicles/filter_active_inactive', f: f %>
 	<tr>
+		<th>Users</th>
+		<td class="nobr">
+			<%= partial 'users/user_ids_field', field: 'filter[user_ids]', value: @filter.user_ids %>
+			<a href="#" onclick="$('#filter_user_ids').val(<%= @current_user.id %>).change(); $('#filter').submit(); return false;">My Reservations</a>
+		</td>
+	</tr>
+	<tr>
 		<th></th>
 		<td>
 			<button type="submit" name="apply" value="apply"><i class="fa fa-check"></i> Apply</button>
@@ -46,6 +53,7 @@
 	#right td.wend { background: #eee; }
 	#right td.today { background: #fcf8e3; }
 	#right tr:hover td { background-color: #f0f8ff; }
+	#right td.droppable { background-color: #c9e6ff !important; }
 	#cols a.av-add { display: inline-block; }
 	a.av-add:hover { color: #08f; }
 	<% @vehicles.each { |v| %>
@@ -86,10 +94,10 @@ today = Date.today
 							<% events = @events[v.id] %>
 							<tr id="ve-vehicle-<%= v.id %>">
 								<% (d1..d2).each { |d| %>
-									<td class="<% if d.wday.in?([0, 6]) %>wend <% end %><% if d == today %>today <% end %>">
+									<td class="<%= [d.wday.in?([0, 6]) ? 'wend' : nil, d == today ? 'today' : nil].compact * ' ' %>" data-date="<%= d.to_s %>">
 										<% events[d].each { |e| %>
 											<% lbl = [[e.begin_time.t0, e.end_time.t0].reject(&:blank?) * "-", e.ve_reservation.description].reject(&:blank?) * " " %>
-											<%= link_to lbl, {controller: :ve_reservations, action: :view, id: e.ve_reservation_id}, target: '_blank', class: "av-event" %>
+											<%= link_to lbl, {context: nil, context_id: nil, controller: :ve_events, action: :view, id: e.id}, class: "av-event", draggable: true, id: "e-#{e.id}" %>
 										<% } %>
 										<%= link_to fa('plus', 'Reserve'), {controller: :ve_reservations, action: :new, 'obj[new_schedules][0][ve_vehicle_ids][]' => v.id, 'obj[new_schedules][0][dates]' => d.to_s}, target: '_blank', class: 'av-add' %>
 									</td>
@@ -103,18 +111,70 @@ today = Date.today
 	</tr>
 </table>
 <script>
-	$(function() {
-		var lt = $('#left .col');
-		var rt = $('#right .col');
-		lt.floatThead({position: 'auto'} /*{useAbsolutePositioning: false}*/);
-		rt.floatThead({position: 'absolute'} /*{useAbsolutePositioning: true}*/);
-		//lt.stickyTableHeaders();
-		//rt.stickyTableHeaders();
-		$('#rscroll').floatingScroll();
-		var rt_cells = rt.find('tr > :first-child');
-		lt.find('tr > :first-child').each(function(i, el) {
-			var h = rt_cells[i].offsetHeight;
-			$(el).height(h - 1);
+
+
+
+$('.av-event').draggable();
+$('#right table td').droppable({
+	hoverClass: 'droppable',
+	drop: function(e, ui) {
+		var $this = $(this);
+		var original_td = ui.draggable.parent();
+		ui.draggable.detach().css({top: 0, left: 0}).insertBefore($this.find('.av-add')).addClass('busy-bg-i');
+		set_row_heights();
+		//$this.addClass('busy-bg');
+		var revert = function() {
+			ui.draggable.insertBefore(original_td.find('.av-add'));
+			set_row_heights();
+		}
+		$.ajax({
+			url: '<%= url_for action: :avail_edit %>/' + ui.draggable.attr('id').split('-')[1],
+			data: {obj: {
+				date: $this.data('date'),
+				ve_vehicle_id: $this.closest('tr').attr('id').split('-')[2]
+			}},
+			success: function(data, status, xhr) {
+				if(data && data.errors) {
+					alert(data.errors.join("\r"));
+					revert();
+				}
+				else {
+					ui.draggable.effect('highlight');
+				}
+			},
+			complete: function(xhr, status) {
+				//$this.removeClass('busy-bg');
+				ui.draggable.removeClass('busy-bg-i');
+			},
+			error: function(xhr, status, error) {
+				revert();
+			}
 		});
+	}
+});
+
+$('.av-event').click(function(e) {
+	e.preventDefault();		
+	_open_popup($(this).prop('href').replace('/ve_events', '/pop/ve_events'));
+});
+
+var lt = $('#left .col');
+var rt = $('#right .col');
+
+var set_row_heights = function() {
+	var rt_cells = rt.find('tr > :first-child');
+	lt.find('tr > :first-child').each(function(i, el) {
+		var h = rt_cells[i].offsetHeight;
+		$(el).height(h - 1);
 	});
+}
+
+$(function() {
+	lt.floatThead({position: 'auto'} /*{useAbsolutePositioning: false}*/);
+	rt.floatThead({position: 'absolute'} /*{useAbsolutePositioning: true}*/);
+	//lt.stickyTableHeaders();
+	//rt.stickyTableHeaders();
+	$('#rscroll').floatingScroll();
+	set_row_heights();
+});
 </script>

@@ -38,10 +38,15 @@ class CrudController < ApplicationController
 		index
 		return if performed?
 		@cols = []
+		can_edit = @model.can_edit?(@current_user)
 		@model.columns.each { |col|
+			next if @col_skip && col.name.in?(@col_skip)
 			label = col.name.titleize
 			label += ' ID' if col.name.index('_id', 1)
 			c = {name: col.name, label: label, db_type: col.type} 
+			if !can_edit
+				c.editor = false
+			end
 			if col.name == 'id'
 				c.readOnly = true
 				c.disableVisualSelection = true
@@ -60,6 +65,7 @@ class CrudController < ApplicationController
 				c.format = '0,0.' + ('0' * col.scale)
 			elsif c.db_type == :boolean
 				c.type = 'checkbox'
+				c.readOnly = true if !can_edit
 			elsif c.db_type == :date
 				c.type = 'date'
 				c.dateFormat = 'M/D/YYYY'
@@ -85,7 +91,6 @@ class CrudController < ApplicationController
 
 		@data = @objs.map { |o| 
 			@cols.map { |c|
-				logger.info c.name
 				v = o.instance_eval("self.#{c.name}") rescue nil
 				if c.db_type == :date
 					v = v.d4
@@ -114,9 +119,11 @@ class CrudController < ApplicationController
 		data = Hash.new { |h, k| h[k] = {} }
 		(params.objs || []).each { |id, attr|
 			obj = @model.find(id)
-			obj.current_user = @current_user
-			if !obj.update_attributes(attr)
-				data[id].errors = obj.errors.full_messages
+			if obj.can_edit? @current_user
+				obj.current_user = @current_user
+				if !obj.update_attributes(attr)
+					data[id].errors = obj.errors.full_messages
+				end
 			end
 		}
 		render json: data.to_json
@@ -182,6 +189,9 @@ class CrudController < ApplicationController
 			if params.context && @obj.has_attribute?("#{params.context}_id")
 				url += {context_id: @obj.send("#{params.context}_id")}
 			end
+			if params.popup
+				flash[:js] = 'parent._popup_refresh = true;';
+			end
 			redirect_to(url, notice: 'Record has been saved.')
 		end
 	end
@@ -189,6 +199,9 @@ class CrudController < ApplicationController
 	def after_delete
 		if request.xhr?
 			render_nothing
+		elsif params.popup
+			flash[:js] = 'parent._popup_refresh = true;';
+			redirect_to({action: :close_popup}, notice: 'Record has been deleted.')
 		else
 			redirect_to({action: :index}, notice: 'Record has been deleted.')
 		end

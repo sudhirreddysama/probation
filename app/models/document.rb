@@ -6,6 +6,12 @@ class Document < ApplicationRecord
 	belongs_to :user, optional: true
 	belongs_to :doc_template, optional: true
 	belongs_to :doc_bulk, optional: true
+
+	def self.can_create? u, *args; true; end
+	def can_clone? u, *args; false; end
+	def self.can_edit? u, *args; u.admin?; end
+	def can_edit? u, *args; u.id == user_id; end
+	def can_destroy? u, *args; can_edit? u, *args; end
 	
 	default_scope { order 'documents.created_at desc' }
 	

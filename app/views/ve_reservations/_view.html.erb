@@ -5,18 +5,22 @@
 	<%= dl 'Name/Description', o.description %>
 </div>
 <div class="view">
-	<%= dl 'Created By', o.user.try(:name) %>
+	<%= dl 'Created By', o.user && link_to(o.user.name, context: nil, context_id: nil, controller: :users, action: :view, id: o.user_id) %>
 	<%= dl 'Created At', o.created_at.dt %>
+</div>
+<div class="view">
+	<%= dl 'Users', partial('users/user_list', users: o.users) %>
 </div>
 <div class="view">
 	<%= dl 'Notes', nl2br_h(o.notes) %>
 </div>
 <div class="view">	
 	<dl>
-		<dt>Dates/Times/Vehicles</dt>
+		<dt>Dates/Times/Vehicles - 1st 20 shown <%= link_to 'View All', controller: :ve_events, action: :index, context: :ve_reservation, context_id: o.id %></dt>
 		<dd>
-			<% o.ve_events.order('date, begin_time').each { |e| %>
-				<div><%= [e.date.d, [e.begin_time.t, e.end_time.t].reject(&:blank?) * '-'].reject(&:blank?) * ' ' %> &middot; <%= link_to e.ve_vehicle.label, controller: :ve_vehicles, action: :view, id: e.ve_vehicle_id %></div>
+			<% o.ve_events.order('date, begin_time').limit(20).each { |e| %>
+				<div><%= link_to([e.date.d, [e.begin_time.t, e.end_time.t].reject(&:blank?) * '-'].reject(&:blank?) * ' ', controller: :ve_events, action: :view, id: e.id, context: :ve_reservation, context_id: o.id) %>
+				&middot; <%= link_to e.ve_vehicle.label, controller: :ve_vehicles, action: :view, id: e.ve_vehicle_id %></div>
 			<% } %>
 		</dd>
 	</dl>

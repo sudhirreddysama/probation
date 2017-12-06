@@ -1,11 +1,5 @@
-<% 
-existing_ids = @obj.new_schedules.map(&:ve_vehicle_ids).flatten.uniq
-vehicles = VeVehicle.order('vehicle_no')
-vehicles = existing_ids.empty? ? vehicles.where('active = 1') : vehicles.where('active = 1 or id in (?)', existing_ids)
-@ve_vehicle_options = vehicles.map { |v| lbl = "#{v.vehicle_no} #{v.year} #{v.make} #{v.model} #{v.assignment}"; [lbl, v.id, {title: lbl, data: {no: v.vehicle_no}}] }
-%>
 <% @obj.new_schedules.each_with_index { |s, i| %>
-	<%= partial 've_reservations/schedule_vehicles', s: s, f: f, i: i %>
+	<%= partial 've_reservations/schedule_fields', s: s, f: f, i: i %>
 <% } %>
 <tr id="add-schedule-row">
 	<th>Add Fields/Dates</th>
@@ -16,7 +10,7 @@ vehicles = existing_ids.empty? ? vehicles.where('active = 1') : vehicles.where('
 </tr>
 <script>
 	var schedule_count = <%= @obj.new_schedules.size %>;
-	var schedule_html = <%= partial('ve_reservations/schedule_vehicles', f: f, s: {}, i: '__COUNT__').to_json.html_safe %>;
+	var schedule_html = <%= partial('ve_reservations/schedule_fields', f: f, s: {}, i: '__COUNT__').to_json.html_safe %>;
 	function init_schedule(s) {
 		var f = s.find('.schedule-dates');
 		var v = f.val().split(',');
@@ -44,8 +38,10 @@ vehicles = existing_ids.empty? ? vehicles.where('active = 1') : vehicles.where('
 			}
 		});
 		s.find('.schedule-deselect-all').click(function(e) {
-			e.preventDefault();
-			cal.multiDatesPicker('resetDates');
+			if(confirm('Are you sure you want to deselect all days?')) {
+				e.preventDefault();
+				cal.multiDatesPicker('resetDates');
+			}
 		});
 		s.find('.schedule-delete').click(function(e) {
 			if(confirm('Are you sure you want to remove these scheduled days?')) {
@@ -54,6 +50,55 @@ vehicles = existing_ids.empty? ? vehicles.where('active = 1') : vehicles.where('
 			}
 		});
 		s.find('.schedule-begin, .schedule-end').inputmask('hh:mm t', {showMaskOnHover: true});
+		var date_presets_select = s.find('select[name="date_presets"]');
+		date_presets_select.change(function(e) {
+			var d1 = s.find('input[name="from"]');
+			var d2 = s.find('input[name="to"]');
+			var v = date_presets_select.val().split('-');
+			var v1 = v[0];
+			var v2 = v[1] || v1;
+			d1.val(v1);
+			d2.val(v2);
+			e.preventDefault();
+			date_presets_select[0].selectedIndex = 0;
+		});
+		var get_date_range = function() {
+			var d1 = new Date(s.find('input[name="from"]').val());
+			var d2 = new Date(s.find('input[name="to"]').val());
+			var wdays = []
+			s.find('.schedule-wday input:checked').each(function(i, chk) {
+				wdays.push(parseInt($(chk).val()));
+			});
+			if(d1 == 'Invalid Date') d1 = null;
+			if(d2 == 'Invalid Date') d2 = null;
+			if(!d1 || !d2 || d1 > d2) {
+				alert('Invalid date range.');
+				return;
+			}
+			var new_dates = [];
+			while(d1 <= d2) {
+				if(wdays.length == 0 || wdays.indexOf(d1.getDay()) !== -1) {
+					new_dates.push(d1.clone());
+				}
+				d1 = d1.add(1).day();
+			}
+			return new_dates;
+		}
+		s.find('.schedule-select-dates').click(function(e) {
+			e.preventDefault();			
+			add_dates = get_date_range();
+			if(add_dates) {
+				cal.datepicker('setDate', add_dates[0]);
+				cal.multiDatesPicker('addDates', add_dates);
+			}
+		});
+		s.find('.schedule-deselect-dates').click(function(e) {
+			e.preventDefault();			
+			rem_dates = get_date_range();
+			if(rem_dates) {
+				cal.multiDatesPicker('removeDates', rem_dates);
+			}
+		});		
 	}
 	$('#add-schedule').click(function(e) {
 		e.preventDefault();

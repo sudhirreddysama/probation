@@ -164,6 +164,14 @@ class ApplicationController < ActionController::Base
 		@filter[filter_key].empty? ? nil : DB.escape(db_field + ' in (?)', @filter[filter_key]) 
 	end
 	
+	def debug_headers
+		request.headers.each { |k, v|
+			logger.info k
+			logger.info v
+		}
+	end
+	before_filter :debug_headers
+	
 	def render_pdf html, options = {}
 		wk = options.delete(:wkhtmltopdf)
 		options[:filename] ||= "#{params[:action]}.pdf"

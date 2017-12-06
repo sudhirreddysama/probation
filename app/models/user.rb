@@ -17,6 +17,11 @@ class User < ApplicationRecord
 		o.errors.add(:password, :blank) if !auth_ldap && !o.password_digest.present?
 	}
 	
+	def self.can_create? u, *args; u.admin?; end
+	def can_clone? u, *args; can_edit? u, *args; end
+	def can_edit? u, *args; self.class.can_create? u, *args; end
+	def can_destroy? u, *args; can_edit? u, *args; end	
+	
 	def label; username_was; end
 	
 	def name; "#{first_name} #{last_name}"; end

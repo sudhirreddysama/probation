@@ -1,7 +1,7 @@
 <% 
 	c = params.controller
 	ct = params.context
-	is_ve = c.start_with?('ve_') && ct.blank? || ct.to_s.start_with?('ve_')
+	is_ve = c.start_with?('ve_') && ct.blank? || ct.to_s.start_with?('ve_') || c == 'ical'
 	is_fd = c.start_with?('fd_') && ct.blank? || ct.to_s.start_with?('fd_')
 	is_pl = c.start_with?('pl_') && ct.blank? || ct.to_s.start_with?('pl_')
 	is_tf = c.start_with?('tf_') && ct.blank? || ct.to_s.start_with?('tf_')
@@ -20,9 +20,7 @@
 		<%= tab 'life-ring', 'Pool', {controller: :pl_pools, context: nil, action: :index}, {}, class: (is_pl ? 'active' : '') %>
 	<% end %>
 	<%= tab 'database', 'Other', {controller: :documents, context: nil}, {}, class: (is_other ? 'active' : '') %>
-	<% if @current_user.admin? %>
-		<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params.context == 'user' ? 'active' : '') %>
-	<% end %>
+	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params.context == 'user' ? 'active' : '') %>
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>
 		<%= tab 'sign-out', 'Logout', db: nil, context: nil, controller: :account, action: :logout %>
@@ -33,9 +31,11 @@
 <% if is_ve %>
 	<div class="tabs">
 
-		<%= tab 'calendar', 'Schedule', {controller: :ve_reservations, context: nil}, {action: :availability}, class: (ct == 've_reservation' ? 'active' : '') %>
 		<%= tab 'truck', 'Vehicles', {controller: :ve_vehicles, context: nil}, {}, class: (ct == 've_vehicle' ? 'active' : '') %>
 		<%= tab 'road', 'Mileage', {controller: :ve_mileages, context: nil}, {}, class: (ct == 've_mileage' ? 'active' : '') %>
+		<%= tab 'calendar', 'Reservations', {controller: :ve_reservations, context: nil}, {action: :availability}, class: (ct == 've_reservation' ? 'active' : '') %>
+		<%= tab 'calendar-o', 'Reservation Days', {controller: :ve_events, context: nil}, {}, class: (ct == 've_event' ? 'active' : '') %>
+		<%= tab 'calendar', 'iCalendar', {controller: :ical, context: nil}, {} %>
 		<div class="clear"></div>
 	</div>
 <% end %>

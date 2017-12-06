@@ -4,10 +4,31 @@ class VeReservation < ApplicationRecord
 
 	has_many :ve_events, dependent: :destroy
 	belongs_to :user, optional: true
+	has_many :ve_reservation_users, dependent: :destroy
+	has_many :users, through: :ve_reservation_users
+	
+	has_many :documents, as: :obj
 	
 	validates_presence_of :description
 	
 	def label; [(begin_was ? begin_was.d : nil), description_was] * ' '; end
+
+	attr :check_new_user_ids, true
+	def new_user_ids; @new_user_ids || user_ids; end
+	def new_user_ids= v
+		@new_user_ids = v.map &:to_i
+	end
+	
+	attr :check_new_user_ids, true
+	def new_user_ids; @new_user_ids || user_ids; end
+	def new_user_ids= v
+		@new_user_ids = v.map &:to_i
+	end
+	
+	def handle_before_create
+		self.user ||= @current_user
+	end
+	before_create :handle_before_create
 	
 	def schedules
 		scheds = []
@@ -40,6 +61,7 @@ class VeReservation < ApplicationRecord
 		return scheds
 	end
 	
+	attr :check_new_schedules, true
 	def new_schedules
 		@new_schedules ||= schedules.map { |s| s.dates = s.dates.join(','); s }
 	end
@@ -48,20 +70,12 @@ class VeReservation < ApplicationRecord
 		@new_schedules = v.map { |i, s|
 			s.ve_vehicle_ids ||= []
 			s.dates ||= ''
-			#s.begin_time = Time.parse(s.begin_time) rescue nil
-			#s.end_time = Time.parse(s.end_time) rescue nil
 			s
 		}
 	end
 	
-	attr :check_new_schedules, true
-	
-	def handle_before_save
-
-	end
-	before_save :handle_before_save
-	
 	def handle_validate
+		errors.add :base, 'You cannot edit this reservation' if !can_edit? @current_user
 		if @check_new_schedules
 			self.begin = nil
 			self.end = nil
@@ -84,7 +98,7 @@ class VeReservation < ApplicationRecord
 					end_time = Time.parse(s.end_time) rescue nil
 					errs << "Invalid end time for schedule ##{j}" if !end_time || end_time.strftime('%I:%M %P') != s.end_time
 				end
-				errs << "Begin time is after end time for schedule ##{i}" if end_time && begin_time && begin_time > end_time
+				errs << "Begin time is after end time for schedule ##{j}" if end_time && begin_time && begin_time > end_time
 				errs.each { |e| errors.add :base, e }
 				if errs.empty? 
 					s.ve_vehicle_ids.each { |ve_vehicle_id|
@@ -97,45 +111,44 @@ class VeReservation < ApplicationRecord
 								end_time: end_time.try(:strftime, '%H:%M:%S'),
 							}
 							e = ve_events.find_by(attr) || ve_events.build(attr)
+							if e.new_record?
+								errors.add :base, "You cannot reserve vehicle ##{v.vehicle_no} for schedule ##{j}" if !v.can_reserve?(@current_user)
+							end
 							@new_events << e
 							self.begin = [e.date, self.begin].compact.min
-							self.end = [e.date, self.end].compact.min
+							self.end = [e.date, self.end].compact.max
 						}
 					}
 				end
 			}
 		end
 	end
-	validate :handle_validate
+	validate :handle_validate, if: :current_user
 	
 	def handle_after_save
 		if @new_events
-			conflicts = []
-			@new_events.each { |e|
-				conflict = VeEvent.where('ve_reservation_id != ? and ve_vehicle_id = ? and date = ?', id, e.ve_vehicle_id, e.date)
-					.where(e.begin_time ? ['end_time is null or end_time > ?', e.begin_time] : nil)
-					.where(e.end_time ? ['begin_time is null or begin_time < ?', e.end_time] : nil)
-					.first
-				conflicts << conflict if conflict
-			}
+			conflicts = @new_events.map(&:find_conflict).compact
 			if !conflicts.empty?
 				conflicts.each { |c|
-					v = c.ve_vehicle
-					r = c.ve_reservation
-					lbl = [c.date.d, [c.begin_time, c.end_time].compact.map(&:t0) * '-', v.vehicle_no, v.year_make_model, r.description].reject(&:blank?) * ' '
-					errors.add :base, "Conflicting vehicle reservation: #{lbl}"
+					errors.add :base, "Conflicting vehicle reservation: #{c.label}"
 				}
 				raise ActiveRecord::RecordInvalid::new(self)
 			end
 			keep_ids = @new_events.map &:id
 			ve_events.where(keep_ids.empty? ? nil : ['id not in (?)', keep_ids]).delete_all
 		end
+		if @check_new_user_ids
+			ids = (@new_user_ids || []).map { |user_id|
+				ve_reservation_users.find_or_create_by(user_id: user_id).id
+			}
+			ve_reservation_users.where.not(id: ids + [0]).delete_all
+		end		
 	end
 	after_save :handle_after_save
 	
-	def handle_before_create
-		self.user = @current_user
+	def can_edit? u, *args
+		return true if u.admin?
+		u.id == user_id || u.id.in?(user_ids)
 	end
-	before_create :handle_before_create
 
 end

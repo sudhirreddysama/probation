@@ -1,13 +1,15 @@
 class VeMileagesController < CrudController
 
 	def index
-		@filter ||= {
-			sort1: 've_mileages.year',
-			dir1: 'desc',
-			sort2: 've_vehicles.vehicle_no',
-			dir2: 'asc',
-			active: params.context.blank? && '1'
-		}
+		if !@filter
+			@filter = {
+				sort1: 've_mileages.year',
+				dir1: 'desc',
+				sort2: 've_vehicles.vehicle_no',
+				dir2: 'asc',
+			}
+			@filter.active = '1' if params.context != 've_vehicle'
+		end
 		generic_filter_setup([
 			['Vehicle No', 've_vehicles.vehicle_no'],
 			['License', 've_vehicles.license'],
@@ -41,19 +43,13 @@ class VeMileagesController < CrudController
 	def grid
 		@extra_cols = {
 			ve_vehicle_id: [{
-				name: 've_vehicle.vehicle_no',
-				label: 'No.',
-				type: 'text',				
-				readOnly: true,
-				disableVisualSelection: true,
-			}, {
 				name: 've_vehicle.license',
 				label: 'License',
 				type: 'text',				
 				readOnly: true,
 				disableVisualSelection: true,
 			}, {
-				name: 've_vehicle.year_make_model',
+				name: 've_vehicle.no_ymm_name',
 				label: 'Vehicle',
 				type: 'text',				
 				readOnly: true,

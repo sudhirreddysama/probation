@@ -113,6 +113,26 @@ window.onbeforeunload = function(e) {
 	}
 }
 
+window._open_popup = function(src) {	
+	$('#pop1').show();
+	$('#popi').prop('src', src);
+}
+window._handle_popup_refresh = function() {
+	$('#popl').show();
+	$('#pop2').hide();
+	location.reload();
+}
+window._popup_refresh = false;
+window._close_popup = function() {
+	if(window._popup_refresh) {
+		_handle_popup_refresh();
+		window._popup_refresh = false;
+	}
+	else {
+		$('#pop1').hide();
+	}
+}
+
 function zebra(container) {
 	var c = $(container);
 	c.children(':even').attr('class', 'odd');

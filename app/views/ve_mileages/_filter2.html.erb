@@ -1,11 +1,4 @@
-<% if params.context.blank? %>
-	<tr>
-		<th>Active/Inactive</th>
-		<td class="nobr" id="filter_active">
-			<label class="yes"><%= check_box_tag 'filter[active][]', '1', '1'.in?(@filter.active) %> Active Vehicles</label>&nbsp;&nbsp;&nbsp;
-			<label class="no"><%= check_box_tag 'filter[active][]', '0', '0'.in?(@filter.active) %> Inactive Vehicles</label>
-		</td>
-	</tr>
+<% if params.context != 've_vehicle' %>
 	<%= partial 've_vehicles/filter_ve_vehicle_ids', f: f %>
 <% end %>
 <tr>

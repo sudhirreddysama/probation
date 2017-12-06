@@ -7,7 +7,7 @@
 			<th width="1%">#</th>
 			<th width="1%">License</th>
 			<th width="1%">Account</th>
-			<th width="49%">Year Make Model</th>
+			<th width="49%">Year Make Model (Name)</th>
 			<th width="49%">Assignment</th>
 		</tr>
 	</thead>
@@ -21,7 +21,7 @@
 				<td><%= o.vehicle_no %></td>
 				<td><%= o.license %></td>
 				<td><%= o.account %></td>
-				<td><%= link_to blank_tag("#{o.year} #{o.make} #{o.model}"), controller: :ve_vehicles, action: :view, id: o.id %></td>
+				<td><%= link_to blank_tag(o.no_ymm_name), controller: :ve_vehicles, action: :view, id: o.id %></td>
 				<td><%= o.assignment %></td>
 			</tr>
 		<% } %>

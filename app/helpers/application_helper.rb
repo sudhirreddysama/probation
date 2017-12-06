@@ -104,5 +104,9 @@ module ApplicationHelper
 		end
 		return ('<i class="fa fa-' + fa + '"></i>').html_safe
 	end	
+	
+	def id_for_field f
+		f.to_s.gsub(/[\[\]]+/, "_").chop
+	end
 
 end

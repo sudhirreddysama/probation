@@ -1,5 +1,6 @@
 <div id="grid" style="margin: 0 8px;"></div>
 <script>
+var can_edit = <%= @model.can_edit?(@current_user) %>;
 
 var cols = <%= @cols.to_json.html_safe %>;
 var data = <%= @data.to_json.html_safe %>;
@@ -110,7 +111,7 @@ function select_check(c, e, id) {
 cols[0].renderer = function(instance, td, row, col, prop, value, cellProperties) {
 	td.innerHTML = '<div class="nobr"><input type="checkbox" class="grid_select"' + (select_data[value] ? ' checked="checked"' : '') + ' onclick="select_check(this, event, ' + value + ');">&nbsp;' +
 		'<a href="<%= url_for action: :view %>/' + value + '"><i class="fa fa-search"></i></a>&nbsp;' + 
-		'<a href="<%= url_for action: :edit %>/' + value + '"><i class="fa fa-pencil-square-o"></i></a>&nbsp;' + value + '</div>';
+		(can_edit ? '<a href="<%= url_for action: :edit %>/' + value + '"><i class="fa fa-pencil-square-o"></i></a>&nbsp;' : '') + value + '</div>';
 	return td;
 }
 
@@ -123,6 +124,7 @@ var hot = new Handsontable($('#grid')[0], {
 		}
 		return cols[i].label;
 	},
+	editor: can_edit,
 	columns: cols,
 	manualColumnResize: true,
 	manualRowResize: false,

@@ -6,7 +6,7 @@
 		<% if o.new_record? %>
 			<%= f.hidden_field :obj_ids_str %>
 			<%= f.hidden_field :obj_type %>
-			<%= n0 o.obj_ids_str.split(',').size %>
+			<%= n0 o.obj_ids_str.to_s.split(',').size %>
 		<% else %>
 			<%= n0 o.documents.count %>
 		<% end %>

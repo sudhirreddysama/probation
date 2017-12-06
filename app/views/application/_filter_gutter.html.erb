@@ -1,4 +1,4 @@
-<% if @allow_edit_all != false %>
+<% if @allow_edit_all != false && @model.can_edit?(@current_user) %>
 	<div class="gutter" id="edit-all-form" style="display: none;">
 		<table class="form">
 			<th></th>
@@ -17,7 +17,7 @@
 		</table>
 	</div>
 <% end %>
-<% if @allow_delete_all != false %>
+<% if @allow_delete_all != false && @model.can_destroy?(@current_user) %>
 	<div class="gutter" id="delete-all-form" style="display: none;">
 		<p>Are you sure you want to delete multiple items? This action is irreversible!<p>
 			<div class="btns">

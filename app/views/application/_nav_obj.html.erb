@@ -1,15 +1,4 @@
 <% url = {context: context, controller: controller} %>
-<div class="tabs" id="objs-tabs">
-	<%= partial 'nav_pre' %>
-	<%= tab 'list', 'List', url + {action: :index} %>
-	<%= tab 'table', 'Grid', url + {action: :grid} %>
-	<%= tab 'plus-circle', 'New', url + {action: :new} if model.can_create? @current_user, context_obj %>
-	<% if obj && !obj.new_record? %>
-		<%= tab 'gear', obj.label.truncate(20), url + {id: obj.id, action: :view}, {}, class: 'active' %>
-	<% end %>
-	<%= partial 'nav1', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
-	<div class="clear"></div>
-</div>
 <% if obj && !obj.new_record? %>
 	<% url.id = obj.id %>
 	<div class="tabs" id="obj-tabs">
@@ -18,10 +7,10 @@
 		<%= tab 'clone', 'Clone', url + {action: :copy} if obj.can_clone? @current_user, context_obj %>
 		<%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
 		<%= partial 'nav2', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
-		<% if obj.respond_to?(:documents) %>
+		<% if obj.respond_to?(:documents) && !params.popup %>
 			<%= tab 'file-text-o', 'Documents', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
 		<% end %>
-		<% if obj.respond_to?(:db_changes) %>
+		<% if obj.respond_to?(:db_changes) && !params.popup %>
 			<%= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: obj.id}, action: :index %>
 		<% end %>
 		<div class="clear"></div>

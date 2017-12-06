@@ -10,12 +10,9 @@ class VeReservationsController < CrudController
 	end
 	
 	def calendar
-		logger.info params.filter.inspect
-		logger.info '???'
 		@filter = params.filter || {
 			active: '1'
 		}
-		logger.info @filter
 		@filter.active ||= []
 		if @filter.print
 			@filter.date_to = Date.parse(@filter.date_to) rescue nil
@@ -30,6 +27,12 @@ class VeReservationsController < CrudController
 	def new
 		if @obj.new_schedules.empty?
 			@obj.new_schedules = {0 => {}}
+		end
+		if !request.post?
+			@obj.new_user_ids = params.uids.split(',') if !params.uids.blank?
+			@obj.new_user_ids << @current_user.id if !@obj.new_user_ids.include?(@current_user.id)
+			@obj.new_schedules[0].ve_vehicle_ids = params.vids.split(',') if !params.vids.blank?
+			@obj.new_schedules[0].dates = params.date if !params.date.blank?
 		end
 		super
 	end
@@ -69,7 +72,7 @@ class VeReservationsController < CrudController
 		month_view = @filter.view.in?(['listMonth', 'month'])
 		day_view = @filter.view.in?(['agendaDay'])
 		events = []
-		@cond = search_filter(@filter[:search], {
+		cond = search_filter(@filter[:search], {
 				've_reservations.description' => :like,
 				've_reservations.notes' => :like,
 				've_vehicles.vehicle_no' => :like,
@@ -77,12 +80,13 @@ class VeReservationsController < CrudController
 				've_vehicles.make' => :like,
 				've_vehicles.model' => :like,
 		})
-		@cond << collection_conds({
+		cond << collection_conds({
 			active: 've_vehicles.active',
 			ve_vehicle_ids: 've_vehicles.id',
+			user_ids: 've_reservation_users.user_id',
 		})
-		@cond << DB.escape('ve_events.date <= ? and ve_events.date >= ?', @filter.date_to, @filter.date_from)
-		objs = VeEvent.eager_load(:ve_vehicle, :ve_reservation).where(get_where(@cond))
+		cond << DB.escape('ve_events.date <= ? and ve_events.date >= ?', @filter.date_to, @filter.date_from)
+		objs = VeEvent.eager_load(:ve_vehicle, (@filter.user_ids.empty? ? :ve_reservation : {ve_reservation: :ve_reservation_users})).where(get_where(cond))
 		objs.each { |e|
 			r = e.ve_reservation
 			v = e.ve_vehicle
@@ -94,7 +98,6 @@ class VeReservationsController < CrudController
 				end: all_day ? (e.date + 1.day).to_s : e.date.to_s + 'T' + e.end_time.t2,
 				className: 'cal-ve_event',
 				color: v.color.blank? ? '#888888' : v.color,
-				url: url_for(controller: :ve_reservations, action: :view, id: e.ve_reservation_id),
 				type: 've_event',
 				startEditable: true,
 				durationEditable: !month_view,
@@ -107,7 +110,11 @@ class VeReservationsController < CrudController
 	
 	def avail_events_data
 		events = Hash.new { |h, k| h[k] = Hash.new { |h2, k2| h2[k2] = [] } }
-		objs = VeEvent.eager_load(:ve_reservation).where('ve_events.date <= ? and ve_events.date >= ?', @filter.date_to, @filter.date_from)
+		cond = [DB.escape('ve_events.date <= ? and ve_events.date >= ?', @filter.date_to, @filter.date_from)]
+		cond << collection_conds({
+			user_ids: 've_reservation_users.user_id',
+		})		
+		objs = VeEvent.eager_load(@filter.user_ids.empty? ? :ve_reservation : {ve_reservation: :ve_reservation_users}).where(get_where(cond))
 		if !@vehicles.empty?
 			objs = objs.where('ve_events.ve_vehicle_id in (?)', @vehicles.map(&:id))
 		end
@@ -117,14 +124,22 @@ class VeReservationsController < CrudController
 		return events	
 	end
 	
+	# Seems like data_edit and avail_edit should post to ve_event/edit, is crud_controller setup to handle ajax for generic operations? 
 	def data_edit
 		obj = params.obj
-		o = VeEvent.find params.id2
+		o = VeEvent.find params.id
 		o.date = obj.start
 		o.begin_time = obj.all_day == 'true' ? nil : obj.start
 		o.end_time = obj.all_day == 'true' ? nil : obj.end
-		o.save
-		render nothing: true
+		o.current_user = @current_user
+		render o.save ? {nothing: true} : {errors: o.errors.full_messages}.to_json
+	end
+	
+	def avail_edit
+		o = VeEvent.find params.id
+		o.attributes = params.obj
+		o.current_user = @current_user
+		render o.save ? {nothing: true} : {json: {errors: o.errors.full_messages}}
 	end
 
 end
