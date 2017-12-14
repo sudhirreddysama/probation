@@ -36,12 +36,14 @@ class VeEvent < ApplicationRecord
 			if ve_reservation && ve_reservation.ve_events.count == 1
 				r = ve_reservation
 			else
-				r = self.ve_reservation = VeReservation.new({user: @current_user})
+				r = self.ve_reservation = VeReservation.new({
+					user: @current_user, 
+					availability: ve_reservation.try(:availability) || false,
+					notes: ve_reservation.try(:notes)
+				})
 			end	
 			r.attributes = {
 				description: description,
-				availability: r.availability,
-				notes: r.notes,
 				new_user_ids: new_user_ids,
 				check_new_user_ids: true,
 				begin: [r.begin, date].compact.min,
