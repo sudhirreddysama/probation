@@ -15,6 +15,7 @@ class VeEventsController < CrudController
 		@cond << collection_conds({
 			ve_vehicle_ids: "#{@model.table_name}.ve_vehicle_id",
 			active: "ve_vehicles.active",
+			availability: 've_reservations.availability'
 		})		
 		@objs = @model.eager_load(:ve_vehicle, :ve_reservation)
 		super

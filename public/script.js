@@ -113,9 +113,16 @@ window.onbeforeunload = function(e) {
 	}
 }
 
+
+window._popup_load = function(e) {
+	$('#popi').css({visibility: 'visible'});
+	$('#pop2').removeClass('busy-bg');
+}
+	
 window._open_popup = function(src) {	
 	$('#pop1').show();
-	$('#popi').prop('src', src);
+	$('#pop2').addClass('busy-bg');
+	$('#popi').css({visibility: 'hidden'}).prop('src', src);
 }
 window._handle_popup_refresh = function() {
 	$('#popl').show();

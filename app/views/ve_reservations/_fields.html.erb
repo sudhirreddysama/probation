@@ -6,5 +6,12 @@
 		<%= partial 'users/user_ids_field', value: o.new_user_ids, field: 'obj[new_user_ids]' %>
 	</td>
 </tr>
+<tr>
+	<th>Type</th>
+	<td>
+		<label><%= f.radio_button :availability, false %> Reservation</label> - Normal vehicle reservation. No one else will be able to reserve the vehicle(s) during the selected dates/times.<br>
+		<label><%= f.radio_button :availability, true %> Availability</label> - Restricts (or allows) who can make a reservation during the selected dates/times to the user list above. If no users are selected, anyone will be able to reserve the vehicle(s). Overrides the vehicle user list.
+	</td>
+</tr>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= partial 've_reservations/schedule_builder', f: f %>

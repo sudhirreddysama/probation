@@ -56,6 +56,7 @@
 	#right td.droppable { background-color: #c9e6ff !important; }
 	#cols a.av-add { display: inline-block; }
 	a.av-add:hover { color: #08f; }
+	.av-availability { opacity: .5; }
 	<% @vehicles.each { |v| %>
 		<% if !v.color.blank? %>
 			#ve-vehicle-<%= v.id %> a.av-event { background-color: <%= v.color %>; }
@@ -96,10 +97,10 @@ today = Date.today
 								<% (d1..d2).each { |d| %>
 									<td class="<%= [d.wday.in?([0, 6]) ? 'wend' : nil, d == today ? 'today' : nil].compact * ' ' %>" data-date="<%= d.to_s %>">
 										<% events[d].each { |e| %>
-											<% lbl = [[e.begin_time.t0, e.end_time.t0].reject(&:blank?) * "-", e.ve_reservation.description].reject(&:blank?) * " " %>
-											<%= link_to lbl, {context: nil, context_id: nil, controller: :ve_events, action: :view, id: e.id}, class: "av-event", draggable: true, id: "e-#{e.id}" %>
+											<% lbl = [(e.begin_time.t0 + (e.end_time ? "-#{e.end_time.t0}" : '')), e.ve_reservation.description].reject(&:blank?) * " " %>
+											<%= link_to lbl, {context: nil, context_id: nil, controller: :ve_events, action: :view, id: e.id}, class: 'av-event' + (e.ve_reservation.availability ? ' av-availability' : ''), draggable: true, id: "e-#{e.id}" %>
 										<% } %>
-										<%= link_to fa('plus', 'Reserve'), {controller: :ve_reservations, action: :new, 'obj[new_schedules][0][ve_vehicle_ids][]' => v.id, 'obj[new_schedules][0][dates]' => d.to_s}, target: '_blank', class: 'av-add' %>
+										<%= link_to fa('plus', 'Reserve'), {controller: :ve_reservations, action: :new, 'vids' => v.id, 'date' => d.to_s}, target: '_blank', class: 'av-add' %>
 									</td>
 								<% } %>
 							</tr>
@@ -135,7 +136,7 @@ $('#right table td').droppable({
 			}},
 			success: function(data, status, xhr) {
 				if(data && data.errors) {
-					alert(data.errors.join("\r"));
+					alert(data.errors.join("\n"));
 					revert();
 				}
 				else {

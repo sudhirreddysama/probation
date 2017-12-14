@@ -10,7 +10,7 @@ class ApplicationRecord < ActiveRecord::Base
 	def self.can_edit? u, *args; can_create? u, *args; end
 	def can_edit? u, *args; self.class.can_edit? u, *args; end
 	def self.can_destroy? u, *args; can_edit? u, *args; end
-	def can_destroy? u, *args; self.class.can_destroy? u, *args; end
+	def can_destroy? u, *args; can_edit? u, *args; end
 
 	def self.columns_by_type *types
 		columns.select { |c| c.type.in?(types) }.map &:name

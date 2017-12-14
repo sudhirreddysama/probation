@@ -75,7 +75,7 @@ class VeReservation < ApplicationRecord
 	end
 	
 	def handle_validate
-		errors.add :base, 'You cannot edit this reservation' if !can_edit? @current_user
+		errors.add :base, 'You cannot edit this reservation' if !new_record? && !can_edit?(@current_user)
 		if @check_new_schedules
 			self.begin = nil
 			self.end = nil
@@ -111,9 +111,7 @@ class VeReservation < ApplicationRecord
 								end_time: end_time.try(:strftime, '%H:%M:%S'),
 							}
 							e = ve_events.find_by(attr) || ve_events.build(attr)
-							if e.new_record?
-								errors.add :base, "You cannot reserve vehicle ##{v.vehicle_no} for schedule ##{j}" if !v.can_reserve?(@current_user)
-							end
+							errors.add :base, "You cannot reserve vehicle ##{v.vehicle_no} for schedule ##{j}" if !e.can_reserve?(@current_user)
 							@new_events << e
 							self.begin = [e.date, self.begin].compact.min
 							self.end = [e.date, self.end].compact.max
@@ -146,9 +144,11 @@ class VeReservation < ApplicationRecord
 	end
 	after_save :handle_after_save
 	
+	# Availabilities can only be edited by the person who created it and admins.
+	# Reservations can be edited by anyone in the reservation user list.
 	def can_edit? u, *args
 		return true if u.admin?
-		u.id == user_id || u.id.in?(user_ids)
+		u.id == user_id || (!availability && u.id.in?(user_ids))
 	end
 
 end

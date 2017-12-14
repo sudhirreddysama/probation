@@ -11,6 +11,7 @@
 	.fc .fc-toolbar > * > * { margin-left: 8px; }
 	.fc-state-hover { background-position: initial; }
 	.fc-view a:hover { text-decoration: underline; }
+	.cal-availability { opacity: .5; }
 </style>
 <% } %>
 <%= table_form_for(:filter, html: {id: 'filter'}) { |f| %>
@@ -86,6 +87,10 @@
 				url: '<%= url_for action: :data_edit %>/' + event.id,
 				data: {obj: data},
 				success: function(data, status, xhr) {
+					if(data && data.errors) {
+						alert(data.errors.join("\n"));
+						revertFunc();
+					}
 				},
 				complete: function(xhr, status) {
 					toolbar.removeClass('busy-bg');
@@ -95,6 +100,20 @@
 				}
 			});
 		}
+		var set_new_res_link = function() {
+			var d = moment(date.val());
+			var q_vids = ($('#filter_ve_vehicle_ids').val() || []).join(',');
+			var q_uids = ($('#filter_user_ids').val() || []).join(',');
+			var q_date = d.isValid() ? d.format('YYYY-MM-DD') : '';
+			var q = []
+			if(q_vids) q.push('vids=' + q_vids);
+			if(q_uids) q.push('uids=' + q_uids);
+			if(q_date) q.push('date=' + q_date);
+			$('#new-res').prop('href',
+				$('#new-res').prop('href').split('?')[0] + (q.length ? '?' + q.join('&') : '')
+			);
+		}
+		set_new_res_link();
 		cal.fullCalendar({
 			defaultView: $('#filter_view').val() || 'month',
 			defaultDate: $('#filter_date').val() || null,
@@ -133,6 +152,7 @@
 				needs_refresh = false;
 				var d = cal.fullCalendar('getDate');
 				date.val(d.format('M/D/YYYY'));
+				set_new_res_link();
 				$('#filter_date_from').val(start.format('M/D/YYYY'));
 				$('#filter_date_to').val(end.format('M/D/YYYY'));
 				$('#filter_view').val(current_view);
@@ -167,20 +187,6 @@
 				allow_print_submit = false;
 			}
 		});
-		var set_new_res_link = function() {
-			var d = moment(date.val());
-			var q_vids = ($('#filter_ve_vehicle_ids').val() || []).join(',');
-			var q_uids = ($('#filter_user_ids').val() || []).join(',');
-			var q_date = d.isValid() ? d.format('YYYY-MM-DD') : '';
-			var q = []
-			if(q_vids) q.push('vids=' + q_vids);
-			if(q_uids) q.push('uids=' + q_uids);
-			if(q_date) q.push('date=' + q_date);
-			$('#new-res').prop('href',
-				$('#new-res').prop('href').split('?')[0] + (q.length ? '?' + q.join('&') : '')
-			);
-		}
-		set_new_res_link();
 		filter.find('input, select').change(function(e) {
 			needs_refresh = true;
 			var d = moment(date.val());

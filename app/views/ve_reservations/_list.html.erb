@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<th width="1%">Type</th>
 			<th width="1%">Begin</th>
 			<th width="1%">End</th>
 			<th width="99%">Name/Description</th>
@@ -12,6 +13,7 @@
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= o.availability ? 'Availability' : 'Reservation' %></td>
 				<td><%= o.begin.d %></td>
 				<td><%= o.end.d %></td>
 				<td><%= link_to blank_tag(o.description), controller: :ve_reservations, action: :view, id: o.id %></td>

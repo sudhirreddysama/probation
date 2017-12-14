@@ -5,6 +5,7 @@ class VeReservationsController < CrudController
 		generic_filter_setup
 		@cond << collection_conds({
 			#active: "#{@model.table_name}.active",
+			availability: 've_reservations.availability'
 		})		
 		super
 	end
@@ -55,6 +56,7 @@ class VeReservationsController < CrudController
 		@filter.date_from = Date.parse(@filter.date_from) rescue n
 		@filter.date_to = Date.parse(@filter.date_to) rescue n + 28 - 1
 		@events = avail_events_data
+		@model = VeReservation
 	end
 
 	# Prevent redirect
@@ -96,7 +98,7 @@ class VeReservationsController < CrudController
 				title: "#{v.vehicle_no} #{r.description}", 
 				start: e.date.to_s + (all_day ? '' : 'T' + e.begin_time.t2),
 				end: all_day ? (e.date + 1.day).to_s : e.date.to_s + 'T' + e.end_time.t2,
-				className: 'cal-ve_event',
+				className: 'cal-ve_event' + (r.availability ? ' cal-availability ' : ''),
 				color: v.color.blank? ? '#888888' : v.color,
 				type: 've_event',
 				startEditable: true,
@@ -132,7 +134,7 @@ class VeReservationsController < CrudController
 		o.begin_time = obj.all_day == 'true' ? nil : obj.start
 		o.end_time = obj.all_day == 'true' ? nil : obj.end
 		o.current_user = @current_user
-		render o.save ? {nothing: true} : {errors: o.errors.full_messages}.to_json
+		render o.save ? {nothing: true} : {json: {errors: o.errors.full_messages}}
 	end
 	
 	def avail_edit

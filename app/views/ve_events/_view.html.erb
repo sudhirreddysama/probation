@@ -9,10 +9,42 @@
 	<%= dl 'Date', o.date.d %>
 	<%= dl 'Begin Time', o.begin_time.t %>
 	<%= dl 'End Time', o.end_time.t %>
+	<%= dl 'Type', o.ve_reservation.availability ? 'Availability' : 'Reservation' %>
 </div>
 <div class="view">
 	<%= dl 'Users', r && (r.users.map { |u| link_to(u.name, {context: nil, context_id: nil, controller: :users, action: :view, id: u.id, popup: nil}, target: '_top') } * ', ').html_safe %>
 </div>
 <div class="view">
-	<%= dl 'Notes', nl2br_h(o.ve_reservation.notes) %>
+	<%= dl 'Reservation Notes', nl2br_h(o.ve_reservation.notes) %>
+</div>
+<div class="view">
+	<dl>
+		<dt>Day/Vehicle Notes</dt>
+		<dd>
+			<% if !@print && o.can_edit?(@current_user) %>
+				<%= text_area_tag 'obj[notes]', o.notes, class: 'r3' %>
+				<script>
+					$('#obj_notes').change(function(e) {
+						var $this = $(this);
+						$this.addClass('busy-bg');
+						$.ajax({
+							url: '<%= url_for context: nil, context_id: nil, controller: :ve_events, action: :edit, id: o.id %>',
+							method: 'POST',
+							data: {'obj[notes]': $this.val()},
+							success: function(data, status, xhr) {
+								$this.effect('highlight');
+							},
+							complete: function(xhr, status) {
+								$this.removeClass('busy-bg');
+							},
+							error: function(xhr, status, error) {
+								alert('Could not save notes.');
+							}
+						});
+					});
+				</script>
+			<% else %>
+				<%= nl2br_h o.notes %>
+			<% end %>
+		</dd>
 </div>

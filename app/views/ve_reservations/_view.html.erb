@@ -1,7 +1,8 @@
 <div class="view">
 	<%= dl 'ID', o.id %>
 	<%= dl 'Begin', o.begin.d %>
-	<%= dl 'end', o.end.d %>
+	<%= dl 'End', o.end.d %>
+	<%= dl 'Type', o.availability ? 'Availability' : 'Reservation' %>
 	<%= dl 'Name/Description', o.description %>
 </div>
 <div class="view">

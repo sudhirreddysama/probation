@@ -189,7 +189,7 @@ html.dev #pop1 { padding-top: 58px; }
 }
 #popl { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 #popc { position: absolute; top: -1px; right: -32px; font-size: 27px; line-height: 27px; width: 31px; height: 27px; text-align: center; }
-#popi { border: none; margin: 0; padding: 0; width: 100%; display: block; height: 400px; }
+#popi { border: none; margin: 0; padding: 0; width: 100%; display: block; height: 500px; }
 html.popup body > .tabs:first-child { margin-top: -1px; }
 
 .lbl-na, .lbl-blk { background: #000; }

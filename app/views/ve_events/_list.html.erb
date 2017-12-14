@@ -2,6 +2,9 @@
 	<thead>
 		<tr>
 			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<% if params.context != 've_reservation' %>
+				<th width="1%" class="nobr">Type</th>
+			<% end %>
 			<th width="1%">Date</th>
 			<th width="1%" class="nobr">Begin Time</th>
 			<th width="1%" class="nobr">End Time</th>
@@ -16,6 +19,9 @@
 			<% r = o.ve_reservation %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<% if params.context != 've_reservation' %>
+					<td class="nobr"><%= o.ve_reservation.availability ? 'Availability' : 'Reservation' %></td>
+				<% end %>
 				<td class="nobr"><%= link_to blank_tag(o.date.d), controller: :ve_events, action: :view, id: o.id %></td>
 				<td class="nobr"><%= o.begin_time.t %></td>
 				<td class="nobr"><%= o.end_time.t %></td>

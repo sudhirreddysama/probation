@@ -24,7 +24,7 @@
 			data: function(params) {	
 				var data = {term: params.term, page: params.page || 1}
 				if(active_inactive.length) {
-					var active_checked = active_inactive.find(':checked');
+					var active_checked = active_inactive.filter(':checked');
 					if(active_checked.length == 1) {
 						data.active = active_checked.val();
 					}

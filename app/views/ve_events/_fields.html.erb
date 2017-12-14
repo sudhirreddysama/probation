@@ -19,6 +19,7 @@
 <%= f.tr_text_field :date, class: 'date', value: o.date.d, label: 'Date', req: true %>
 <%= f.tr_text_field :begin_time, class: 'time', value: o.begin_time.t, label: 'Begin Time', style: 'width: 100px;' %>
 <%= f.tr_text_field :end_time, class: 'time', value: o.end_time.t, label: 'End Time', style: 'width: 100px;' %>
+<%= f.tr_text_area :notes, label: 'Notes', class: 'r3' %>
 <script>
 	$('#obj_begin_time, #obj_end_time').inputmask('hh:mm t', {showMaskOnHover: true});
 </script>

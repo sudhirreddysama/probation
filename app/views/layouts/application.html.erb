@@ -61,7 +61,7 @@
 	<% if !params.popup %>
 		<div id="pop1" style="display: none;" onclick="_close_popup(); return false;">
 			<div id="popl"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>
-			<div id="pop2"><a href="#" id="popc" class="red" onclick="_close_popup(); return false;"><i class="fa fa-times"></i></a><iframe id="popi"></iframe>
+			<div id="pop2"><a href="#" id="popc" class="red" onclick="_close_popup(); return false;"><i class="fa fa-times"></i></a><iframe id="popi" onload="window._popup_load();"></iframe>
 		</div>
 	<% end %>
 </body>
