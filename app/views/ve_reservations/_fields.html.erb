@@ -13,5 +13,8 @@
 		<label><%= f.radio_button :availability, true %> Availability</label> - Restricts (or allows) who can make a reservation during the selected dates/times to the user list above. If no users are selected, anyone will be able to reserve the vehicle(s). Overrides the vehicle user list.
 	</td>
 </tr>
+<% if @current_user.admin? %>
+	<%= f.tr_select :user_id, User.where(o.user_id ? ['active = 1 or id = ?', o.user_id] : 'active = 1').order('first_name, last_name').map { |u| [u.name, u.id] }, label: 'Created By' %>
+<% end %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= partial 've_reservations/schedule_builder', f: f %>

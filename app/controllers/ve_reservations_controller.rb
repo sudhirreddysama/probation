@@ -30,6 +30,7 @@ class VeReservationsController < CrudController
 			@obj.new_schedules = {0 => {}}
 		end
 		if !request.post?
+			@obj.user = @current_user
 			@obj.new_user_ids = params.uids.split(',') if !params.uids.blank?
 			@obj.new_user_ids << @current_user.id if !@obj.new_user_ids.include?(@current_user.id)
 			@obj.new_schedules[0].ve_vehicle_ids = params.vids.split(',') if !params.vids.blank?
