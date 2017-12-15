@@ -3,8 +3,8 @@ require_relative 'application'
 
 if Rails.env.production?
 	Rails.application.config.middleware.use ExceptionNotification::Rack, :email => {
-		:email_prefix => "[DEBTSERVICES]",
-		:sender_address => %{"Debt Services" <noreply@monroecounty.gov>},
+		:email_prefix => "[EHPERMITS]",
+		:sender_address => %{"EHPermits" <noreply@monroecounty.gov>},
 		:exception_recipients => %w{jessesternberg@monroecounty.gov}
 	}
 end
@@ -19,7 +19,7 @@ if Rails.env.development?
 end
 
 APP_HUMAN_NAME = 'Environmental Health Permits/Vehicles'
-ROOT_PATH = '/ehpdev/'
+ROOT_PATH = '/'
 ROOT_URL = 'https://ehpermits.monroecounty.gov' + ROOT_PATH
 
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
