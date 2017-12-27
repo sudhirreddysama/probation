@@ -96,7 +96,7 @@ class VeReservationsController < CrudController
 			all_day = !e.begin_time
 			event = {
 				id: e.id,
-				title: "#{v.vehicle_no} #{r.description}", 
+				title: [v.vehicle_no, v.name.blank? ? '' : "(#{v.name})", r.description].reject(&:blank?) * ' ',
 				start: e.date.to_s + (all_day ? '' : 'T' + e.begin_time.t2),
 				end: all_day ? (e.date + 1.day).to_s : e.date.to_s + 'T' + e.end_time.t2,
 				className: 'cal-ve_event' + (r.availability ? ' cal-availability ' : ''),

@@ -75,7 +75,7 @@ today = Date.today
 				<thead><tr><th><span class="a">Vehicles</span></th></tr></thead>
 				<tbody>
 					<% @vehicles.each { |v| %>
-						<tr><th class="fixed-left"><%= link_to "#{v.vehicle_no} (#{v.license}) #{v.year_make_model}", controller: :ve_vehicles, action: :view, id: v.id %></th></tr>
+						<tr><th class="fixed-left"><%= link_to v.no_ymm_name, controller: :ve_vehicles, action: :view, id: v.id %></th></tr>
 					<% } %>
 				</tbody>
 			</table>
