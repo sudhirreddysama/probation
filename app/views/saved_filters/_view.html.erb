@@ -1,5 +1,5 @@
 <div class="btns">
-	<%= link_to fa('eye', 'View Filter'), {controller: o.type, action: :index, 'filter[saved_filter_id]' => o.id, 'filter_op' => 'load'} %>
+	<%= link_to fa('eye', 'View Filter'), {context: nil, controller: o.type, action: :index, 'filter[saved_filter_id]' => o.id, 'filter_op' => 'load'} %>
 </div>
 <div class="view">
 	<%= dl 'ID', o.id %>

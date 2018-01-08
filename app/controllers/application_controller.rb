@@ -207,6 +207,7 @@ class ApplicationController < ActionController::Base
   
   def parse_advanced_filter
 		@filter.adv = @filter.adv.try(:values) || []
+		@filter.edit = @filter.edit.try(:values) || []
 		cond = ''
 		indent = 0
 		fields = @model.columns.map { |c| [c.name, c.type] }.to_h

@@ -1,5 +1,5 @@
 <% if !params.popup %>
-	<% if @context_obj %>
+	<% if @context_class %>
 		<% tmp = lookup_context.prefixes[0] %>
 		<% lookup_context.prefixes[0] = params.context.pluralize %>
 		<% vars = {obj: @context_obj, model: @context_model, context: nil, controller: params.context.pluralize, context_obj: nil} %>

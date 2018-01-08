@@ -9,15 +9,16 @@
 	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
 	other = %w{documents doc_templates doc_bulks saved_filters db_changes}
 	is_other = ct ? ct.pluralize.in?(other) : c.in?(other)
+	is_permit = is_fd || is_pl || is_tf || is_tr || is_ny
 %>
+<% if is_permit %>
+	<div class="bar bar-red">PERMITS APPLICATION IS NOT LIVE - THIS IS A PREVIEW</div>
+<% end %>
 <div id="tabs" class="tabs">
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params.context == 'home' ? 'active' : '') %>
 	<%= tab 'truck', 'Vehicles', {controller: :ve_reservations, context: nil, action: :availability}, {}, class: (is_ve ? 'active' : '') %>
-	<% if false %>
-		<%= tab 'cutlery', 'Food', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_fd ? 'active' : '') %>
-		<%= tab 'birthday-cake', 'Temp Food', {controller: :tf_facilities, context: nil, action: :index}, {}, class: (is_tf ? 'active' : '') %>
-		<%= tab 'child', 'Temp Residence', {controller: :tr_tannings, context: nil, action: :index}, {}, class: (is_tr ? 'active' : '') %>
-		<%= tab 'life-ring', 'Pool', {controller: :pl_pools, context: nil, action: :index}, {}, class: (is_pl ? 'active' : '') %>
+	<% if is_permit %>
+		<%= tab 'book', 'Permits', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_permit ? 'active' : '') %>
 	<% end %>
 	<%= tab 'database', 'Other', {controller: :documents, context: nil}, {}, class: (is_other ? 'active' : '') %>
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params.context == 'user' ? 'active' : '') %>
@@ -30,12 +31,21 @@
 
 <% if is_ve %>
 	<div class="tabs">
-
 		<%= tab 'truck', 'Vehicles', {controller: :ve_vehicles, context: nil}, {}, class: (ct == 've_vehicle' ? 'active' : '') %>
 		<%= tab 'road', 'Mileage', {controller: :ve_mileages, context: nil}, {}, class: (ct == 've_mileage' ? 'active' : '') %>
 		<%= tab 'calendar', 'Reservations', {controller: :ve_reservations, context: nil}, {action: :availability}, class: (ct == 've_reservation' ? 'active' : '') %>
 		<%= tab 'calendar-o', 'Reservation Days', {controller: :ve_events, context: nil}, {}, class: (ct == 've_event' ? 'active' : '') %>
 		<%= tab 'calendar', 'iCalendar', {controller: :ical, context: nil}, {} %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_permit %>
+	<div class="tabs">
+		<%= tab 'cutlery', 'Food', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_fd ? 'active' : '') %>
+		<%= tab 'birthday-cake', 'Temp Food', {controller: :tf_facilities, context: nil, action: :index}, {}, class: (is_tf ? 'active' : '') %>
+		<%= tab 'child', 'Temp Residence', {controller: :tr_tannings, context: nil, action: :index}, {}, class: (is_tr ? 'active' : '') %>
+		<%= tab 'life-ring', 'Pool', {controller: :pl_pools, context: nil, action: :index}, {}, class: (is_pl ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
 <% end %>
@@ -99,8 +109,8 @@
 		<%= tab 'file-text-o', 'Documents', {controller: :documents, context: nil}, {}, class: (params.context == 'document' ? 'active' : '') %>
 		<%= tab 'files-o', 'Bulk Documents', {controller: :doc_bulks, context: nil}, {}, class: (params.context == 'doc_bulk' ? 'active' : '') %>
 		<%= tab 'file-code-o', 'Document Templates', {controller: :doc_templates, context: nil}, {}, class: (params.context == 'doc_template' ? 'active' : '') %>
+		<%= tab 'clock-o', 'Log', {controller: :db_changes, context: nil}, {}, class: (params.context == 'db_change' ? 'active' : '') %>
 		<%= tab 'filter', 'Filters', {controller: :saved_filters, context: nil}, {}, class: (params.context == 'saved_filter' ? 'active' : '') %>
-		<%= tab 'filter', 'DB Changes', {controller: :db_changes, context: nil}, {}, class: (params.context == 'db_change' ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
 <% end %>

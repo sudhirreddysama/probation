@@ -11,8 +11,6 @@
 		#home-btns a:hover { color: #000; background-position: 0 200px; }
 		#home-btns a:active, #home-btns a:focus { border-color: #07f; }
 		#home-btns i { font-size: 48px; line-height: 70px; }
-		#home-btns b { font-size: 24px; line-height: 36px; }
-		#home-btns span { font-size: 12px; line-height: 18px; }
 	</style>
 <% } %>
 <div id="home-btns">
@@ -20,8 +18,8 @@
 		<i class="fa fa-fw fa-3x fa-truck"></i><br>
 		Vehicle Scheduling<br>&amp; Mileage<br>&nbsp;
 	</a>
-	<a href="#" style="pointer-events: none; cursor: default; color: #888;">
+	<a href="<%= url_for context: nil, context_id: nil, controller: :fd_establishments, action: :index %>" style="color: #888;">
 		<i class="fa fa-fw fa-3x fa-book"></i><br>
-		Environmental<br>Health Permits<br>(Coming Soon)
+		Environmental<br>Health Permits<br><span class="req">(Preview)</span>
 	</a>
 </div>

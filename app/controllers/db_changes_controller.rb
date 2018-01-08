@@ -7,6 +7,7 @@ class DbChangesController < CrudController
 	
 	def index
 		generic_filter_setup
+		logger.info @context_class
 		@cond << collection_conds({
 			#active: "#{@model.table_name}.active",
 		})		

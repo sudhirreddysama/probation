@@ -28,4 +28,6 @@ class ApplicationRecord < ActiveRecord::Base
   	columns_by_type :string, :text
   end
   
+  def self.scope_for_class_context c; where(:obj_type => c.to_s); end
+  
 end

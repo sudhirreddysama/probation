@@ -1,0 +1,7 @@
+<tr class="edit-field">
+	<td><div><div class="inp-row">
+		<%= select_tag "filter[edit][#{i}][name]", options_for_select(@model.columns[1..-1].map { |c| [c.name, {data: {type: c.type}}] }, f.name), class: 'edit-field' %>
+		<%= text_field_tag "filter[edit][#{i}][value]", f.value, style: 'width: 300px;' %>
+			<a href="#" class="edit-del red" title="Remove"><i class="fa fa-minus-circle"></i></a>
+	</div></div></td>
+</tr>

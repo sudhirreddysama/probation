@@ -1,19 +1,35 @@
 <% if @allow_edit_all != false && @model.can_edit?(@current_user) %>
 	<div class="gutter" id="edit-all-form" style="display: none;">
 		<table class="form">
-			<th></th>
-			<td>Enter values ONLY for fields you want to update. To clear values, enter NULL in a field.</td>
-			<% @edit ||= (@model.new rescue @model.klass.new) # Quick hack here for through: associations that are read only %>
-			<%= fields_for(:obj, @edit, builder: TableFormBuilder) { |f| %>
-				<%= partial 'fields', f: f, o: @edit %>
-			<% } %>
-			<tr>
+			<% if false %>
 				<th></th>
-				<td>
-					<button type="submit" name="process" value="edit_all" id="edit-all-submit"><i class="fa fa-save"></i> Update All</button>
-					<button type="button" id="edit-all-cancel"><i class="fa fa-close"></i> Cancel</button>
-				</td>
-			</tr>
+				<td>Enter values ONLY for fields you want to update. To clear values, enter NULL in a field.</td>
+				<% @edit ||= (@model.new rescue @model.klass.new) # Quick hack here for through: associations that are read only %>
+				<%= fields_for(:obj, @edit, builder: TableFormBuilder) { |f| %>
+					<%= partial 'fields', f: f, o: @edit %>
+				<% } %>
+				<tr>
+					<th></th>
+					<td>
+						<button type="submit" name="process" value="edit_all" id="edit-all-submit"><i class="fa fa-save"></i> Update All</button>
+						<button type="button" id="edit-all-cancel"><i class="fa fa-close"></i> Cancel</button>
+					</td>
+				</tr>
+			<% end %>
+			<tbody id="edit-fields">
+				<% @filter.edit.each_with_index { |f, i| %>
+					<%= partial 'edit_field', f: f, i: i %>
+				<% } %>
+			</tbody>
+			<tbody>
+				<tr>
+					<td><div class="inp-row">
+						<%= select_tag 'edit-add', options_for_select([['Edit Field...', nil]] + @model.columns[1..-1].map(&:name)) %>
+						<button type="submit" name="process" value="edit_all" id="edit-all-submit"><i class="fa fa-save"></i> Update All</button>
+						<button type="button" id="edit-all-cancel"><i class="fa fa-close"></i> Cancel</button>
+					</div></td>			
+				</tr>
+			</tbody>
 		</table>
 	</div>
 <% end %>
@@ -27,7 +43,36 @@
 	</div>		
 <% end %>
 <script>
+	
+	var edit_i = <%= @filter.edit.length %>;
+	var edit_field = <%= partial('edit_field', f: {}, i: '__EDIT__').to_json.html_safe %>;
+	$('#edit-add').change(function(e) {
+		e.preventDefault();
+		var val = $(this).val();
+		this.selectedIndex = 0;
+		if(val) {
+			var row = $(edit_field.replace(/__EDIT__/g, adv_i++));
+			$('#edit-fields').append(row);
+			var field = row.find('select[name$="[name]"]');
+			field.val(val).change();
+			row.find('td > div').hide().slideDown(100, function() {
+				row.find('input[name$="[value]"]').focus();
+			});
+		}
+	});
+	$('#edit-fields').on('click', '.edit-del', function(e) {
+		e.preventDefault();
+		var tr = $(this).closest('tr');
+		tr.find('td > div').slideUp(100, function() { tr.remove(); });
+	});	
+
 	var edit_open = false;
+	if(<%= @filter.edit.empty? ? 'false' : 'true' %>) {
+		$('#edit-all').addClass('dep');
+		edit_open = true;
+		$('#edit-all-form').show();
+	}	
+	
 	var delete_open = false;
 	$('#edit-all').click(function() {
 		$('#edit-all').blur();
@@ -72,7 +117,14 @@
 		}
 	});			
 	$('#edit-all-cancel').click(function() {
-		$('#edit-all-form').slideUp(200);
+		if($('.edit-field').size()) {
+			if(!confirm('Clear all pending edits?')) {
+				return;
+			}
+		}
+		$('#edit-all-form').slideUp(200, function() {
+			$('.edit-field').remove();
+		});
 		$('#edit-all').removeClass('dep');
 		edit_open = false;
 	});

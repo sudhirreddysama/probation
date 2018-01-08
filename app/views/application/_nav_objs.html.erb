@@ -3,10 +3,21 @@
 	<%= partial 'nav_pre' %>
 	<%= tab 'list', 'List', url + {action: :index} %>
 	<%= tab 'table', 'Grid', url + {action: :grid} %>
-	<%= tab 'plus-circle', 'New', url + {action: :new} if model.can_create? @current_user, context_obj %>
+	<% unless context && !context_obj %>
+		<%= tab 'plus-circle', 'New', url + {action: :new} if model.can_create? @current_user, context_obj %>
+	<% end %>
+	<% if controller != 'documents' && !context %>
+		<%= tab 'file-text-o', 'Documents', {controller: :documents, context: controller.singularize, context_id: nil}, action: :index %>
+	<% end %>
+	<% if controller != 'db_changes' && !context %>
+		<%= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: nil}, action: :index %>
+	<% end %>
+	<% if controller != 'saved_filters' && !context %>
+		<%= tab 'filter', 'Filters', {controller: :saved_filters, context: controller.singularize, context_id: nil}, action: :index %>
+	<% end %>
+	<%= partial 'nav1', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 	<% if obj && !obj.new_record? %>
 		<%= tab 'gear', obj.label.truncate(20), url + {id: obj.id, action: :view}, {}, class: 'active' %>
 	<% end %>
-	<%= partial 'nav1', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 	<div class="clear"></div>
 </div>

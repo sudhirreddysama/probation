@@ -17,7 +17,10 @@ class CrudController < ApplicationController
 		elsif params[:print]
 			print_objs
 		elsif params[:process] == 'edit_all'
-			obj = params[:obj].reject { |k, v| v.blank? }.transform_values { |v| v == 'NULL' ? '' : v }
+			obj = @filter.edit.inject({}) { |m, v|  
+				m[v.name] = v.value
+				m
+			}
 			@objs.find_each { |o|
 				o.update_attributes obj
 			}
@@ -212,11 +215,13 @@ class CrudController < ApplicationController
 		if params.context
 			@context_class = params.context.classify.constantize
 			@context_model = @context_class
-			@context_obj = @context_model.find params.context_id
+			@context_obj = @context_model.find params.context_id if params.context_id
 		end
 		@model = @model_class
 		if @context_obj && @context_obj.respond_to?(params.controller)
 			@model =  @context_obj.send(params.controller)
+		elsif @context_model
+			@model = @model.scope_for_class_context(@context_model)
 		end
 	end
 

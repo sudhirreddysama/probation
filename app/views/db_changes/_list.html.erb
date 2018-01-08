@@ -5,8 +5,10 @@
 			<th width="1%">When</th>
 			<th width="1%">User</th>
 			<th width="1%">Action</th>
-			<% if params.controller == 'db_change' %>
+			<% if params.context.nil? %>
 				<th width="1%">Object</th>
+			<% end %>
+			<% if params.context_id.nil? %>
 				<th width="1%">ID</th>
 			<% end %>
 			<th width="1%">Field</th>
@@ -26,13 +28,15 @@
 		<tbody class="<%= cycle 'odd', 'even' %>">
 			<tr>
 				<td rowspan="<%= changes.size %>" class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
-				<% url = {controller: :db_changes, action: :view, id: o.id} %>
+				<% url = {controller: :db_changes, action: :view, id: o.id, context: params.context, context_id: params.context_id} %>
 				<td rowspan="<%= changes.size %>" class="nobr"><%= link_to o.created_at.dt, url %></td>
 				<td rowspan="<%= changes.size %>" class="nobr"><%= o.user.try(:username) %></td>
 				<td rowspan="<%= changes.size %>" class="nobr"><%= o.action %></td>
-				<% if params.controller == 'db_change' %>
-					<td rowspan="<%= changes.size %>" class="nobr"><%= h o.record_type %></td>
-					<td rowspan="<%= changes.size %>" class="nobr"><%= h o.record_id %></td>
+				<% if params.context.nil? %>
+					<td rowspan="<%= changes.size %>" class="nobr"><%= h o.obj_type %></td>
+				<% end %>
+				<% if params.context_id.nil? %>
+					<td rowspan="<%= changes.size %>" class="nobr"><%= h o.obj_id %></td>
 				<% end %>
 				<%= changes.shift %>
 			</tr>
