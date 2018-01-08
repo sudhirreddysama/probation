@@ -17,9 +17,7 @@
 <div id="tabs" class="tabs">
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params.context == 'home' ? 'active' : '') %>
 	<%= tab 'truck', 'Vehicles', {controller: :ve_reservations, context: nil, action: :availability}, {}, class: (is_ve ? 'active' : '') %>
-	<% if is_permit %>
-		<%= tab 'book', 'Permits', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_permit ? 'active' : '') %>
-	<% end %>
+	<%= tab 'book', 'Permits', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_permit ? 'active' : '') %>
 	<%= tab 'database', 'Other', {controller: :documents, context: nil}, {}, class: (is_other ? 'active' : '') %>
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params.context == 'user' ? 'active' : '') %>
 	<div class="right">
