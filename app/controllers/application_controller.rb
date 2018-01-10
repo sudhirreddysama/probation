@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
 	def params= v
 		@_params = v
 	end
+	
+	def errortest
+		this_will_throw_an_error
+	end
 
 	private
 
