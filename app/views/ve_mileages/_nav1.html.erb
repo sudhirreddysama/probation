@@ -1,1 +1,3 @@
-<%= tab 'calendar-plus-o', 'Yearly Setup', {controller: :ve_mileages, action: :setup_year, id: nil, context: nil} %>
+<% if @model.can_create? @current_user %>
+	<%= tab 'calendar-plus-o', 'Yearly Setup', {controller: :ve_mileages, action: :setup_year, id: nil, context: nil} %>
+<% end %>

@@ -237,10 +237,12 @@ class CrudController < ApplicationController
 	end
 	
 	def require_can_create?; require_check @model_class.can_create?(@current_user, @context_obj); end
+	def require_can_clone?; require_check @obj.can_clone?(@current_user); end
 	def require_can_edit?; require_check @obj.can_edit?(@current_user); end
 	def require_can_destroy?; require_check @obj.can_destroy?(@current_user); end
 	
-	before_filter :require_can_create?, only: [:new, :copy]
+	before_filter :require_can_create?, only: :new
+	before_filter :require_can_clone?, only: :copy
 	before_filter :require_can_edit?, only: :edit
 	before_filter :require_can_destroy?, only: :delete
 	

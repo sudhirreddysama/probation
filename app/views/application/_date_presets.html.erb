@@ -1,26 +1,11 @@
 <% name = 'date_presets' if local_assigns[:name].nil? %>
-<% t = Date.today %>
-<% m = t.beginning_of_month %>
-<% w = t.beginning_of_week(:sunday) %>
-<% y = t.beginning_of_year %>
-<%= select_tag name, options_for_select([
-	['Presets&hellip;'.html_safe],
-	['Today', t.d],
-	['Yesterday', (t - 1).d],
-	['Tommorrow', (t + 1).d],
-	['This Week', "#{w.d}-#{(w + 6).d}" ],
-	['Last Week', "#{(w - 7).d}-#{(w - 1).d}"],
-	['Next Week', "#{(w + 7).d}-#{(w + 13).d}"],
-	['This Month', "#{m.d}-#{m.end_of_month.d}" ],
-	['Last Month', "#{m.last_month.d}-#{(m - 1).d}"],
-	['Next Month', "#{m.next_month.d}-#{m.next_month.end_of_month.d}"],
-	['This Year', "#{y.d}-#{y.end_of_year.d}"],
-	['Last Year', "#{y.last_year.d}-#{(y - 1).d}"],
-	['Next Year', "#{y.next_year.d}-#{y.next_year.end_of_year.d}"],
-]), style: 'width: 90px;' %><i></i>
+<%= select_tag name, options_for_select(date_preset_options(local_assigns[:range])), style: 'width: 130px;' %><i></i>
+<a href="#" id="<%= name %>-prev"><i class="fa fa-chevron-circle-left"></i></a>&nbsp;<a href="#" id="<%= name %>-next"><i class="fa fa-chevron-circle-right"></i></a>
 <script>
 	(function($) {
 		var name = '<%= name %>';
+		var prev = $('#' + name + '-prev');
+		var next = $('#' + name + '-next');
 		var date_presets_select = $('#' + name);
 		var d1 = date_presets_select.closest('form').find('input[name$="<%= local_assigns[:from_date] || 'from_date' %>]"]');
 		var d2 = date_presets_select.closest('form').find('input[name$="<%= local_assigns[:to_date] || 'to_date' %>]"]');
@@ -36,10 +21,54 @@
 			var v = date_presets_select.val().split('-');
 			var v1 = v[0];
 			var v2 = v[1] || v1;
-			d1.val(v1);
-			d2.val(v2);
+			d1.val(v1).effect('highlight');
+			d2.val(v2).effect('highlight');
 			e.preventDefault();
 			date_presets_select[0].selectedIndex = 0;
+		});
+		var inc_range = function(inc) {
+			var v1 = Date.parse(d1.val());
+			var v2 = Date.parse(d2.val());
+			if(v1 && v2) {
+				// Year range
+				if(v1.getDate() == 1 && v1.getMonth() == 0 && v2.getDate() == 31 && v2.getMonth() == 11) {
+					var diff = (v2.getFullYear() - v1.getFullYear() + 1) * inc;
+					v1 = new Date(v1.getFullYear() + diff, 0, 1);
+					v2 = new Date(v2.getFullYear() + diff, 11, 31);
+				}
+				// Month range
+				else if(v1.getDate() == 1 && new Date(v2.getFullYear(), v2.getMonth() + 1, 0).getTime() == v2.getTime()) {
+					var diff = ((v2.getFullYear() - v1.getFullYear()) * 12 + (v2.getMonth() - v1.getMonth()) + 1) * inc;
+					v1 = new Date(v1.getFullYear(), v1.getMonth() + diff, 1);
+					v2 = new Date(v2.getFullYear(), v2.getMonth() + 1 + diff, 0);
+				}
+				// Day range (works for weeks)
+				else {
+					var diff = ((v2 - v1) + 86400000) * inc;
+					v1 = new Date(v1.getTime() + diff);
+					v2 = new Date(v2.getTime() + diff);
+				}
+			}
+			else if(v1) {
+				v1 = new Date(v1.getFullYear(), v1.getMonth(), v1.getDate() + inc);
+			}
+			else if(v2) {
+				v2 = new Date(v2.getFullYear(), v2.getMonth(), v2.getDate() + inc);
+			}
+			if(v1) {
+				d1.val(v1.toString('MM/dd/yyyy')).effect('highlight', 20);
+			}
+			if(v2) {
+				d2.val(v2.toString('MM/dd/yyyy')).effect('highlight', 20);
+			}
+		}
+		prev.click(function(e) {
+			e.preventDefault();
+			inc_range(-1);
+		});
+		next.click(function(e) {
+			e.preventDefault();
+			inc_range(1);
 		});
 	})(jQuery);
 </script>

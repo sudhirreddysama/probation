@@ -1,20 +1,7 @@
-<%= f.tr_text_field :description, label: 'Name/Description', req: true %>
-<tr>
-	<th>Users</th>
-	<td>
-		<%= hidden_field_tag 'obj[check_new_user_ids]', '1' %>
-		<%= partial 'users/user_ids_field', value: o.new_user_ids, field: 'obj[new_user_ids]' %>
-	</td>
-</tr>
-<tr>
-	<th>Type</th>
-	<td>
-		<label><%= f.radio_button :availability, false %> Reservation</label> - Normal vehicle reservation. No one else will be able to reserve the vehicle(s) during the selected dates/times.<br>
-		<label><%= f.radio_button :availability, true %> Availability</label> - Restricts (or allows) who can make a reservation during the selected dates/times to the user list above. If no users are selected, anyone will be able to reserve the vehicle(s). Overrides the vehicle user list.
-	</td>
-</tr>
+<%= partial 've_reservations/fields_shared', f: f, o: o %>
 <% if @current_user.admin? %>
 	<%= f.tr_select :user_id, User.where(o.user_id ? ['active = 1 or id = ?', o.user_id] : 'active = 1').order('first_name, last_name').map { |u| [u.name, u.id] }, label: 'Created By' %>
+	<div class=".users-help-a" style="display: none;">Only this user (plus admins) will be able to edit/delete this availability.</div>
 <% end %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= partial 've_reservations/schedule_builder', f: f %>

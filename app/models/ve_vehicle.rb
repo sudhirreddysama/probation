@@ -55,13 +55,7 @@ class VeVehicle < ApplicationRecord
 	
 	scope :reservable, -> (u, id = nil) {
 		s = where(active: true)
-		# Availability makes this problematic.
-		#if u.admin?
-		#	s = s.or(VeVehicle.where(id: id)) if id
-		#else
-		#	s = s.eager_load(:ve_vehicle_users).where('ve_vehicle_users.user_id is null or ve_vehicle_users.id = ?', u.id)
-		#	s = s.or(VeVehicle.eager_load(:ve_vehicle_users).where(id: id)) if id
-		#end
+		s = s.or(VeVehicle.where(id: id)) if id
 		s
 	}
 	

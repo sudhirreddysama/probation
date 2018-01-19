@@ -2,7 +2,7 @@
 	<%= partial 've_reservations/schedule_fields', s: s, f: f, i: i %>
 <% } %>
 <tr id="add-schedule-row">
-	<th>Add Fields/Dates</th>
+	<th>Add Vehicles/Dates</th>
 	<td class="form-inline">
 		<a id="add-schedule" href="#"><i class="fa fa-plus-circle"></i> Click to Add Schedule</a>
 		<%= hidden_field 'obj[check_new_schedules]', 1 %>
@@ -22,6 +22,7 @@
 			changeYear: true, 
 			monthNames: mn,
 			monthNamesShort: mn,
+			minDate: 0,
 			separator: ',',
 			dateFormat: 'yy-mm-dd',
 			dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -76,6 +77,12 @@
 				return;
 			}
 			var new_dates = [];
+			var today = Date.now();
+			d1.setHours(0, 0, 0, 0);
+			today.setHours(0, 0, 0, 0);
+			if(d1 < today) {
+				d1 = today;
+			}
 			while(d1 <= d2) {
 				if(wdays.length == 0 || wdays.indexOf(d1.getDay()) !== -1) {
 					new_dates.push(d1.clone());

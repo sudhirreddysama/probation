@@ -16,7 +16,7 @@
 				<td class="nobr"><%= o.availability ? 'Availability' : 'Reservation' %></td>
 				<td><%= o.begin.d %></td>
 				<td><%= o.end.d %></td>
-				<td><%= link_to blank_tag(o.description), controller: :ve_reservations, action: :view, id: o.id %></td>
+				<td><%= link_to blank_tag(o.title), controller: :ve_reservations, action: :view, id: o.id %></td>
 			</tr>
 		<% } %>
 	</tbody>

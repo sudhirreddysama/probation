@@ -11,10 +11,6 @@ class ApplicationController < ActionController::Base
 	def params= v
 		@_params = v
 	end
-	
-	def errortest
-		this_will_throw_an_error
-	end
 
 	private
 
@@ -178,7 +174,7 @@ class ApplicationController < ActionController::Base
 		rurl = root_url.sub 'https://', 'http://'
 		html = html.gsub("src=\"#{root_path}", "src=\"#{rurl}").gsub("href=\"#{root_path}", "href=\"#{rurl}")
 		# To debug the html...
-		#render :text => html
+		#render text: html
 		#return
 		IO.popen("wkhtmltopdf -s Letter -T .25in -B .25in -L .25in -R .25in --javascript-delay 1000 --enable-local-file-access --disable-smart-shrinking --debug-javascript --print-media-type #{wk} - -", 'w+') { |io|
 			io.write html

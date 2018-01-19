@@ -1,5 +1,7 @@
 /* Using fonts that are common and that render without problems in wkhtmltopdf. Arial, for example doesn't. */
-html, body { padding: 0; margin: 0; font: 12px/1.5 "Trebuchet MS", Tahoma, sans-serif; box-sizing: border-box; }		
+html, body { padding: 0; margin: 0; font: 12px/1.5 "Trebuchet MS", Tahoma, sans-serif; box-sizing: border-box; 
+	-webkit-text-size-adjust: 100%;
+}		
 *, *:before, *:after { font-size: inherit; line-height: inherit; font-family: inherit; box-sizing: inherit; }
 
 table { border-collapse: collapse; margin: 0; padding: 0; }
@@ -390,3 +392,6 @@ fieldset legend { margin-left: 8px; }
 
 .handsontable td.currentRow,
 .handsontable td.currentCol { background-color: #f0f0f0; }
+
+
+#ui-datepicker-div { z-index: 1002 !important; }

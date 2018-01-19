@@ -20,13 +20,18 @@
 						return {
 							title: name, 
 							id: o.id, 
-							text: name, 
-							username: o.username
+							text: o.username, 
+							username: o.username,
+							name: name
 						};
 					}), 
 					pagination: {more: data.page < data.pages}
 				};
 			},
+		},
+		placeholder: 'Type to Search Users...',
+		templateResult: function(data) {
+			return data.name || data.text;
 		},
 		templateSelection: function(data, li) {
 			return data.username || data.text;

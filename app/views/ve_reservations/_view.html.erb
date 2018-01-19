@@ -3,7 +3,7 @@
 	<%= dl 'Begin', o.begin.d %>
 	<%= dl 'End', o.end.d %>
 	<%= dl 'Type', o.availability ? 'Availability' : 'Reservation' %>
-	<%= dl 'Name/Description', o.description %>
+	<%= dl 'Name/Description', o.title %>
 </div>
 <div class="view">
 	<%= dl 'Created By', o.user && link_to(o.user.name, context: nil, context_id: nil, controller: :users, action: :view, id: o.user_id) %>

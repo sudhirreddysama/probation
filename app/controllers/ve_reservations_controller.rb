@@ -1,7 +1,7 @@
 class VeReservationsController < CrudController
 
 	def index
-		@allow_edit_all = false
+		#@allow_edit_all = false
 		generic_filter_setup
 		@cond << collection_conds({
 			#active: "#{@model.table_name}.active",
@@ -77,6 +77,7 @@ class VeReservationsController < CrudController
 		events = []
 		cond = search_filter(@filter[:search], {
 				've_reservations.description' => :like,
+				've_reservations.auto_description' => :like,
 				've_reservations.notes' => :like,
 				've_vehicles.vehicle_no' => :like,
 				've_vehicles.assignment' => :like,
@@ -96,7 +97,7 @@ class VeReservationsController < CrudController
 			all_day = !e.begin_time
 			event = {
 				id: e.id,
-				title: [v.vehicle_no, v.name.blank? ? '' : "(#{v.name})", r.description].reject(&:blank?) * ' ',
+				title: [v.vehicle_no, v.name.blank? ? '' : "(#{v.name})", r.title].reject(&:blank?) * ' ',
 				start: e.date.to_s + (all_day ? '' : 'T' + e.begin_time.t2),
 				end: all_day ? (e.date + 1.day).to_s : e.date.to_s + 'T' + e.end_time.t2,
 				className: 'cal-ve_event' + (r.availability ? ' cal-availability ' : ''),

@@ -1,1 +1,3 @@
-<%= tab 'paint-brush', 'Colors', {controller: 've_vehicles', context: nil, context_id: nil, action: :colors} %>
+<% if @model.can_edit? @current_user %>
+	<%= tab 'paint-brush', 'Colors', {controller: 've_vehicles', context: nil, context_id: nil, action: :colors} %>
+<% end %>

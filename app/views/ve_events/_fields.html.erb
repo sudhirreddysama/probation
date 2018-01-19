@@ -1,18 +1,19 @@
-<% if o.ve_reservation && o.ve_reservation.ve_events.count > 1 %>
+<% if params.action == 'copy' %>
 	<tr>
 		<th><i class="fa fa-warning"></i></th>
-		<td>You are editing a single day/vehicle for a multiple-day reservation. Changing the description or users will split this day/vehicle off into its own reservation. 
+		<td>
+			This Copied vehicle/day will be created within the same reservation if the description, users, and type are unchanged. Otherwise a new reservation will be created.
+			<%= f.hidden_field :ve_reservation_id %>
+		</td>
+	</tr>
+<% elsif o.ve_reservation && o.ve_reservation.ve_events.count > 1 %>
+	<tr>
+		<th><i class="fa fa-warning"></i></th>
+		<td>You are editing a single day/vehicle for a multiple-day reservation. Changing the description, users, or type will split this day/vehicle off into its own reservation. 
 		<%= link_to 'Click here to view/edit the full reservation.', {popup: nil, context: nil, context_id: nil, controller: :ve_reservations, action: :view, id: o.ve_reservation_id}, target: '_top' %></td>
 	</tr>
 <% end %>
-<%= f.tr_text_field :description, label: 'Description', req: true %>
-<tr>
-	<th>Users</th>
-	<td>
-		<%= hidden_field_tag 'obj[check_new_user_ids]', '1' %>
-		<%= partial 'users/user_ids_field', value: o.new_user_ids, field: 'obj[new_user_ids]' %>
-	</td>
-</tr>
+<%= partial 've_reservations/fields_shared', f: f, o: o %>
 <%= f.tr_select :ve_vehicle_id, VeVehicle.reservable(@current_user, o.ve_vehicle_id).order('ve_vehicles.vehicle_no').map { |v| 
 		[v.no_ymm_name, v.id] 
 	}, label: 'Vehicle', include_blank: true, req: true %>

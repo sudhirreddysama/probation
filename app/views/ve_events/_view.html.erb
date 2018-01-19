@@ -2,7 +2,7 @@
 <% r = o.ve_reservation %>
 <div class="view">
 	<%= dl 'ID', o.id %>
-	<%= dl 'Reservation', r ? link_to(r.description, {context: nil, context_id: nil, controller: :ve_reservations, action: :view, id: r.id, popup: nil}, target: '_top') : '' %>
+	<%= dl 'Reservation', r ? link_to(r.title, {context: nil, context_id: nil, controller: :ve_reservations, action: :view, id: r.id, popup: nil}, target: '_top') : '' %>
 	<%= dl 'Vehicle', o.ve_vehicle ? link_to(o.ve_vehicle.label, {context: nil, context_id: nil, controller: :ve_vehicles, action: :view, id: o.ve_vehicle_id, popup: nil}, target: '_top') : '' %>
 </div>
 <div class="view">

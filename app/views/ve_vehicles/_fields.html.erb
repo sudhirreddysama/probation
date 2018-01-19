@@ -39,7 +39,8 @@
 	<th>Users</th>
 	<td>
 		<%= hidden_field_tag 'obj[check_new_user_ids]', 1 %>
-		<%= f.select :new_user_ids, o.new_user_ids.empty? ? [] : User.where(id: o.new_user_ids).map { |u| [u.username, u.id, title: "#{u.first_name} #{u.last_name}"] }, {include_hidden: false}, multiple: true, style: 'width: 400px;' %></td>
+		<%= f.select :new_user_ids, o.new_user_ids.empty? ? [] : User.where(id: o.new_user_ids).map { |u| [u.username, u.id, title: "#{u.first_name} #{u.last_name}"] }, {include_hidden: false}, multiple: true, style: 'width: 400px;' %>
+		<div>Who can reserve this vehicle. If no users are specified, everyone can reserve it. This can be overridden for specific dates/times by creating an availability.</div>
 	</td>
 </tr>
 

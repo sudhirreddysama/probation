@@ -1,11 +1,11 @@
 <%= table_form_for(:filter, html: {id: 'filter'}) { |f| %>
 	<tr>
 		<th>Date Range</th>
-		<td class="nobr">
-			<%= f.text_field :date_from, value: @filter.date_from.d, class: 'datepicker', style: 'width: 100px;' %>
+		<td class="nobr" class="inp-row">
+			<%= f.text_field :date_from, value: @filter.date_from.d, class: 'date', style: 'width: 100px;' %>
 			&nbsp;&nbsp;To:
-			&nbsp;&nbsp;<%= f.text_field :date_to, value: @filter.date_to.d, class: 'datepicker', style: 'width: 100px;' %>
-			&nbsp;&nbsp;<%= partial 'date_presets', :f => f, :o => @filter, :from_date => 'date_from', :to_date => 'date_to' %>
+			&nbsp;&nbsp;<%= f.text_field :date_to, value: @filter.date_to.d, class: 'date', style: 'width: 100px;' %>
+			<%= partial 'date_presets', f: f, o: @filter, from_date: 'date_from', to_date: 'date_to', range: 'future' %>
 		</td>
 	</tr>
 	<tr>
@@ -97,10 +97,14 @@ today = Date.today
 								<% (d1..d2).each { |d| %>
 									<td class="<%= [d.wday.in?([0, 6]) ? 'wend' : nil, d == today ? 'today' : nil].compact * ' ' %>" data-date="<%= d.to_s %>">
 										<% events[d].each { |e| %>
-											<% lbl = [(e.begin_time.t0 + (e.end_time ? "-#{e.end_time.t0}" : '')), e.ve_reservation.description].reject(&:blank?) * " " %>
+											<% lbl = [(e.begin_time.t0 + (e.end_time ? "-#{e.end_time.t0}" : '')), e.ve_reservation.title].reject(&:blank?) * " " %>
 											<%= link_to lbl, {context: nil, context_id: nil, controller: :ve_events, action: :view, id: e.id}, class: 'av-event' + (e.ve_reservation.availability ? ' av-availability' : ''), draggable: true, id: "e-#{e.id}" %>
 										<% } %>
-										<%= link_to fa('plus', 'Reserve'), {controller: :ve_reservations, action: :new, 'vids' => v.id, 'date' => d.to_s}, target: '_blank', class: 'av-add' %>
+										<% if d >= Date.today %>
+											<%= link_to fa('plus', 'Reserve'), {controller: :ve_reservations, action: :new, 'vids' => v.id, 'date' => d.to_s}, target: '_blank', class: 'av-add' %>
+										<% else %>
+											&nbsp;
+										<% end %>
 									</td>
 								<% } %>
 							</tr>

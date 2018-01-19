@@ -33,6 +33,7 @@ class VeVehiclesController < CrudController
 	end	
 	
 	def colors
+		require_can_create? || return
 		if request.post?
 			VeVehicle.assign_colors
 			redirect_to({}, notice: 'Vehicles have been assigned colors')

@@ -23,26 +23,9 @@ vehicle_opts = VeVehicle.order('ve_vehicles.vehicle_no').reservable(@current_use
 				<td class="subform">
 					<table class="schedule-season-select">
 						<tr>
-							<td>Select Range:</td>
+							<td>Select Range: <i class="fa fa-question-circle" title="Select days 1 by 1 or use the &quot;Select Range&quot; tool to select multiple days at once. Enter a date range + week days, then click &quot;Select&quot; to pick them on the calendar."></i></td>
 						</tr>
-						<tr><td class="nobr">
-							<% t = Date.today %>
-							<% m = t.beginning_of_month %>
-							<% w = t.beginning_of_week(:sunday) %>
-							<% y = t.beginning_of_year %>				
-							<%= select_tag 'date_presets', options_for_select([
-								['Presets&hellip;'.html_safe],
-								['This Week', "#{w.d}-#{(w + 6).d}" ],
-								['Last Week', "#{(w - 7).d}-#{(w - 1).d}"],
-								['Next Week', "#{(w + 7).d}-#{(w + 13).d}"],
-								['This Month', "#{m.d}-#{m.end_of_month.d}" ],
-								['Last Month', "#{m.last_month.d}-#{(m - 1).d}"],
-								['Next Month', "#{m.next_month.d}-#{m.next_month.end_of_month.d}"],
-								['This Year', "#{y.d}-#{y.end_of_year.d}"],
-								['Last Year', "#{y.last_year.d}-#{(y - 1).d}"],
-								['Next Year', "#{y.next_year.d}-#{y.next_year.end_of_year.d}"],
-							]), style: 'width: 130px;' %>
-						</td></tr>
+						<tr><td class="nobr"><%= select_tag 'date_presets', options_for_select(date_preset_options('future')), style: 'width: 130px;' %></td></tr>
 						<tr><td class="nobr"><%= text_field_tag 'from', '', class: 'date', style: 'width: 130px;', placeholder: 'From Date' %></td></tr>
 						<tr><td class="nobr"><%= text_field_tag 'to', '', class: 'date', style: 'width: 130px;', placeholder: 'To Date' %></td></tr>
 						<tr><td class="nobr">
@@ -61,7 +44,7 @@ vehicle_opts = VeVehicle.order('ve_vehicles.vehicle_no').reservable(@current_use
 				<td class="subform">
 					<table>
 						<tr>
-							<td>Begin/End Time:</td>
+							<td>Begin/End Time: <i class="fa fa-question-circle" title="Leave the begin &amp; end time blank for an all-day reservation. If you need different times for different days, enter them in a separate schedule by clicking &quot;Add Schedule&quot; below."></i></td>
 						</tr>
 						<tr>	
 							<td><%= ff.text_field :begin_time, style: 'width: 100px;', placeholder: 'Begin Time', value: s.begin_time, class: 'schedule-begin' %></td>
