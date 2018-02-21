@@ -26,6 +26,10 @@
 			if(cke) {
 				cke.setReadOnly(!v);
 			}
+			if(v) {
+				var no_edit = $('#obj_doc_template_id_or_action').val().match(/[^\d]+/);
+				$('.user-tpl').toggle(!no_edit).find('input, textarea').prop('disabled', no_edit);
+			}
 		}
 		$('#obj_generated input').change(function(e) {
 			toggle_fields();

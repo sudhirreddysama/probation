@@ -11,7 +11,7 @@
 							<input type="file" name="obj[upload]" multiple id="document-new" title="Select Files to Upload" style="display: none;">
 						</label>
 						<% if @allow_generate_doc != false %>
-							<%= select_tag 'file_doc_template_id', options_for_select(DocTemplate.order('name').map { |t| [t.name, t.id, data: {margins: [t.margin_top, t.margin_bottom, t.margin_left, t.margin_right].join(',')}] }), {include_blank: 'New From Template...', class: 'left', style: 'margin-right: 2px;'} %>
+							<%= select_tag 'file_doc_template_id_or_action', options_or_grouped_options_for_select(doc_template_options(controller)), {include_blank: 'New From Template...', class: 'left', style: 'margin-right: 2px;'} %>
 						<% end %>
 						<button id="download_all"><i class="fa fa-download"></i> Download Merged</a>
 						<% if false %><%= link_to fa('file-code-o', 'Generate File'), context: params.controller.singularize, context_id: o.id, controller: :documents, action: :new, 'obj[generated]' => 'pdf' %><% end %>
@@ -104,22 +104,25 @@
 					tr.removeClass('busy-bg');
 				}
 			});
-			$('#file_doc_template_id').change(function(e) {
+			$('#file_doc_template_id_or_action').change(function(e) {
 				var $this = $(this);
 				var option = $this.find('option:selected')
 				var file_name = option.text() + '.pdf';
 				var temp_row = $('<tr class="busy-bg"><td></td><td colspan="3">' + file_name + '</td></tr>');
 				$('#documents-queue').prepend(temp_row);
 				documents_visible();
-				var margins = option.data('margins').split(',');
+				var val = $this.val();
+				var data = {'obj[doc_template_id_or_action]': val, 'obj[name]': file_name, 'obj[generated]': 1};
+				if(!val.match(/[^\d]/)) {
+					var margins = option.data('margins').split(',');
+					data['obj[margin_top]'] = margins[0];
+					data['obj[margin_bottom]'] = margins[1];
+					data['obj[margin_left]'] = margins[2];
+					data['obj[margin_right]'] = margins[3];
+				}
 				$.ajax({
 					url: documents_url + '/new',
-					data: {'obj[doc_template_id]': $this.val(), 'obj[name]': file_name, 'obj[generated]': 1, 
-						'obj[margin_top]': margins[0], 
-						'obj[margin_bottom]': margins[1], 
-						'obj[margin_left]': margins[2], 
-						'obj[margin_right]': margins[3]
-					},
+					data: data,
 					method: 'POST',
 					success: function(data, status, xhr) {
 						$(data).appendTo(documents).effect('highlight');

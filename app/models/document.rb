@@ -48,7 +48,7 @@ class Document < ApplicationRecord
 	attr :regenerate, true
 	
 	def handle_before_save
-		if generated && (regenerate || new_record?)
+		if generated && (regenerate || new_record?) && !action
 			@html = full_html
 		end
 	end
@@ -82,6 +82,17 @@ class Document < ApplicationRecord
 			`mv #{Shellwords.escape tmp_path} #{Shellwords.escape path}`
 			`rm -f #{Shellwords.escape tmp_path}`
 		end
+		if generated && action && (regenerate || id_changed?) # id_changed? = detect new record
+			# This. Is. A. Hack. Rails really does not want you to instantiate a controller outside of a request.
+			c, m = action.split('#')
+			c = c.constantize.new
+			c.request = @current_request
+			c.send(:current_user=, @current_user)
+			c.send(:options)
+			c.send(:print=, true)
+			c.send(:obj=, obj)
+			c.send(m, path)
+		end
 	end
 	after_save :handle_after_save
 	
@@ -101,4 +112,24 @@ class Document < ApplicationRecord
 	end
 	before_create :handle_before_create
 	
+	module Common
+	
+		def doc_template_id_or_action
+			doc_template_id || action
+		end
+		
+		def doc_template_id_or_action= v
+			if v =~ /[^\d]/
+				self.action = v
+				self.doc_template_id = nil
+			else
+				self.action = nil
+				self.doc_template_id = v
+			end
+		end
+	
+	end
+	
+	include Common
+		
 end

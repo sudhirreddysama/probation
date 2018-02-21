@@ -25,8 +25,18 @@ class FdEstablishmentsController < FdRecordsController
 	
 	def permit
 		load_obj
+		permit_template
+	end
+	
+	private
+	
+	def predefined_doc_templates
+		super + [['Food Permit', 'FdEstablishmentsController#permit_template']]
+	end
+	
+	def permit_template path = nil
 		html = render_to_string template: 'fd_establishments/permit', layout: false
-		render_pdf html, filename: "#{@obj.gaz_number}.pdf"
+		render_pdf html, filename: "#{@obj.gaz_number}.pdf", path: path
 	end
 	
 	

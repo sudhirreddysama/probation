@@ -162,5 +162,15 @@ module ApplicationHelper
 			]
 		end
 	end
+	
+	def doc_template_options use_controller = nil
+		userdef = DocTemplate.order('name').map { |t| [t.name, t.id, data: {margins: [t.margin_top, t.margin_bottom, t.margin_left, t.margin_right].join(',')}] }
+		predef = use_controller ? use_controller.send(:predefined_doc_templates) : nil
+		predef.empty? ? userdef : [['Predefined', predef], ['User Defined', userdef]]
+	end
+	
+	def options_or_grouped_options_for_select opts = []
+		opts[0] && opts[0][1].is_a?(Array) ? grouped_options_for_select(opts) : options_for_select(opts)
+	end
 
 end

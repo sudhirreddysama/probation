@@ -14,6 +14,8 @@
 	<%= dl 'Count', o.documents.count %>
 	<%= dl 'Doc Template', o.doc_template ? link_to(o.doc_template.label, context: nil, controller: :doc_templates, action: :view, id: o.doc_template_id) : '' %>
 </div>
-<%= partial 'documents/view_common', o: o %>
+<% if !@obj.action %>
+	<%= partial 'documents/view_common', o: o %>
+<% end %>
 <% @documents_once = false %>
 <%= partial 'application/documents', o: o %>

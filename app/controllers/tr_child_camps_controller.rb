@@ -11,8 +11,18 @@ class TrChildCampsController < TrRecordsController
 	
 	def permit
 		load_obj
-		html = render_to_string template: 'tr_others/permit', layout: false
-		render_pdf html, filename: "#{@obj.fac_no}.pdf"
+		permit_template
 	end
+	
+	private
+	
+	def predefined_doc_templates
+		super + [['Child Camps Permit', 'TrChildCampsController#permit_template']]
+	end
+	
+	def permit_template path = nil
+		html = render_to_string template: 'tr_others/permit', layout: false
+		render_pdf html, filename: "#{@obj.fac_no}.pdf", path: path
+	end	
 	
 end

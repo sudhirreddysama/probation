@@ -124,6 +124,7 @@ class CrudController < ApplicationController
 			obj = @model.find(id)
 			if obj.can_edit? @current_user
 				obj.current_user = @current_user
+				obj.current_request = request
 				if !obj.update_attributes(attr)
 					data[id].errors = obj.errors.full_messages
 				end
@@ -136,6 +137,7 @@ class CrudController < ApplicationController
 		if request.post?
 			@clone = @model.new(params.obj)
 			@clone.current_user = @current_user
+			@clone.current_request = request
 			if @clone.save
 				@obj = @clone
 				after_new
@@ -161,8 +163,7 @@ class CrudController < ApplicationController
 	
 	def print
 		@print = true
-		html = render_to_string action: 'print', layout: @print_layout || 'application'
-		render_pdf html, filename: "#{params.controller}-#{@obj.id}.pdf"
+		print_template
 	end
 	
 	#to do: factor out implementation
@@ -228,12 +229,14 @@ class CrudController < ApplicationController
 	def load_obj
 		@obj = @model.find(params.id)
 		@obj.current_user = @current_user
+		@obj.current_request = request
 	end
 
 	def build_obj
 		@obj = @model.new
 		@obj.attributes = params.obj if params.obj
 		@obj.current_user = @current_user
+		@obj.current_request = request
 	end
 	
 	def require_can_create?; require_check @model_class.can_create?(@current_user, @context_obj); end
@@ -274,6 +277,19 @@ class CrudController < ApplicationController
 	def doc_bulk_redirect
 		File.open("#{Rails.root}/tmp/doc-bulk-#{request.uuid}.txt", 'w') { |f| f.write @objs.pluck('id') * ',' }
 		redirect_to context: nil, context_id: nil, controller: :doc_bulks, action: :new, 'obj[obj_ids_file]' => request.uuid, 'obj[obj_type]' => params.controller.classify
+	end
+	
+	attr :obj, true
+	attr :print_all, true
+	attr :print, true
+	
+	def predefined_doc_templates
+		return super + (print_all != false ? [['Print PDF', "#{self.class.to_s}#print_template"]] : [])
+	end
+	
+	def print_template path = nil
+		html = render_to_string action: 'print', layout: @print_layout || 'application'
+		render_pdf html, filename: "#{params.controller}-#{@obj.id}.pdf", path: path
 	end
 
 end

@@ -4,6 +4,7 @@ class ApplicationRecord < ActiveRecord::Base
   def label; "#{self.class} #{id}"; end
   
   attr :current_user, true
+  attr :current_request, true
   
 	def self.can_create? u, *args; true || u.admin?; end
 	def can_clone? u, *args; can_edit?(u, *args) && self.class.can_create?(u, *args); end

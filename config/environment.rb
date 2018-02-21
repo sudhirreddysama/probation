@@ -22,6 +22,8 @@ APP_HUMAN_NAME = 'Environmental Health Permits/Vehicles'
 ROOT_PATH = '/'
 ROOT_URL = 'https://ehpermits.monroecounty.gov' + ROOT_PATH
 
+Rails.application.routes.default_url_options[:host] = 'ehpermits.monroecounty.gov'
+
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   html = Nokogiri::HTML::DocumentFragment.parse(html_tag)
 	html.children.add_class 'error'

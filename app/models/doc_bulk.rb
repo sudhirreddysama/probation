@@ -48,9 +48,13 @@ class DocBulk < ApplicationRecord
 		d.margin_bottom = margin_bottom
 		d.margin_left = margin_left
 		d.margin_right = margin_right
-		d.doc_template_id = doc_template_id
+		d.doc_template_id_or_action = doc_template_id_or_action
 		d.name = name
-		d.body = DocTemplate.apply(body, d.obj, user)
+		if !action
+			d.body = DocTemplate.apply(body, d.obj, user)
+		end
 	end
+	
+	include Document::Common
 	
 end

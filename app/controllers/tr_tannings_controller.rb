@@ -10,8 +10,18 @@ class TrTanningsController < TrRecordsController
 	
 	def permit
 		load_obj
-		html = render_to_string template: 'tr_others/permit', layout: false
-		render_pdf html, filename: "#{@obj.fac_no}.pdf"
+		permit_template
 	end
+	
+	private
+	
+	def predefined_doc_templates
+		super + [['Tanning Permit', 'TrTanningsController#permit_template']]
+	end
+	
+	def permit_template path = nil
+		html = render_to_string template: 'tr_others/permit', layout: false
+		render_pdf html, filename: "#{@obj.fac_no}.pdf", path: path
+	end	
 	
 end

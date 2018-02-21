@@ -1,6 +1,6 @@
 <% @documents_once = true %>
 <%= f.tr_text_field :name, req: true, label: 'Name', tr: {class: 'generate'} %>
-<tr class="generate">
+<tr class="generate user-tpl">
 	<th>Margins</th>
 	<td class="subform">
 		<table>
@@ -19,7 +19,7 @@
 		</table>
 	</td>
 </tr>
-<%= f.tr_text_area :body, label: 'Body', tr: {class: 'generate'} %>
+<%= f.tr_text_area :body, label: 'Body', tr: {class: 'generate user-tpl'} %>
 <style>
 .custom-fields td.cke_dialog_contents_body,
 .custom-fields .cke_dialog_ui_vbox_child { padding: 0; box-sizing: border-box; }

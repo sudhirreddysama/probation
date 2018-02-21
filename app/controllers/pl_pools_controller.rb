@@ -13,8 +13,19 @@ class PlPoolsController < PlRecordsController
 	
 	def permit
 		load_obj
-		html = render_to_string template: 'pl_pools/permit', layout: false
-		render_pdf html, filename: "#{@obj.pool_name}.pdf"
+		permit_template
 	end
+	
+	private
+	
+	def predefined_doc_templates
+		super + [['Pools Permit', 'PlPoolsController#permit_template']]
+	end
+	
+	def permit_template path = nil
+		html = render_to_string template: 'pl_pools/permit', layout: false
+		render_pdf html, filename: "#{@obj.pool_name}.pdf", path: path
+	end	
+	
 	
 end

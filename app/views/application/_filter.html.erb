@@ -9,10 +9,10 @@
 				<tr>
 					<th>Numeric Range</th>
 					<td class="nobr inp-row">
-						<%= f.select :no_type, @no_types %>
-						<span>&nbsp;&nbsp;Min: </span>
+						<%= f.select :no_type, @no_types, {}, style: 'width: 150px;' %>
+						<span style="display: inline-block; width: 48px; text-align: right;">Min:</span>
 						<%= f.text_field :no_min, style: 'width: 100px;' %>
-						<span>&nbsp;&nbsp;Max:</span>
+						<span style="display: inline-block; width: 48px; text-align: right;">Max:</span>
 						<%= f.text_field :no_max, style: 'width: 100px;' %>
 					</td>			
 				</tr>

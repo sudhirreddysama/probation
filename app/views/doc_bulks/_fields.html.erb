@@ -13,3 +13,7 @@
 	</td>
 </tr>
 <%= partial 'documents/fields_common', f: f, o: o %>
+<script>
+	var no_edit = $('#obj_doc_template_id_or_action').val().match(/[^\d]+/);
+	$('.user-tpl').toggle(!no_edit).find('input, textarea').prop('disabled', no_edit);
+</script>

@@ -15,6 +15,6 @@
 	<%= dl 'Bulk Document', o.doc_bulk ? link_to(o.doc_bulk.label, context: nil, controller: :doc_bulks, action: :view, id: o.doc_bulk_id) : '' %>
 	<%= dl 'Doc Template', o.doc_template ? link_to(o.doc_template.label, context: nil, controller: :doc_templates, action: :view, id: o.doc_template_id) : '' %>
 </div>
-<% if o.generated %>
+<% if o.generated && !o.action %>
 	<%= partial 'documents/view_common', o: o %>
 <% end %>

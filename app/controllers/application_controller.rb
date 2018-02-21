@@ -168,18 +168,24 @@ class ApplicationController < ActionController::Base
 		wk = options.delete(:wkhtmltopdf)
 		options[:filename] ||= "#{params[:action]}.pdf"
 		options[:disposition] ||= :inline
+		path = options.delete(:path)
+		logger.info 'path'
 		# wkhtmltopdf has issue with loading https files (css & js). Use http absolute urls for now. Apache is configured
 		# to not force https if it's a existing flat file, which makes this work. Also could replace urls with system paths
 		# but that would break links in the the final PDF. Possibly only replace in <head>? Lots of no-good options.
-		rurl = root_url.sub 'https://', 'http://'
-		html = html.gsub("src=\"#{root_path}", "src=\"#{rurl}").gsub("href=\"#{root_path}", "href=\"#{rurl}")
+		rurl = ROOT_URL.sub 'https://', 'http://'
+		html = html.gsub("src=\"#{ROOT_PATH}", "src=\"#{rurl}").gsub("href=\"#{ROOT_PATH}", "href=\"#{rurl}")
 		# To debug the html...
 		#render text: html
 		#return
 		IO.popen("wkhtmltopdf -s Letter -T .25in -B .25in -L .25in -R .25in --javascript-delay 1000 --enable-local-file-access --disable-smart-shrinking --debug-javascript --print-media-type #{wk} - -", 'w+') { |io|
 			io.write html
 			io.close_write
-			send_data io.read, options
+			if path
+				File.write path, io.read
+			else
+				send_data io.read, options
+			end
 		}
 	end
 	
@@ -263,5 +269,9 @@ class ApplicationController < ActionController::Base
   def auto_no_types model, max = nil
   	auto_attribute_types model, model.number_attributes, max
   end
+  
+	def predefined_doc_templates; []; end
+	
+	attr :current_user, true
   
 end
