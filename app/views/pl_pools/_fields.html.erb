@@ -110,7 +110,6 @@
 .supervision-ac li:last-child { border-bottom: none !important; }
 </style>
 <script>
-	var test = <%= PlSupervisionLevel.find(19).text.to_json.html_safe %>;
 	var supervision_levels = <%= PlSupervisionLevel.order('code').map { |s| s.attributes.slice(*%w{code text}) }.to_json.html_safe %>;
 	$('#obj_supervision').autocomplete({
 		source: function(request, response) {
