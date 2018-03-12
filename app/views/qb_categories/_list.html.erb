@@ -10,8 +10,8 @@
 		<% reset_cycle %>
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
-				<td><%= o.id %></td>
-				<td><%= o.division %></td>
+				<td class="nobr"><%= o.id %></td>
+				<td class="nobr"><%= o.division %></td>
 				<td><%= link_to blank_tag(o.label), action: :view, id: o.id %></td>
 			</tr>
 		<% } %>
