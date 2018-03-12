@@ -1,0 +1,3 @@
+class QbRecordsController < CrudController
+	
+end

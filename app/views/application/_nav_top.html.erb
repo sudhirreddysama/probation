@@ -7,9 +7,10 @@
 	is_tf = c.start_with?('tf_') && ct.blank? || ct.to_s.start_with?('tf_')
 	is_tr = c.start_with?('tr_') && ct.blank? || ct.to_s.start_with?('tr_')
 	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
+	is_qb = c.start_with?('qb_') && ct.blank? || ct.to_s.start_with?('qb_') 
 	other = %w{documents doc_templates doc_bulks saved_filters db_changes}
 	is_other = ct ? ct.pluralize.in?(other) : c.in?(other)
-	is_permit = is_fd || is_pl || is_tf || is_tr || is_ny
+	is_permit = is_fd || is_pl || is_tf || is_tr || is_ny || is_qb
 %>
 <% if is_permit %>
 	<div class="bar bar-red">PERMITS APPLICATION IS NOT LIVE - THIS IS A PREVIEW</div>
@@ -44,6 +45,7 @@
 		<%= tab 'birthday-cake', 'Temp Food', {controller: :tf_facilities, context: nil, action: :index}, {}, class: (is_tf ? 'active' : '') %>
 		<%= tab 'child', 'Temp Residence', {controller: :tr_tannings, context: nil, action: :index}, {}, class: (is_tr ? 'active' : '') %>
 		<%= tab 'life-ring', 'Pool', {controller: :pl_pools, context: nil, action: :index}, {}, class: (is_pl ? 'active' : '') %>
+		<%= tab 'book', 'QuickBooks', {controller: :qb_customers, context: nil, action: :index}, {}, class: (is_qb ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
 <% end %>
@@ -98,6 +100,16 @@
 		<%= tab 'tint', 'Pools', {controller: :pl_pools, context: nil}, {}, class: (ct == 'pl_pool' ? 'active' : '') %>
 		<%= tab 'user-circle-o', 'Supervision Levels', {controller: :pl_supervision_levels, context: nil}, {}, class: (ct == 'pl_supervision_level' ? 'active' : '') %>	
 		<%= tab 'dollar', 'Fee Schedule', {controller: :pl_fee_schedules, context: nil}, {}, class: (ct == 'pl_fee_schedule' ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<% end %>
+
+<% if is_qb %>
+	<div class="tabs">
+		<%= tab 'building', 'Customers', {controller: :qb_customers, context: nil}, {}, class: (ct == 'qb_customer' ? 'active' : '') %>
+		<%= tab 'money', 'Charges', {controller: :qb_charges, context: nil}, {}, class: (ct == 'qb_charge' ? 'active' : '') %>	
+		<%= tab 'usd', 'Fee Schedule', {controller: :qb_fees, context: nil}, {}, class: (ct == 'qb_fee' ? 'active' : '') %>
+		<%= tab 'tags', 'Categories', {controller: :qb_categories, context: nil}, {}, class: (ct == 'qb_category' ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
 <% end %>

@@ -1,0 +1,21 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%">ID</th>
+			<th width="1%" class="tr">Fee<br>Recurring</th>
+			<th width="1%">Category<br>Subcategory</th>
+			<th width="99%">Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td><%= o.id %></td>
+				<td class="tr">$<%= o.fee.n2 %><br><%= yn o.recurring %></td>
+				<td class="nobr"><%= o.category %><br><%= o.category2 %></td>
+				<td><%= link_to blank_tag(o.name), action: :view, id: o.id %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

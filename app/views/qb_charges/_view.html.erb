@@ -1,0 +1,5 @@
+<div class="view">
+	<%= dl('Customer', o.qb_customer ? link_to(o.qb_customer.label, context: nil, context_id: nil, controller: :qb_customers, action: :view, id: o.qb_customer_id) : blank_tag) %>
+	<%= dl('Category', o.qb_category ? link_to(o.qb_category.label, context: nil, context_id: nil, controller: :qb_categories, action: :view, id: o.qb_category_id) : blank_tag) %>
+</div>
+<%= partial 'application/view', o: o %>

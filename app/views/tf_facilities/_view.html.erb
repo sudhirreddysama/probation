@@ -1,3 +1,7 @@
+<div class="btns">
+	<%= link_to fa('search', 'Search QB'), context: nil, context_id: nil, controller: :qb_customers, action: :index, id: nil, 'filter[search]' => o.operator_name %>
+	<div class="clear"></div>
+</div>
 <div class="view">
 	<%= dl 'ID', o.id %>
 	<%= dl 'Created', o.created_at.dt %>

@@ -1,0 +1,19 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%">ID<br>Division</th>
+			<th width="1%">Category<br>Subcategory</th>
+			<th width="99%">Name<br>Bill To</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td><%= o.id %><br><%= o.division %></td>
+				<td class="nobr"><%= o.category %><br><%= o.category2 %></td>
+				<td><%= link_to blank_tag(o.name), action: :view, id: o.id %><br><%= o.bill_to %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -3,6 +3,8 @@
 	<% if !o.is_a? TrDaycare %>
 		<%= link_to fa('certificate', 'Print Permit'), {action: :permit, id: o.id}, target: '_blank' %>
 	<% end %>
+	<%= link_to fa('search', 'Search QB'), context: nil, context_id: nil, controller: :qb_customers, action: :index, id: nil, 'filter[search]' => o.operator_owner %>
+	<div class="clear"></div>	
 </div>
 <div class="view">
 	<%= dl 'ID', o.id %>

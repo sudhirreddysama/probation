@@ -1,0 +1,17 @@
+<div class="view">
+	<dl>
+		<dt>Search In:</dt>
+		<dd>
+			<%= link_to 'Food', context: nil, context_id: nil, controller: :fd_establishments, action: :index, id: nil, 'filter[search]' => o.name %> &middot;
+			<%= link_to 'TF', context: nil, context_id: nil, controller: :tf_facilities, action: :index, id: nil, 'filter[search]' => o.name %> &middot;
+			<%= link_to 'Pools', context: nil, context_id: nil, controller: :pl_pools, action: :index, id: nil, 'filter[search]' => o.name %> &middot;
+			<%= link_to 'Daycares', context: nil, context_id: nil, controller: :tr_daycares, action: :index, id: nil, 'filter[search]' => o.name %> &middot;
+			<%= link_to 'CC', context: nil, context_id: nil, controller: :tr_child_camps, action: :index, id: nil, 'filter[search]' => o.name %> &middot;
+			<%= link_to 'TR Other', context: nil, context_id: nil, controller: :tr_others, action: :index, id: nil, 'filter[search]' => o.name %> &middot;
+			<%= link_to 'Tanning', context: nil, context_id: nil, controller: :tr_tannings, action: :index, id: nil, 'filter[search]' => o.name %>
+		</dd>
+</div>
+<div class="view">
+	<%= dl('Category', o.qb_category ? link_to(o.qb_category.label, context: nil, context_id: nil, controller: :qb_categories, action: :view, id: o.qb_category_id) : blank_tag) %>
+</div>
+<%= partial 'application/view', o: o %>

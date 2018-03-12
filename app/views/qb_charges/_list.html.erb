@@ -1,0 +1,29 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%">ID<br>Division</th>
+			<th>Type<br>Date</th>
+			<th class="tr">Qty<br>Price</th>
+			<th class="tr">No<br>Amount</th>
+			<th>Category<br>Subcategory</th>
+			<th width="99%">Item &middot; Split<br>Customer &middot; Memo</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= o.id %><br><%= o.division %></td>
+				<td class="nobr"><%= link_to blank_tag(o.type), action: :view, id: o.id %><br><%= o.date.d %></td>
+				<td class="nobr tr"><%= o.qty.n2 %><br>
+					<% if o.price.to_f != 0 %>
+						<% if !o.price_percent %>$<% end %><%= o.price.n3 %><% if o.price_percent %>%<% end %>
+					<% end %>
+				</td>
+				<td class="nobr tr"><%= o.no %><br>$<%= o.amount.n2 %></td>
+				<td class="nobr"><%= o.category %><br><%= o.category2 %></td>
+				<td><%= blank_tag(o.item) %> &middot; <%= blank_tag(o.split) %><br><%= o.customer %> &middot; <%= blank_tag(o.memo) %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>
