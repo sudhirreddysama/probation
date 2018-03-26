@@ -5,6 +5,7 @@ class FdEstablishment < ApplicationRecord
 	has_many :documents, as: :obj
 	has_many :fd_activities
 	belongs_to :fd_fee_schedule, foreign_key: 'capacity_rate', primary_key: 'fee_code'
+	belongs_to :qb_customer
 	
 	validates_presence_of :facility_name
 	

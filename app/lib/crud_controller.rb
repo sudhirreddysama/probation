@@ -281,7 +281,7 @@ class CrudController < ApplicationController
 	
 	attr :obj, true
 	attr :print_all, true
-	attr :print, true
+	attr_writer :print
 	
 	def predefined_doc_templates
 		return super + (print_all != false ? [['Print PDF', "#{self.class.to_s}#print_template"]] : [])

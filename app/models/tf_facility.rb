@@ -5,6 +5,7 @@ class TfFacility < ApplicationRecord
 	has_many :documents, as: :obj
 	
 	has_many :tf_violations, autosave: true, dependent: :destroy
+	belongs_to :qb_customer
 	accepts_nested_attributes_for :tf_violations, :allow_destroy => true
 	
 	validates_presence_of :operator_name

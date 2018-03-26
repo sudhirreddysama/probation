@@ -1,0 +1,117 @@
+<% o = @obj %><!DOCTYPE html>
+<html>
+<head>
+<style>
+html, body { padding: 0; margin: 0; font: 12px/1.5 "Trebuchet MS", Tahoma, sans-serif; box-sizing: border-box; }
+*, *:before, *:after { font-size: inherit; line-height: inherit; font-family: inherit; box-sizing: inherit; }
+table { border-spacing: 0; margin: 0; border-collapse: collapse; }
+td, th { border: 1px solid #000; padding: 2px 4px; border-spacing: 0; text-align: left; vertical-align: top; }
+th { font-weight: bold; }
+.tr { text-align: right; }
+.tc { text-align: center; }
+.right { float: right; }
+.left { float: left; }
+#title { font-size: 24px; font-weight: bold; }
+#bill-to { width: 300px; }
+#date-no { width: 200px; }
+#items { width: 100%; }
+.big { font-size: 14px; }
+#cut { border-bottom: 2px dashed #000; text-align: center; }
+#slip { padding: 2px 4px; font-size: 16px; border: 1px solid #000; margin: 1em 0; text-align: center; }
+#checks { padding: 2px 4px; border: 1px solid #000; margin: 1em 0; }
+#slip-bill-to { width: 300px; }
+#slip-mail-to { clear: both; }
+</style>
+</head>
+<body>
+<div id="title" class="right">Invoice</div>
+<div id="from">
+Monroe County Department of Public Health<br>
+Bureau of Public Health Engineering<br>
+111 Westfall Road, Room 916<br>
+Rochester, NY 14620<br>
+(585) 753-5057<br>
+&nbsp;
+</div>
+<table id="date-no" class="right">
+	<tr><th class="tc">Date</th><th class="tc">Invoice #</th></tr>
+	<tr><td class="tc"><%= o.date.d4 %></td><td class="tc"><%= o.no %></td></tr>
+</table>
+<table id="bill-to">
+	<tr><th>Bill To</th></tr>
+	<tr><td>
+		<%= o.qb_customer.try :bill_to1 %>&nbsp;<br>
+		<%= o.qb_customer.try :bill_to2 %>&nbsp;<br>
+		<%= o.qb_customer.try :bill_to3 %>&nbsp;<br>
+		<%= o.qb_customer.try :bill_to4 %>&nbsp;<br>
+		<%= o.qb_customer.try :bill_to5 %>&nbsp;
+	</td></tr>
+</table>
+<div>&nbsp;</div>
+<table id="items">
+	<colgroup>
+		<col width="43%">
+		<col width="43%">
+		<col width="14%">
+	</colgroup>
+	<tr id="due-date">
+		<th colspan="2" class="tr big">Due Date</th>
+		<th class="tr big"><%= o.due_date.d4 %></th>
+	</tr>
+	<tr>
+		<th>Item</th>
+		<th>Description</th>
+		<th class="tr">Amount</th>
+	</tr>
+	<% o.qb_charges.each { |i| %>
+		<tr>
+			<td><%= i.item_name %></td>
+			<td><%= i.memo %></td>
+			<td class="tr"><%= (i.amount * -1).n2 %></td>
+		</tr>
+	<% } %>
+	<tr id="total">
+		<th colspan="2" class="tr big">Total Due</th>
+		<th class="tr big">$<%= o.total.n2 %></th>
+	</tr>
+</table>
+	
+<div id="info">&nbsp;<br>
+Failure to remit payment by the due date will result in a late fee added to your balance due.<br>
+Late fees are $50 if your balance due is $100 or more; or $25 if your balance due is under $100.<br>
+&nbsp;<br>
+To pay online visit: <b>http://www.monroecounty.gov/envpay</b><br>
+Call (585) 753-5057 to pay by phone or if you have any questions regarding this invoice.<br>
+&nbsp;
+</div>
+
+<div style="page-break-inside: avoid;">
+
+<div id="cut">Please cut on this line and send in with your payment.</div>
+<div id="slip">TO PROPERLY CREDIT YOUR ACCOUNT, PLEASE MAIL IN THIS<br>
+PAYMENT SLIP WITH YOUR PAYMENT.</div>
+<div id="checks">Please make checks payable to Monroe County Department of Public Health</div>
+
+<div id="slip-bill-to" class="right">
+Bill To<br>
+<%= o.qb_customer.try :bill_to1 %>&nbsp;<br>
+<%= o.qb_customer.try :bill_to2 %>&nbsp;<br>
+<%= o.qb_customer.try :bill_to3 %>&nbsp;<br>
+<%= o.qb_customer.try :bill_to4 %>&nbsp;<br>
+<%= o.qb_customer.try :bill_to5 %>&nbsp;
+</div>
+<b>Invoice # <%= o.no %></b>
+
+
+
+<div id="slip-mail-to">
+Monroe County Department of Public Health<br>
+Bureau of Public Health Engineering<br>
+111 Westfall Road, Room 916<br>
+Rochester, NY 14620<div class="right"><b>Total $<%= o.total.n2 %></b></div>
+</div>
+
+</div>
+
+</body>
+</html>

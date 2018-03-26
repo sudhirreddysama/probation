@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th width="1%"><%= check_box_tag 'list_select_all', 1, false %> ID<br>Division</th>
-			<th width="1%">Category<br>Subcategory</th>
-			<th width="99%">Name<br>Bill To</th>
+			<th width="1%">Type</th>
+			<th>Name<br>Description</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -11,8 +11,8 @@
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %><br><%= o.division %></td>
-				<td class="nobr"><%= o.category %><br><%= o.category2 %></td>
-				<td><%= link_to blank_tag(o.name), action: :view, id: o.id %><br><%= o.bill_to %></td>
+				<td class="nobr"><%= o.accnttype %></td>
+				<td><%= link_to blank_tag(o.name), controller: :qb_accounts, action: :view, id: o.id %><br><%= o.desc %></td>
 			</tr>
 		<% } %>
 	</tbody>

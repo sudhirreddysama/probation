@@ -1,4 +1,4 @@
-class QbCharge < ApplicationRecord
+class QbInvoice < ApplicationRecord
 
 	include DbChange::Track
 	
@@ -10,6 +10,6 @@ class QbCharge < ApplicationRecord
 	
 	belongs_to :qb_customer
 	belongs_to :qb_category
-	belongs_to :qb_invoice
+	has_many :qb_charges
 	
 end

@@ -1,8 +1,10 @@
 <div class="btns">
 	<%= link_to fa('check-square-o', 'New Activity'), context: o.class.to_s.underscore, context_id: o.id, controller: :fd_activities, action: :new %>
 	<%= link_to fa('certificate', 'Print Permit'), {action: :permit, id: o.id}, target: '_blank' %>
-	<%= link_to fa('search', 'Search QB'), context: nil, context_id: nil, controller: :qb_customers, action: :index, id: nil, 'filter[search]' => o.estab_name %>
 	<div class="clear"></div>
+</div>
+<div class="view">
+	<%= dl 'QuickBooks Customer', o.qb_customer ? link_to(o.qb_customer.label, context: nil, context_id: nil, controller: :qb_customers, action: :view, id: o.qb_customer_id) : '' %>
 </div>
 <div class="view">
 	<%= dl 'ID', o.id %>

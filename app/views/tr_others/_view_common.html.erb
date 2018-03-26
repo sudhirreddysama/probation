@@ -7,6 +7,9 @@
 	<div class="clear"></div>	
 </div>
 <div class="view">
+	<%= dl 'QuickBooks Customer', o.qb_customer ? link_to(o.qb_customer.label, context: nil, context_id: nil, controller: :qb_customers, action: :view, id: o.qb_customer_id) : '' %>
+</div>
+<div class="view">
 	<%= dl 'ID', o.id %>
 	<%= dl 'No.', o.fac_no %>
 	<%= dl 'Active', yn(o.active) %>
