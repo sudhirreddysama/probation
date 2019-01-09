@@ -119,7 +119,7 @@ today = Date.today
 
 
 
-$('.av-event').draggable();
+$('.av-event').draggable({revert: 'invalid'});
 $('#right table td').droppable({
 	hoverClass: 'droppable',
 	drop: function(e, ui) {
