@@ -1,0 +1,26 @@
+<% options = o.refund_options.to_a %>
+<% refunds = o.new_refund_items %>
+<% if options.empty? %>
+	<tr class="empty">
+		<th colspan="9" class="tc">Nothing to refund.</th>
+	</tr>
+<% else %>
+	<% options.each_with_index { |d, i| %>
+		<% r = refunds.find { |r| r.previous_id.to_i == d.id } || {cost_center: d.cost_center, debit_ledger: d.credit_ledger} %>
+		<% k = "obj[new_refund_items][#{d.id}]" %>
+		<tr class="<% if !r.refunding %>dim<% end %>">
+			<td><div>
+				<%= hidden_field_tag "#{k}[previous_id]", d.id %>
+				<%= check_box_tag "#{k}[refunding]", '1', r.refunding, class: 'd_refunding' %>
+			</div></td>
+			<td><%= text_field_tag "#{k}[cost_center]", r.cost_center, class: 'd_cost_center' %></td>
+			<td><%= text_field_tag "#{k}[debit_ledger]", r.debit_ledger, class: 'd_debit_ledger' %></td>
+			<th class="tl"><div><%= d.qb_transaction.num %></div></th>
+			<th class="tl"><div><%= d.qb_transaction.date.d %></div></th>
+			<th class="tl"><div><%= d.item_name %></div></th>
+			<th class="tl"><div><%= d.item_description %></div></th>
+			<td class="tr"><div><a href="#" class="orig-amt"><%= n2 d.amount %>&nbsp;<i class="fa fa-caret-right"></i></a></div></td>
+			<td><%= text_field_tag "#{k}[amount]", r.amount, class: 'd_amount n2', data: {orig: d.amount} %></td>
+		</tr>
+	<% } %>
+<% end %>

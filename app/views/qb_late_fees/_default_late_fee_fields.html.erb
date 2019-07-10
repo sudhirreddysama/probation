@@ -1,0 +1,23 @@
+<table class="sheet tbl-resize" id="late-table">
+	<tbody>
+		<tr>
+			<th width="100"><div>Cost Center11111</div></th>
+			<th width="100"><div>Credit GL</div></th>
+			<th><div id="lbl_late_info"><%= (tpl && tpl.label_item_info).presence || 'Info' %></div></th>
+			<th><div id="lbl_late_name"><%= (tpl && tpl.label_item_name).presence || 'Item' %></div></th>
+			<th><div id="lbl_late_desc"><%= (tpl && tpl.label_item_desc).presence || 'Description' %></div></th>
+			<th width="50"><div id="lbl_late_amount"><%= (tpl && tpl.label_item_amount).presence || 'Amount' %></div></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td class="tl"><%= f.text_field "#{prefix}cost_center" %></td>
+			<td class="tl"><%= f.text_field "#{prefix}credit_ledger" %></td>
+			<td class="tl"><%= f.text_field "#{prefix}item_info" %></td>
+			<% price, name, price_id = o.send("#{prefix}qb_item_price"), o.send("#{prefix}item_name"), o.send("#{prefix}qb_item_price_id") %>
+			<td class="tl"><%= f.select "#{prefix}qb_item_price_id", price ? [[name, price_id, title: ' ']] : [] %></td>
+			<td class="tl"><%= f.text_field "#{prefix}item_description" %></td>
+			<td class="tl"><%= f.text_field "#{prefix}amount", class: 'n2' %></td>
+		</tr>
+	</tbody>
+</table>

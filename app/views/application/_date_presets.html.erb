@@ -1,32 +1,43 @@
 <% name = 'date_presets' if local_assigns[:name].nil? %>
-<%= select_tag name, options_for_select(date_preset_options(local_assigns[:range])), style: 'width: 130px;' %><i></i>
-<a href="#" id="<%= name %>-prev"><i class="fa fa-chevron-circle-left"></i></a>&nbsp;<a href="#" id="<%= name %>-next"><i class="fa fa-chevron-circle-right"></i></a>
+<% id = sanitized_id name %>
+<%= select_tag name, options_for_select([['Select Preset&hellip;'.html_safe, nil]] + DateRangeOptions.options_for_select(local_assigns[:range]), local_assigns[:value]), style: 'width: 130px;' %><i></i>
+<a href="#" id="<%= id %>-prev"><i class="fa fa-chevron-circle-left"></i></a>&nbsp;<a href="#" id="<%= id %>-next"><i class="fa fa-chevron-circle-right"></i></a>
 <script>
 	(function($) {
-		var name = '<%= name %>';
+		var name = '<%= id %>';
 		var prev = $('#' + name + '-prev');
 		var next = $('#' + name + '-next');
 		var date_presets_select = $('#' + name);
 		var d1 = date_presets_select.closest('form').find('input[name$="<%= local_assigns[:from_date] || 'from_date' %>]"]');
 		var d2 = date_presets_select.closest('form').find('input[name$="<%= local_assigns[:to_date] || 'to_date' %>]"]');
+		var reset_preset = function() {
+			date_presets_select[0].selectedIndex = 0;
+		}
 		d1.change(function(e) {
 			if(!d2.val()) {
 				d2.val(d1.val());
 			}
+			reset_preset();
+		});
+		d2.change(function(e) {
+			reset_preset();
 		});
 		var f = function(d) {
 			return d.toString('M/d/yy');
 		}
 		date_presets_select.change(function(e) {
-			var v = date_presets_select.val().split('-');
-			var v1 = v[0];
-			var v2 = v[1] || v1;
+			var v = date_presets_select.find('option:selected');
+			var v1 = v.data('d1');
+			if(!v1) {
+				return;
+			}
+			var v2 = v.data('d2') || v1;
 			d1.val(v1).effect('highlight');
 			d2.val(v2).effect('highlight');
 			e.preventDefault();
-			date_presets_select[0].selectedIndex = 0;
 		});
 		var inc_range = function(inc) {
+			reset_preset();
 			var v1 = Date.parse(d1.val());
 			var v2 = Date.parse(d2.val());
 			if(v1 && v2) {

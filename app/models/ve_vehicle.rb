@@ -1,4 +1,4 @@
-class VeVehicle < ApplicationRecord
+class VeVehicle < VeRecord
 
 	include DbChange::Track
 
@@ -8,8 +8,6 @@ class VeVehicle < ApplicationRecord
 	has_many :users, through: :ve_vehicle_users
 	
 	has_many :documents, as: :obj
-
-	def self.can_create? u, *args; u.admin?; end
 	
 	def label; [vehicle_no_was, year_was, make_was, model_was, name_was.blank? ? '' : "(#{name_was})"].reject(&:blank?) * ' '; end
 	

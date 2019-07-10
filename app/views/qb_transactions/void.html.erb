@@ -1,0 +1,12 @@
+<% if @obj.validate_void %>
+	<%= partial 'errors', errors: @obj.errors.full_messages %>
+	<%= form_tag %>
+		<p>Click below to void this transaction. This will attempt to void any credit card transactions associated with this record and prevent it from being sent to SAP.</p>
+		<div class="btns">
+			<button type="submit"><i class="fa fa-times"></i> Void <%= @obj.type %></button>
+		</div>
+	</form>
+<% else %>
+	<p>You cannot void this item due to the errors below.</p>
+	<%= partial 'errors', errors: @obj.errors.full_messages %>
+<% end %>

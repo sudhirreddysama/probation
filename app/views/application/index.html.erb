@@ -1,8 +1,9 @@
 <%= partial 'filter' %>
-<%= partial 'pages', objs: @objs %>
+<% pages = partial 'pages', objs: @objs, objs_unpaginated: @objs_unpaginated %>
+<%= pages %>
 <% if @objs.empty? %>
 	<%= partial 'empty' %>
 <% else %>
 	<%= partial 'list', objs: @objs %>
 <% end %>
-<%= partial 'pages', objs: @objs %>
+<%= pages %>

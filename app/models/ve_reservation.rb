@@ -1,7 +1,8 @@
-class VeReservation < ApplicationRecord
-	
-	def self.can_edit? u, *args; u.admin?; end
-	#def can_clone? u, *args; false; end
+class VeReservation < VeRecord
+
+	def self.can_create? u, *args
+		u.ve_user? || u.ve_admin?
+	end
 
 	include DbChange::Track
 
@@ -191,7 +192,7 @@ class VeReservation < ApplicationRecord
 	# Availabilities can only be edited by the person who created it and admins.
 	# Reservations can be edited by anyone in the reservation user list.
 	def can_edit? u, *args
-		return true if u.admin?
+		return true if u.ve_admin?
 		u.id == user_id || (!availability && u.id.in?(user_ids))
 	end
 

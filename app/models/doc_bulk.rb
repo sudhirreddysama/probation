@@ -11,9 +11,11 @@ class DocBulk < ApplicationRecord
 	def label; name_was; end
 	
 	def obj_ids_file= v
+		v = v.to_s.gsub(/[^0-9A-Za-z.\-]/, '')
 		f = "#{Rails.root}/tmp/doc-bulk-#{v}.txt"
 		if File.exists? f
 			self.obj_ids_str = IO.read(f)
+			File.delete f
 		end
 	end
 	

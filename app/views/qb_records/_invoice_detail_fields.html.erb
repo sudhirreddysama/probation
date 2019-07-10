@@ -1,0 +1,32 @@
+<% n = "obj[new_details][#{i}]" %>
+<% if d.is_a?(QbTransactionDetail) && d.sap_or_pay_lock? %>
+	<tr class="d_lock">
+		<th class="tl row-icons-td"><%= hidden_field_tag "#{n}[id]", d.id %>
+			<div class="row-icons">
+				<a href="#" class="row-move move"><i class="fa fa-fw fa-arrows"></i></a>
+				<span><i class="fa fa-fw fa-lock"></i></span>
+			</div>
+			<div><%= d.cost_center %></div>
+		</th>
+		<th class="tl"><div><%= d.credit_ledger %></div></th>
+		<th class="tl"><div><%= d.item_info %></div></th>
+		<th class="tl"><div><%= d.item_name %></div></th>
+		<th class="tl"><div><%= d.item_description %></div></th>
+		<th class="tr"><div><%= n2(d.price) %></div></th>
+		<th class="tc"><div><% if d.is_percent %>%<% end %></div></th>
+		<th class="tr"><div><%= d.quantity %></div></th>
+		<th class="nobr tr"><div class="d_amount_lbl"><%= n2 d.amount %></div><%= hidden_field_tag "#{n}[amount]", d.amount, class: 'd_amount' %></th>
+	</tr>
+<% else %>
+	<tr>
+		<td class="tl row-icons-td"><%= hidden_field_tag "#{n}[id]", d.id %>
+			<div class="row-icons">
+				<a href="#" class="row-move move"><i class="fa fa-fw fa-arrows"></i></a>
+				<a href="#" class="row-delete red"><i class="fa fa-fw fa-minus-circle"></i></a>
+			</div>
+			<%= select_tag "#{n}[qb_item_price_id]", options_for_select(d.qb_item_price ? [[d.qb_item_price.full_path, d.qb_item_price_id, title: ' ']] : [], d.qb_item_price_id), class: 'd_qb_item_price_id', style: 'width: 100%;' %>
+		</td>
+		<td><%= text_field_tag "#{n}[item_description]", d.item_description, class: 'd_item_description' %></td>
+		<td><%= text_field_tag "#{n}[price]", n2?(d.price), class: 'tr n2 d_price' %></td>
+	</tr>
+<% end %>

@@ -19,10 +19,11 @@ if Rails.env.development?
 end
 
 APP_HUMAN_NAME = 'Environmental Health Permits/Vehicles'
-ROOT_PATH = '/'
-ROOT_URL = 'https://ehpermits.monroecounty.gov' + ROOT_PATH
+ROOT_PATH = Rails.env.development? ? '/dev/' : '/'
+APP_HOST = 'ehpermits.monroecounty.gov'
+ROOT_URL = 'https://' + APP_HOST + ROOT_PATH
 
-Rails.application.routes.default_url_options[:host] = 'ehpermits.monroecounty.gov'
+Rails.application.routes.default_url_options[:host] = APP_HOST
 
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   html = Nokogiri::HTML::DocumentFragment.parse(html_tag)
@@ -36,3 +37,10 @@ LDAP_BASE = 'ou=mc,dc=mc,dc=ad,dc=monroecounty,dc=gov'
 LDAP_USER = 'ldaplook'
 LDAP_PASS = 'ldapl00k'
 LDAP_DOMAIN = '@monroecounty.gov'
+
+require 'net/http'
+require 'mail'
+
+QB_DIVS = ['Food', 'Eng', 'TR', 'ME']
+
+DEPT = 'Department of Public Health'

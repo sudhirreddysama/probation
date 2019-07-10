@@ -7,16 +7,21 @@ function inputmask_n0(e) {
 }
 
 function inputmask_n2(e) {
-	$(e).inputmask({alias: 'numeric', digits: 2, autoGroup: true, groupSeparator: ','}).blur(function(e) {
+	$(e).inputmask({alias: 'numeric', digits: 2, autoGroup: true, groupSeparator: ','});/*.blur(function(e) {
 		this.value = nothing_or_two_decimals(this.value);
 	}).each(function(i, input) {
 		input.value = nothing_or_two_decimals(input.value);
-	});
+	});*/
+}
+
+function inputmask_nn(e) {
+	$(e).inputmask({alias: 'numeric', autoGroup: true, groupSeparator: ','});
 }
 
 function input_setup(scope) {
 	scope.find('input.n0').each(function(i, e) { inputmask_n0(e); });
 	scope.find('input.n2').each(function(i, e) { inputmask_n2(e); });
+	scope.find('input.nn').each(function(i, e) { inputmask_nn(e); });
 	scope.find('input.ucase, textarea.ucase').change(function(e) {
 		capitalize_input(this);
 	}).each(function(i, e) {
@@ -33,11 +38,16 @@ function setup_list_select(all, chks, inp) {
 		});
 		$(inp).val(vals.join(','));
 	}
-	$(all).click(function(e) {
+	$(all).change(function(e) {
 		$(chks).prop('checked', $(this).prop('checked'));
 		set_list_select();
 	});
-	$(document).on('click', chks, set_list_select);
+	$(chks).dragCheck({
+		onChange: function(e) {
+			set_list_select();
+		}
+	});	
+	$(document).on('click', chks, set_list_select);	
 }
 
 $(function() {
@@ -180,7 +190,21 @@ function capitalize_input(i) {
 	i.value = i.value.toString().toUpperCase();
 }
 
+// Date string converters.
+var mdy2ymd = function(mdy) {
+	var parts = mdy.split('/');
+	return parts[2] + '-' + parts[0] + '-' + parts[1];
+}
+var ymd2mdy = function(ymd) {
+	var parts = ymd.split('-');
+	return parts[1] + '/' + parts[2] + '/' + parts[0];
+}
 
+// Get 24h time string from 12h am/pm string.
+var time_24h = function(t) {
+	var v = Date.parse(t);
+	return v ? v.toString('HH:mm') : null;
+} 
 
 
 // Forces an int value (no NaN or undefined or null or Infinity), handles commas in strings.
@@ -191,6 +215,16 @@ function int(v) {
 // Forces a float value (no NaN or undefined or null or Infinity), handles commas in strings.
 function float(v) {
 	return v ? parseFloat(v.toString().replace(/[^\d.-]/g, '')) || 0 : 0;
+}
+
+// A found function that can handle properly rounding 1.005
+function round(n, places) {    
+	return +(Math.round(n + "e+" + places)  + "e-" + places);
+}
+
+// above, for 2 decimal places.
+function round2(n) {
+	return round(n, 2);
 }
 
 // Number with precision, comma separator.
@@ -237,4 +271,162 @@ function PMT(ir, np, pv, fv, type) {
 		pmt /= (1 + ir);
 
 	return pmt;
+}
+
+
+
+
+
+
+function init_autocomplete(opts) {
+	var input = $(opts.input);
+	var ac_options = {
+		source: function(request, response) {
+			input.addClass('busy-bg');
+			if(opts.params) {
+				opts.params(request);
+			}
+			$.ajax({
+				url: opts.url,
+				data: request,
+				complete: function(xhr, status) {
+					input.removeClass('busy-bg');
+				},
+				success: function(data, status, xhr) {
+					for(var i = 0; i < data.data.length; i++) {
+						if(opts.item) {
+							opts.item(data.data[i]);
+						}
+					}
+					response(data.data);
+				},
+				error: function(xhr, status, error) {
+				}
+			});
+		},
+		select: function(e, ui) {
+			if(opts.select) {
+				opts.select(e, ui);
+			}
+			else {
+				input.val(ui.item.value).effect('highlight').blur();
+			}
+			e.preventDefault();
+		}
+	}
+	if(opts.minLength !== undefined) {
+		ac_options.minLength = opts.minLength;
+	}
+	var ac = input.autocomplete(ac_options);
+	if(opts.minLength === 0) {
+		ac.focus(function(e) {
+			$(this).autocomplete('search', '');
+		})
+	}
+	if(opts.renderItem) {
+		ac.data('ui-autocomplete')._renderItem = opts.renderItem;
+	}
+	input.autocomplete('instance').previous = input.val(); // Bug workaround. blur() on an un-touched autocomplete will trigger a change event.
+	return input;
+}
+
+
+
+
+function init_select2(opts) {
+	var select = $(opts.select);
+	select.prepend('<option value=""></option>');
+	var search_box = null;
+	var clearing = false;
+	var select2_opts = {
+		tags: !!opts.tags,
+		closeOnSelect: !select.prop('multiple'),
+		allowClear: true,
+		placeholder: opts.placeholder || ' ',
+		ajax: {
+			url: opts.url,
+			data: function(params) {
+				search_box.addClass('busy-bg');
+				if(opts.params) {
+					opts.params(params);
+				}
+				return params;
+			},
+			processResults: function(data) {				
+				search_box.removeClass('busy-bg');
+				var items = data.data;
+				if(opts.processData) {
+					var items = opts.processData(items);
+				}
+				for(var i = 0; i < items.length; i++) {
+					items[i].title = ' ';
+					if(opts.item) {
+						opts.item(items[i]);
+					}
+				}
+				//select.empty();
+				return {
+					results: items,
+					pagination: {
+						more: data.pages > data.page
+					}
+				}
+			}
+		}
+	}
+	if(opts.opts) {
+		$.extend(select2_opts, opts.opts);
+	}
+	if(opts.templateResult) {
+		select2_opts.templateResult = opts.templateResult;
+	}
+	select.select2(select2_opts).on("select2:unselecting", function(e) { 
+		var opts = $(this).data('select2').options;
+		opts.set('disabled', true);
+		setTimeout(function() { opts.set('disabled', false); }, 1);
+	});
+	search_box = select.data('select2').$dropdown.find('input');
+	return select;
+}
+
+function init_path_select2(opts) {
+	opts.processData = function(data) {
+		var ids = {};
+		var items = [];
+		for(var i = 0; i < data.length; i++) {
+			var d = data[i];
+			if(d.path) {
+				var path_parts = String(d.path).split(':');
+				var id_parts = String(d.id_path).split(':');
+				for(var j = 0; j < path_parts.length; j++) {
+					var path_part = path_parts[j];
+					var id_part = id_parts[j];
+					if(!ids[id_part]) {
+						ids[id_part] = true;
+						items.push({
+							id: id_part, 
+							name: path_part, 
+							path: path_parts.slice(0, j).join(':'), 
+							id_path: id_parts.slice(0, j).join(':')
+						});
+					}
+				}
+			}
+			ids[d.id] = true;
+			items.push(d);
+		}
+		return items;
+	}
+	opts.item = function(item) {
+		item.text = item.path ? item.path + ':' + item.name : item.name;
+	},
+	opts.templateResult = function(state) {
+		if(!state.id) {
+			return null;
+			return state.text;
+		}
+		var depth = state.id_path ? state.id_path.split(':').length : 0;
+		return $('<div style="padding-left: ' + (depth * 20) + 'px">' + (opts.tpl_name ? opts.tpl_name(state) : state.name) + '</div>');
+	}
+	return init_select2(opts);
 }

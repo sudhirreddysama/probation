@@ -1,15 +1,12 @@
 <%= partial 'errors', :errors => o.errors.full_messages %>
-<%= table_form_for(:obj) { |f| %>
+<%= table_form_for(:obj, html: {id: 'obj_form'}) { |f| %>
 	<%= partial 'fields', f: f, o: o %>	
+	<%= partial 'db_groups_field', f: f, o: o %>
 	<%= partial 'document_field', f: f, o: o %>
 	<tr>
 		<th></th>
 		<td class="btns">
 			<button type="submit"><i class="fa fa-save"></i> Save Changes</button>
-			<% if @obj.new_record? %>
-				<button type="submit" name="save_copy" value="save_copy"><i class="fa fa-save"></i> Save & Clone</button>
-				<button type="submit" name="save_new" value="save_copy"><i class="fa fa-save"></i> Save & Create Another</button>
-			<% end %>
 		</td>
 	</tr>	
 <% } %>

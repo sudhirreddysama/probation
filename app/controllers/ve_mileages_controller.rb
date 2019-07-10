@@ -29,7 +29,7 @@ class VeMileagesController < CrudController
 	end
 	
 	def setup_year
-		require_can_create? || return
+		require_model_can_create? || return
 		@data = params.data || {}
 		if request.post?
 			if @data.year.blank?

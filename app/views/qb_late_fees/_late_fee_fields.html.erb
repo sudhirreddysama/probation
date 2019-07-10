@@ -1,0 +1,17 @@
+<% inv = o.is_a?(QbTransaction) || o.is_a?(QbMultiInvoice) %>
+<% tpl = inv ? o.qb_template : o %>
+<tr>
+	<th>Late Fees</th>
+	<td><label><%= f.check_box :late_auto %> Auto apply late fees</label></td>
+</tr>
+<% style = inv && !o.late_auto ? 'display: none;' : '' %>
+<tr class="late-details" style="<%= style %>">
+	<th></th>
+	<td class="subform tbl-resize-wrap">
+		<%= partial 'qb_late_fees/default_late_fee_fields', o: o, f: f, tpl: tpl, prefix: 'late_' %>
+	</td>
+</tr>
+<tr class="late-details" style="<%= style %>">
+	<th>Late Fee Email</th>	
+	<td><%= f.text_field :late_email %></td>
+</tr>

@@ -1,0 +1,33 @@
+<style>
+	tr.voided { opacity: .5; background-color: #ccc !important; color: #888; }
+</style>
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= list_check_all %> ID<br>#</th>
+			<th width="1%" class="nobr">Div<br>Date</td>
+			<th width="1%" class="nobr tr">Type<br>Amount</th>
+			<th width="1%" class="nobr">Method<br>User</th>
+			<th width="1%" class="nobr tr">Due Date<br>Due</th>
+			<th width="1%" class="nobr">Debit<br>Credit</th>
+			<th width="99%" class="nobr">Customer<br>Cost Center</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %><% if o.voided %> voided<% end %>">
+				<td class="nobr"><%= list_check_id o.id %><% if o.id.to_s != o.num %> <%= o.id %><% end %><br><%= o.num %></td>
+				<td class="nobr"><%= lbl 'qbdiv', o.division %><%= o.date.d %></td>
+				<td class="nobr tr"><%= lbl 'qbttype', o.type %><div>$<%= n2 o.amount %></td>
+				<td class="nobr"><% if o.pay_method.blank? %>&nbsp;<br><% else %><%= lbl 'qbpmeth', o.pay_method %><% end %><%= o.created_by&.username %></td>
+				<td class="nobr tr"<% if o.balance_past_due? %> style="color: #e00;"<% end %>><%= o.due_date.d %>&nbsp;<br><% if o.balance.to_f != 0 %><%= n2 o.balance %><% end %></td>
+				<td class="nobr"><%= o.debit_ledger %>&nbsp;<br><%= o.credit_ledger %></td>
+				<td><% if o.voided %><div class="lbl lbl-qbttype-voided right">VOIDED</div><% end %>
+					<%= link_to blank_tag(colon_to_arrow(o.qb_customer&.full_path)), controller: :qb_transactions, action: :view, id: o.id %><br>
+					<%= o.qb_cost_center ? o.qb_cost_center.label : o.cost_center %>
+				</td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

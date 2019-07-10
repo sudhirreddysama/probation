@@ -23,7 +23,8 @@ class DocTemplatesController < CrudController
 		def download
 			load_obj
 			if @obj.is_a? Document
-				send_file @obj.path, filename: @obj.name
+				@obj.ensure_rendered
+				send_file @obj.path, filename: @obj.name, disposition: @obj.pdf? ? :inline : :attachment
 				return
 			end
 			@fmt = :pdf

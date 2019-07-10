@@ -14,6 +14,7 @@ class SavedFilter < ApplicationRecord
 	
 	def self.can_create? *args; false; end
 	def can_edit? u, *args; u.admin?; end
+	def self.can_edit? u, *args; u.admin?; end
 	def self.can_destroy? u, *args; u.admin?; end
 	
 	def self.scope_for_class_context c; where(:type => c.to_s.pluralize.underscore); end

@@ -1,0 +1,8 @@
+<%= partial 'errors', errors: o.errors.full_messages %>
+<p>Are you sure you want to delete &quot;<%= o.label %>?&quot; This action is irreversible!<p>
+<%= form_tag %>
+	<div class="btns">
+		<button type="submit"><i class="fa fa-trash"></i> Yes, Delete!</button>
+		<%= link_to('<i class="fa fa-close"></i> No, Don\'t Delete!'.html_safe, {action: :view, id: o.id}, class: 'btn') %>
+	</div>
+</form>

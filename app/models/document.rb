@@ -6,21 +6,45 @@ class Document < ApplicationRecord
 	belongs_to :user, optional: true
 	belongs_to :doc_template, optional: true
 	belongs_to :doc_bulk, optional: true
+	belongs_to :doc_delivery, optional: true
 
 	def self.can_create? u, *args; true; end
 	def can_clone? u, *args; false; end
 	def self.can_edit? u, *args; u.admin?; end
-	def can_edit? u, *args; u.id == user_id; end
+	def can_edit? u, *args; u.admin? || u.id == user_id; end
 	def can_destroy? u, *args; can_edit? u, *args; end
 	
 	default_scope { order 'documents.created_at desc' }
+	
+	scope :generated, -> { where generated: true }
+	scope :undelivered, -> { where(doc_delivery_id: nil, deliver: true).reorder('documents.created_at asc') }
+	scope :email_queue, -> { via_email_or_both.where('documents.doc_delivery_id is not null and documents.deliver_emailed_at is null').reorder('documents.created_at asc') }
+	scope :render_queue, -> { generated.where(rendered_pdf: false).reorder('documents.created_at asc') }
+	scope :deliver_true, -> { where deliver: true }
+	scope :via_email, -> { deliver_true.where deliver_via: 'Email' }
+	scope :via_postal, -> { deliver_true.where 'ifnull(documents.deliver_via, "") in ("", "Postal")' }
+	scope :via_both, -> { deliver_true.where deliver_via: 'Both' }
+	scope :via_email_or_both, -> { deliver_true.where deliver_via: ['Email', 'Both'] }
+	scope :via_postal_or_both, -> { deliver_true.where 'ifnull(documents.deliver_via, "") in ("", "Postal", "Both")' }
 	
 	def label; name_was; end
 	
 	validates_presence_of :name
 	validates_presence_of :upload, unless: :generated, on: :create
+	validates_presence_of :deliver_email, if: :deliver_via_email_or_both?
+	
+	def deliver_via_email?; deliver && deliver_via == 'Email'; end
+	def deliver_via_postal?; deliver && (deliver_via.blank? || deliver_via == 'Postal'); end
+	def deliver_via_both?; deliver && deliver_via == 'Both'; end
+	def deliver_via_email_or_both?; deliver && deliver_via.in?(['Email', 'Both']); end
+	def deliver_via_postal_or_both?; deliver && (deliver_via.blank? || deliver_via.in?(['Postal', 'Both'])); end
 	
 	attr :upload, true
+	attr :regenerate, true
+	
+	def pdf?
+		File.extname(name).downcase == '.pdf'
+	end
 	
 	def path n = nil
 		n ||= name
@@ -42,22 +66,12 @@ class Document < ApplicationRecord
 				self.body = doc_template.apply obj, user
 			end
 		end
+		self.rendered_pdf = false if regenerate
 	end
 	before_validation :handle_before_validation
 	
-	attr :regenerate, true
-	
-	def handle_before_save
-		if generated && (regenerate || new_record?) && !action
-			@html = full_html
-		end
-	end
-	before_save :handle_before_save
-	
 	def handle_before_update
-		if name_changed?
-			`mv #{path_was} #{path}`
-		end
+		`mv #{path_was} #{path}` if name_changed?
 	end
 	before_update :handle_before_update
 	
@@ -70,9 +84,9 @@ class Document < ApplicationRecord
 	end
 	after_create :handle_after_create
 	
-	def handle_after_save
-		if @html
-			html = @html.gsub("src=\"#{ROOT_PATH}", "src=\"#{Rails.root.to_s}/public/").gsub("href=\"#{ROOT_PATH}", "href=\"#{ROOT_URL}")
+	def render_pdf
+		if generated && action.blank?
+			html = full_html.gsub("src=\"#{ROOT_PATH}", "src=\"#{Rails.root.to_s}/public/").gsub("href=\"#{ROOT_PATH}", "href=\"#{ROOT_URL}")
 			tmp_path = path[0...-4] + '-tmp.pdf'
 			margins = "-T #{margin_top || 1}in -B #{margin_bottom || 1}in -L #{margin_left || 1}in -R #{margin_right || 1}in"
 			IO.popen("wkhtmltopdf -s Letter #{margins} --javascript-delay 100 --enable-local-file-access --print-media-type --disable-smart-shrinking --no-background - #{Shellwords.escape tmp_path}", 'w') { |io|
@@ -82,19 +96,21 @@ class Document < ApplicationRecord
 			`mv #{Shellwords.escape tmp_path} #{Shellwords.escape path}`
 			`rm -f #{Shellwords.escape tmp_path}`
 		end
-		if generated && action && (regenerate || id_changed?) # id_changed? = detect new record
+		if generated && action
 			# This. Is. A. Hack. Rails really does not want you to instantiate a controller outside of a request.
+			# Could also just render the template without controller but that might not work for all actions (calls to helpers, @current_user references, etc.).
+			# Thisis meant to be a generic way to map an action to pdf processing.
 			c, m = action.split('#')
 			c = c.constantize.new
-			c.request = @current_request
-			c.send(:current_user=, @current_user)
+			c.request = ActionDispatch::Request.new({})
+			c.send(:current_user=, user)
 			c.send(:options)
 			c.send(:print=, true)
 			c.send(:obj=, obj)
 			c.send(m, path)
 		end
+		self.update_attribute :rendered_pdf, true
 	end
-	after_save :handle_after_save
 	
 	def can_clone? u, *args; false; end
 
@@ -108,9 +124,46 @@ class Document < ApplicationRecord
 	end
 	
 	def handle_before_create
-		self.sort = Document.where(obj_type: obj_type, obj_id: obj_id).maximum('documents.sort').to_i + 1
+		Document.where(obj_type: obj_type, obj_id: obj_id).update_all('sort = sort + 1')
+		self.download_key = SecureRandom.hex(10)
 	end
 	before_create :handle_before_create
+	
+	def self.process_render_queue n = 10
+		sys = System.first
+		return if sys.doc_render_working
+		sys.update_attribute :doc_render_working, true
+		Document.render_queue.limit(n).each { |d|
+			Kernel.suppress(ActiveRecord::RecordNotFound) { # Skip if deleted
+				d.reload # In case it was edited.
+				d.render_pdf if !d.rendered_pdf
+			}
+		}
+		sys.update_attribute :doc_render_working, false
+	end
+	
+	def ensure_rendered
+		return if !generated
+		render_pdf if !rendered_pdf
+	end
+	
+	def send_email
+		Notifier.document(self).deliver_now
+		update_attribute :deliver_emailed_at, Time.now
+	end
+	
+	def self.process_email_queue n = 10
+		sys = System.first
+		return if sys.doc_email_working
+		sys.update_attribute :doc_email_working, true
+		Document.email_queue.limit(n).each { |d|
+			Kernel.suppress(ActiveRecord::RecordNotFound) { # Skip if deleted
+				d.reload # In case it was edited.
+				d.send_email if !d.deliver_emailed_at && d.doc_delivery && d.deliver_email.to_s != ''
+			}
+		}
+		sys.update_attribute :doc_email_working, false
+	end
 	
 	module Common
 	

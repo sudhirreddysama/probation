@@ -1,0 +1,5 @@
+<span class="lbl-chk-grp" id="obj_division">
+	<% QB_DIVS.each { |d| %>
+		<label class="lbl-chk"><%= f.radio_button :division, d %><span class="lbl lbl-qbdiv-<%= d.downcase %>"><%= d %></span></label>
+	<% } %>
+</span>

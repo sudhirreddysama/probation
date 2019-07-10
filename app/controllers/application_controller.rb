@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   
 	def load_current_user
 		if session[:current_user_id]
-			@current_user = User.find_by id: session[:current_user_id], active: true
+			@current_user = User.valid.find_by id: session[:current_user_id]
 		end
 	end
 	before_action :load_current_user
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
 	before_action :require_login
   
   def filter_name
-		"filter_#{params.context}_#{params.controller}_#{params.action}"
+		"filter_#{params.context}_#{params.controller}"#{params.action}"
   end
   
   def require_check p
@@ -54,7 +54,9 @@ class ApplicationController < ActionController::Base
   	if params[:filter]
   		if params[:filter_op] == 'load'
   			f = SavedFilter.find(params[:filter][:saved_filter_id])
-  			session[filter_name] = f.data + {saved_filter_id: f.id}
+  			filter = f.data + {saved_filter_id: f.id}
+  			DateRangeOptions.load_filter_date_preset(filter)
+  			session[filter_name] = filter
   			flash[:notice] = "Filter \"#{f.name}\" loaded."
   		elsif params[:filter_op] == 'new'
   			params[:filter].delete 'saved_filter_id'
@@ -81,7 +83,7 @@ class ApplicationController < ActionController::Base
   		else
 				session[filter_name] = params[:clear] ? nil : params[:filter]
 			end
-  		if !(params[:export_xls] || params[:print] || params[:process])
+  		if !(params[:export_xls] || params[:print] || params[:process] || !params[:alter_db_group_id].blank? || !params[:group_op].blank?)
 				redirect_to
 			end
   	end
@@ -160,6 +162,7 @@ class ApplicationController < ActionController::Base
 	
 	def collection_cond filter_key, db_field, int = false
 		@filter[filter_key] ||= []
+		@filter[filter_key].reject!(&:blank?) if @filter[filter_key].is_a?(Array)
 		@filter[filter_key].map!(&:to_i) if int
 		@filter[filter_key].empty? ? nil : DB.escape(db_field + ' in (?)', @filter[filter_key]) 
 	end
@@ -169,7 +172,6 @@ class ApplicationController < ActionController::Base
 		options[:filename] ||= "#{params[:action]}.pdf"
 		options[:disposition] ||= :inline
 		path = options.delete(:path)
-		logger.info 'path'
 		# wkhtmltopdf has issue with loading https files (css & js). Use http absolute urls for now. Apache is configured
 		# to not force https if it's a existing flat file, which makes this work. Also could replace urls with system paths
 		# but that would break links in the the final PDF. Possibly only replace in <head>? Lots of no-good options.
@@ -209,6 +211,17 @@ class ApplicationController < ActionController::Base
 		out = StringIO.new
 		book.write out
 		send_data out.string, filename: 'export.xls', type: 'application/vnd.ms-excel'
+  end
+  
+  def parse_group_filter
+  	if !@filter.db_group_id.blank?
+  		@db_group = @model.db_groups.find_by id: @filter.db_group_id
+  		if @db_group
+				@model = @model.joins(:db_group_objs).where(db_group_objs: {db_group_id: @filter.db_group_id})
+			else
+				@filter.delete 'db_group_id'
+			end
+		end
   end
   
   def parse_advanced_filter
@@ -258,15 +271,15 @@ class ApplicationController < ActionController::Base
   	(max ? cols[0, max] : cols).map { |a| [a == 'id' ? 'ID' : a.titleize, model.table_name + '.' + a] }
   end
   
-  def auto_text_types model, max = nil
+  def auto_text_types model, cols, max = nil
   	auto_attribute_types model, model.text_attributes, max
   end
   
-  def auto_date_types model, max = nil
+  def auto_date_types model, cols, max = nil
   	auto_attribute_types model, model.datetime_attributes, max
   end
   
-  def auto_no_types model, max = nil
+  def auto_no_types model, cols, max = nil
   	auto_attribute_types model, model.number_attributes, max
   end
   

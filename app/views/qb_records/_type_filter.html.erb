@@ -1,0 +1,7 @@
+<tr>
+	<th>Type(s)</th>
+	<td><%= f.select :type, @model.types.map { |t| [t, title: ' '] }, {include_hidden: false}, multiple: true, style: 'width: 600px;' %></td>
+</tr>
+<script>
+	$('#filter_type').select2({closeOnSelect: false});
+</script>

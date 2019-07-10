@@ -31,12 +31,13 @@
 					<th width="97%">Document (click to download, drag to sort)</th>
 					<th width="1%">Created</th>
 					<th width="1%">User</th>
+					<th width="1%" class="tr">Deliver</th>
 				</tr>
 			</thead>
 			<tbody id="documents-queue"></tbody>
 			<tbody id="documents">
 				<% reset_cycle 'documents' %>
-				<% o.documents.reorder('documents.sort').each { |d| %>
+				<% o.documents.reorder('documents.sort, documents.created_at desc').each { |d| %>
 					<%= partial 'document', d: d %>
 				<% } %>
 			</tbody>
@@ -125,7 +126,7 @@
 					data: data,
 					method: 'POST',
 					success: function(data, status, xhr) {
-						$(data).appendTo(documents).effect('highlight');
+						$(data).prependTo(documents).effect('highlight');
 					},
 					complete: function(xhr, status) {
 						temp_row.remove();
@@ -158,7 +159,7 @@
 					data.progress_row.find('span').text(parseInt(data.loaded / data.total * 100, 10));
 				},	
 				done: function(e, data) {
-					$(data.result).appendTo(documents).effect('highlight');
+					$(data.result).prependTo(documents).effect('highlight');
 					documents_visible();
 				},
 				fail: function(e, data) {

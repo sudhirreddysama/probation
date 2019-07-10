@@ -1,12 +1,9 @@
-class VeEvent < ApplicationRecord
-	
-	def self.can_edit? u, *args; u.admin?; end
+class VeEvent < VeRecord
 
 	def can_edit? u, *args
 		return false if date_was && (date_was < Date.today)
 		ve_reservation.can_edit? u, *args
 	end	
-	def can_destroy? u, *args; can_edit? u, *args; end
 	
 	include DbChange::Track
 	

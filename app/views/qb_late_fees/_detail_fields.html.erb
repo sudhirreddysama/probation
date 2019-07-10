@@ -1,0 +1,38 @@
+<% n = "obj[new_details][#{i}]" %>
+<% if d.sap_or_pay_or_late_fee_delivery_lock? %>
+	<tr class="d_lock">
+		<th class="tl row-icons-td"><%= hidden_field_tag "#{n}[id]", d.id %>
+			<div class="row-icons">
+				<span><i class="fa fa-fw fa-lock"></i></span>
+			</div>
+			<div><%= d.qb_customer&.full_path %></div>
+		</th>
+		<th class="tl"><div><%= d.qb_transaction&.num %></div></th>
+		<th class="tl"><div><%= n2 d.qb_transaction&.amount %></div></th>
+		<th class="tl"><div><%= d.qb_transaction&.due_date.d %></div></th>
+		<th class="tl"><div><%= d.cost_center %></div></th>
+		<th class="tl"><div><%= d.credit_ledger %></div></th>
+		<th class="tl"><div><%= d.item_info %></div></th>
+		<th class="tl"><div><%= d.item_name %></div></th>
+		<th class="tl"><div><%= d.item_description %></div></th>
+		<th class="tr"><div><%= n2 d.price %></div></th>
+	</tr>
+<% else %>
+	<tr>
+		<th class="tl row-icons-td"><%= hidden_field_tag "#{n}[id]", d.id %>
+			<div class="row-icons">
+				<a href="#" class="row-delete red"><i class="fa fa-fw fa-minus-circle"></i></a>
+			</div>
+			<div class="d_qb_customer_full_path"><%= d.qb_customer&.full_path %></div>
+		</th>
+		<td class="tl"><%= select_tag "#{n}[qb_transaction_id]", options_for_select(d.qb_transaction ? [[d.qb_transaction.num, d.qb_transaction_id, title: ' ']] : [], d.qb_transaction_id), class: 'd_qb_transaction_id' %></td>
+		<th class="tl"><div class="d_invoice_total"><%= d.qb_transaction ? n2(d.qb_transaction.amount) : '' %></div></th>
+		<th class="tl"><div class="d_invoice_due_date"><%= d.qb_transaction&.due_date.d %></div></th>
+		<td class="tl"><%= text_field_tag "#{n}[cost_center]", d.cost_center, class: 'd_cost_center' %></td>
+		<td class="tl"><%= text_field_tag "#{n}[credit_ledger]", d.credit_ledger, class: 'd_credit_ledger' %></td>
+		<td class="tl"><%= text_field_tag "#{n}[item_info]", d.item_info, class: 'd_item_info' %></td>
+		<td class="tl"><%= select_tag "#{n}[qb_item_price_id]", options_for_select(d.qb_item_price ? [[d.qb_item_price.full_path, d.qb_item_price_id, title: ' ']] : [], d.qb_item_price_id), class: 'd_qb_item_price_id' %></td>
+		<td><%= text_field_tag "#{n}[item_description]", d.item_description, class: 'd_item_description' %></td>
+		<td><%= text_field_tag "#{n}[price]", n2?(d.price), class: 'tr n2 d_price' %></td>
+	</tr>
+<% end %>

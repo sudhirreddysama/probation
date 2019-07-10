@@ -1,5 +1,5 @@
 class TableFormBuilder < ActionView::Helpers::FormBuilder
-  
+
   def tr_text_field method, options = {}
   	tr_field(options) { text_field(method, options) }
   end
@@ -25,7 +25,7 @@ class TableFormBuilder < ActionView::Helpers::FormBuilder
   	tr_field(options) {
 			field = check_box(method, options, checked_value, unchecked_value)
 			if text
-				field = ('<label>' + field.to_s + ' ' + text.to_s + '</label>').html_safe
+				field = ('<label for="' + @object_name.to_s + '_' + method.to_s + '">' + field.to_s + ' ' + text.to_s + '</label>').html_safe
 			end
 			field
 		}
@@ -58,4 +58,10 @@ class TableFormBuilder < ActionView::Helpers::FormBuilder
   	)
   end
   
+end
+
+class ActionView::Helpers::FormBuilder
+	def html_id_prefix
+		ActionView::Base::Tags::Base.new(object_name, '', :ignore).send(:tag_id)
+	end
 end

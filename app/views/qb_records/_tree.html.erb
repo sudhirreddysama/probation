@@ -1,0 +1,30 @@
+<% ids = [] %>
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<th width="1%">Div</th>
+			<th width="1%">Actv</th>
+			<%= partial 'tree_row_extra_th' %>
+			<th width="99%">Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<% if !o.path.blank? %>
+				<% path_parts = o.path.to_s.split(':') %>
+				<% id_parts = o.id_path.to_s.split(':') %>
+				<% path_parts.each.with_index { |path_part, j| %>
+					<% id_part = id_parts[j].to_i %>
+					<% if !ids[id_part] %>
+						<% ids[id_part] = true %>
+						<%= partial 'tree_row', o: @model_class.find(id_part) %>
+					<% end %>
+				<% } %>
+			<% end %>
+			<% ids[o.id] = true %>
+			<%= partial 'tree_row', o: o %>
+		<% } %>
+	</tbody>
+</table>

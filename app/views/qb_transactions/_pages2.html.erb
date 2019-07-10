@@ -1,0 +1,14 @@
+<% sale, refund, invoice, payment, ar_refund, balance = objs_unpaginated.where(voided: false).pluck(
+	'sum(if(qb_transactions.type = "Sale", qb_transactions.amount, 0))',
+	'sum(if(qb_transactions.type = "Refund", qb_transactions.amount, 0))',
+	'sum(if(qb_transactions.type = "Invoice", qb_transactions.amount, 0))',
+	'sum(if(qb_transactions.type = "Payment", qb_transactions.amount, 0))',
+	'sum(if(qb_transactions.type = "AR Refund", qb_transactions.amount, 0))',
+	'sum(qb_transactions.balance)'
+)[0].map(&:to_f) %>
+<% if sale != 0 %><span><i class="dim">Sale:</i> $<%= n2(sale) %></span><% end %>
+<% if refund != 0 %><span><i class="dim">Refund:</i> $<%= n2(refund) %></span><% end %>
+<% if invoice != 0 %><span><i class="dim">Invoice:</i> $<%= n2(invoice) %></span><% end %>
+<% if payment != 0 %><span><i class="dim">Payment:</i> $<%= n2(payment) %></span><% end %>
+<% if ar_refund != 0 %><span><i class="dim">AR Refund:</i> $<%= n2(ar_refund) %></span><% end %>
+<span><i class="dim">Balance:</i> $<%= n2(balance) %></span>

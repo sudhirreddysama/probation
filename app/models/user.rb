@@ -1,10 +1,19 @@
 class User < ApplicationRecord
 	
+	include DbGroup::HasGroups
+	include DbChange::Track
+	
+	scope :valid, -> { where 'users.active = 1 and (users.valid_until is null or valid_until >= date(now()))' }
+	
 	def self.can_create? u, *args; u.admin?; end
 
-	include DbChange::Track
-
 	LEVELS = [
+		['User', 'user'],
+		['Admin', 'admin']
+	]
+	
+	SUB_LEVELS = [
+		['None', ''],
 		['User', 'user'],
 		['Admin', 'admin']
 	]
@@ -27,11 +36,13 @@ class User < ApplicationRecord
 	
 	def email_with_name; "#{name} <#{email}>"; end
 	
-	def level; super.try(:inquiry); end
+	def level; super.to_s.inquiry; end
+	def qb_level; super.to_s.inquiry; end
+	def ve_level; super.to_s.inquiry; end
 
 	def self.authenticate u, p
 		return nil if u.blank? || p.blank?
-		user = find_by(username: u)
+		user = valid.find_by(username: u)
 		if user
 			if user.auth_ldap
 				return user if authenticate_ldap(u, p)
@@ -44,7 +55,7 @@ class User < ApplicationRecord
 	
 	def self.authenticate_by_activation_key id, id2
 		return nil if id.blank? || id2.blank?
-		u = where(active: true, id: id, activation_key: id2).take
+		u = valid.where(id: id, activation_key: id2).take
 		return nil if !u
 		u.update_attribute :activation_key, nil
 		return u
@@ -52,13 +63,24 @@ class User < ApplicationRecord
 	
 	def self.find_lost_account lost
 		return nil if lost.blank?
-		u = where('active = 1 and (username = ? or email = ?)', lost, lost).take
+		u = valid.where('(username = ? or email = ?)', lost, lost).take
 		return nil if !u
-		u.update_attribute(:activation_key, Array.new(10) { rand(9).to_s }.join)
+		u.create_activation_key
 		return u
+	end
+
+	def create_activation_key
+		chars = 'bcdfghjkmnopqrstvwxz023456789'.split('') # ambiguous characters l vs 1 vs i and vowels (no bad words) removed.
+  	k = Array.new(7) { chars[rand(chars.size)] }.join
+		update_attributes({activation_key: k, activation_key_set: Time.now})
 	end
 	
 	def admin?; level.admin?; end
+	
+	def qb_admin?; qb_level.admin?; end
+	def ve_admin?; ve_level.admin?; end
+	def qb_user?; qb_level.user?; end
+	def ve_user?; ve_level.user?; end
 	
 	attr :force_new_password, true
 	def handle_before_save

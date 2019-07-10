@@ -8,7 +8,7 @@
 		<%= tab 'clone', 'Clone', url + {action: :copy} if obj.can_clone? @current_user, context_obj %>
 		<% if !params.popup %>
 			<% if obj.respond_to?(:documents) %>
-				<%= tab 'file-text-o', 'Documents', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
+				<%= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
 			<% end %>
 			<% if obj.respond_to?(:db_changes) %>
 				<%= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: obj.id}, action: :index %>

@@ -1,26 +1,35 @@
 <% 
-	c = params.controller
-	ct = params.context
+	c = params[:controller]
+	ct = params[:context]
 	is_ve = c.start_with?('ve_') && ct.blank? || ct.to_s.start_with?('ve_') || c == 'ical'
 	is_fd = c.start_with?('fd_') && ct.blank? || ct.to_s.start_with?('fd_')
 	is_pl = c.start_with?('pl_') && ct.blank? || ct.to_s.start_with?('pl_')
 	is_tf = c.start_with?('tf_') && ct.blank? || ct.to_s.start_with?('tf_')
 	is_tr = c.start_with?('tr_') && ct.blank? || ct.to_s.start_with?('tr_')
 	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
-	is_qb = c.start_with?('qb_') && ct.blank? || ct.to_s.start_with?('qb_') 
-	other = %w{documents doc_templates doc_bulks saved_filters db_changes}
+
+	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
+	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
+	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
+	
+	is_qb = (c.start_with?('qb_') || c.to_s.in?(['sap_exports', 'payeezy_posts'])) && ct.blank? || (ct.to_s.start_with?('qb_') || ct.to_s.in?(['sap_export', 'payeezy_post']))
+	other = %w{documents doc_templates doc_bulks saved_filters db_changes doc_deliveries}
 	is_other = ct ? ct.pluralize.in?(other) : c.in?(other)
-	is_permit = is_fd || is_pl || is_tf || is_tr || is_ny || is_qb
+	is_permit = is_fd || is_pl || is_tf || is_tr || is_ny
 %>
 <% if is_permit %>
 	<div class="bar bar-red">PERMITS APPLICATION IS NOT LIVE - THIS IS A PREVIEW</div>
 <% end %>
 <div id="tabs" class="tabs">
-	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params.context == 'home' ? 'active' : '') %>
-	<%= tab 'truck', 'Vehicles', {controller: :ve_reservations, context: nil, action: :availability}, {}, class: (is_ve ? 'active' : '') %>
-	<%= tab 'book', 'Permits', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_permit ? 'active' : '') %>
-	<%= tab 'database', 'Other', {controller: :documents, context: nil}, {}, class: (is_other ? 'active' : '') %>
-	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params.context == 'user' ? 'active' : '') %>
+
+	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params[:context] == 'home' ? 'active' : '') %>
+	<%= tab 'money', "Sales", {controller: :qb_transactions, context: nil, action: :index}, {}, {class: (params[:context] =="qb_transactions" ? 'active' : '')} %>
+	<%#= top_tab 'money', 'Inv/Sale/Pay', QbTransaction %>
+	<%= tab 'dollar', 'Prices', {controller: :qb_item_prices, context: nil}, action: :index %>
+	<%= tab 'payments', 'Payments', {controller: :qb_item_prices, context: nil}, action: :index %>
+	<%= tab 'sap_exports', 'Sap Exports', {controller: :qb_item_prices, context: nil}, action: :index %>
+	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params[:context] == 'user' ? 'active' : '') %>
+
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>
 		<%= tab 'sign-out', 'Logout', db: nil, context: nil, controller: :account, action: :logout %>
@@ -30,10 +39,10 @@
 
 <% if is_ve %>
 	<div class="tabs">
-		<%= tab 'truck', 'Vehicles', {controller: :ve_vehicles, context: nil}, {}, class: (ct == 've_vehicle' ? 'active' : '') %>
-		<%= tab 'road', 'Mileage', {controller: :ve_mileages, context: nil}, {}, class: (ct == 've_mileage' ? 'active' : '') %>
-		<%= tab 'calendar', 'Reservations', {controller: :ve_reservations, context: nil}, {action: :availability}, class: (ct == 've_reservation' ? 'active' : '') %>
-		<%= tab 'calendar-o', 'Reservation Days', {controller: :ve_events, context: nil}, {}, class: (ct == 've_event' ? 'active' : '') %>
+		<%= top_tab 'truck', 'Vehicles', VeVehicle %>
+		<%= top_tab 'road', 'Mileage', VeMileage %>
+		<%= top_tab 'calendar', 'Reservations', VeReservation, {}, {action: :availability} %>
+		<%= top_tab 'calendar-o', 'Reservation Days', VeEvent %>
 		<%= tab 'calendar', 'iCalendar', {controller: :ical, context: nil}, {} %>
 		<div class="clear"></div>
 	</div>
@@ -45,7 +54,6 @@
 		<%= tab 'birthday-cake', 'Temp Food', {controller: :tf_facilities, context: nil, action: :index}, {}, class: (is_tf ? 'active' : '') %>
 		<%= tab 'child', 'Temp Residence', {controller: :tr_tannings, context: nil, action: :index}, {}, class: (is_tr ? 'active' : '') %>
 		<%= tab 'life-ring', 'Pool', {controller: :pl_pools, context: nil, action: :index}, {}, class: (is_pl ? 'active' : '') %>
-		<%= tab 'book', 'QuickBooks', {controller: :qb_customers, context: nil, action: :index}, {}, class: (is_qb ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
 <% end %>
@@ -108,24 +116,20 @@
 
 <% if is_qb %>
 	<div class="tabs">
-		<%= tab 'building', 'Customers', {controller: :qb_customers, context: nil}, {}, class: (ct == 'qb_customer' ? 'active' : '') %>
-		<%= tab 'money', 'Charges', {controller: :qb_charges, context: nil}, {}, class: (ct == 'qb_charge' ? 'active' : '') %>	
-		<%= tab 'file-text-o', 'Invoices', {controller: :qb_invoices, context: nil}, {}, class: (ct == 'qb_invoice' ? 'active' : '') %>	
-		<%= tab 'usd', 'Fee Schedule', {controller: :qb_fees, context: nil}, {}, class: (ct == 'qb_fee' ? 'active' : '') %>
-		<%= tab 'tags', 'Categories', {controller: :qb_categories, context: nil}, {}, class: (ct == 'qb_category' ? 'active' : '') %>
-		<%= tab 'shopping-cart', 'Items', {controller: :qb_items, context: nil}, {}, class: (ct == 'qb_category' ? 'active' : '') %>
-		<%= tab 'address-book', 'Accounts', {controller: :qb_accounts, context: nil}, {}, class: (ct == 'qb_category' ? 'active' : '') %>
+		<%= tab 'list', 'List', {context: nil, controller: :qb_transactions, action: :index} %>
+		<%= tab 'plus-circle', 'New', {context: nil, controller: :qb_transactions, action: :new} %>
 		<div class="clear"></div>
 	</div>
 <% end %>
 
 <% if is_other %>
 	<div class="tabs">
-		<%= tab 'file-text-o', 'Documents', {controller: :documents, context: nil}, {}, class: (params.context == 'document' ? 'active' : '') %>
-		<%= tab 'files-o', 'Bulk Documents', {controller: :doc_bulks, context: nil}, {}, class: (params.context == 'doc_bulk' ? 'active' : '') %>
-		<%= tab 'file-code-o', 'Document Templates', {controller: :doc_templates, context: nil}, {}, class: (params.context == 'doc_template' ? 'active' : '') %>
-		<%= tab 'clock-o', 'Log', {controller: :db_changes, context: nil}, {}, class: (params.context == 'db_change' ? 'active' : '') %>
-		<%= tab 'filter', 'Filters', {controller: :saved_filters, context: nil}, {}, class: (params.context == 'saved_filter' ? 'active' : '') %>
+		<%= top_tab 'file-text-o', 'Documents', Document %>
+		<%= top_tab 'files-o', 'Bulk Documents', DocBulk %>
+		<%= top_tab 'paper-plane', 'Delivery', DocDelivery %>
+		<%= top_tab 'file-code-o', 'Document Templates', DocTemplate %>
+		<%= top_tab 'clock-o', 'Log', DbChange %>
+		<%= top_tab 'filter', 'Filters', SavedFilter %>
 		<div class="clear"></div>
 	</div>
 <% end %>

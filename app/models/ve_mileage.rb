@@ -1,4 +1,4 @@
-class VeMileage < ApplicationRecord
+class VeMileage < VeRecord
 
 	include DbChange::Track
 
@@ -7,10 +7,10 @@ class VeMileage < ApplicationRecord
 	has_many :documents, as: :obj
 	
 	MONTHS = %i{jan feb mar apr may jun jul aug sep oct nov dec}
-
-	def self.can_create? u, *args; u.admin?; end
-	def self.can_edit? u, *args; true; end
-	def self.can_destroy? u, *args; u.admin?; end
+	
+	def self.can_edit? u, *args
+		true
+	end
 	
 	validates_presence_of :ve_vehicle, message: '^Vehicle can\'t be blank'
 	validates_presence_of :year

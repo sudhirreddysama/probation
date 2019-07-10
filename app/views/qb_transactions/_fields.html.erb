@@ -1,0 +1,121 @@
+<tr>
+	<th style="width: 110px;">Division <span class="req">*</span><%= hidden_field_tag 'obj[process_form]', '1' %></th>
+	<td class="subform">
+		<table>
+			<tr id="division_type_head">
+				<th><%= f.radio_button :type, 'intermination' %> Intermination</th>
+				<th><%= f.radio_button :type, 'tb' %> TB</th>
+				<th><%= f.radio_button :type, 'std' %> STD</th>
+			</tr>
+		</table>
+	</td>
+</tr>
+<div style="display: none">
+	<%= f.hidden_field :qb_customer_id %>
+	<%= f.hidden_field :qb_template_id %>
+</div>
+<tr>
+	<th>Insight EMR # <span class="req">*</span></th>
+	<td><%= f.text_field :num, style: 'width: 100px;' %></td>
+</tr>
+<%= partial 'invoice_details_fields', o: o, f: f %>
+
+<tr>
+	<th>Total Amount <span class="req">*</span></th>
+	<td><%= f.text_field :late_amount, style: 'width: 100px;'%></td>
+</tr>
+
+<tr>
+	<th style="width: 110px;">Payment <span class="req">*</span><%= hidden_field_tag 'obj[cc_option]', '1' %></th>
+	<td class="subform">
+		<table>
+			<tr id="division_type_head">
+				<th><%= f.radio_button :cc_option, 'none' %> None</th>
+				<th><%= f.radio_button :cc_option, 'pay' %> Pay</th>
+				<th><%= f.radio_button :cc_option, 'refund' %> Refund</th>
+			</tr>
+		</table>
+	</td>
+</tr>
+
+
+<tr>
+	<th>Amount <span class="req">*</span></th>
+	<td><%= f.text_field :late_amount, style: 'width: 100px;'%></td>
+</tr>
+
+<!-- <tr>
+	<th style="width: 110px;">Payment <span class="req">*</span><%= hidden_field_tag 'obj[pay_method]', '1' %></th>
+	<td class="subform">
+		<table>
+			<tr id="division_type_head">
+				<th><%#= f.radio_button :pay_method, 'credit card' %> Credit Card</th>
+				<th><%#= f.radio_button :pay_method, 'cash' %> Cash</th>
+				<th><%#= f.radio_button :pay_method, 'check' %> Check</th>
+			</tr>
+		</table>
+	</td>
+</tr> -->
+<tr>
+					<th><% if o.refund? || o.ar_refund? %>Refund<% else %>Pay<% end %> Method <% if o.sale? || o.refund? %><span class="req">*</span><% end %></th>
+					<td id="obj_pay_method">
+						<span class="lbl-chk-grp">
+							<label class="lbl-chk"><%= f.radio_button :pay_method, 'CC' %><span class="lbl lbl-qbpmeth-cc">Credit Card</span></label>
+							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Check' %><span class="lbl lbl-qbpmeth-check">Check</span></label>
+							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Cash' %><span class="lbl lbl-qbpmeth-cash">Cash</span></label>
+							<% if o.type == 'Payment' %>
+								<label class="lbl-chk"><%= f.radio_button :pay_method, 'Credit' %><span class="lbl lbl-qbpmeth-credit">Credit</span></label>
+							<% end %>
+						</span>
+						<span class="lbl-chk-grp method-cc" style="<% if !o.pay_cc? %>display: none;<% end %>" id="obj_cc_option">
+							<% if o.refund? || o.ar_refund? %>
+								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Void', data: {cc: 'prev'} %><span class="lbl lbl-paycc-void">Void</span></label>
+								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Tagged Refund', data: {cc: 'prev'} %><span class="lbl lbl-paycc-tagged-refund">Tagged Refund</span></label>
+								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Token Refund', data: {cc: 'prev'} %><span class="lbl lbl-paycc-token-refund">Token Refund</span></label>
+								<label class="lbl-chk"><%= f.radio_button :cc_option, 'New CC Refund', data: {cc: 'new'} %><span class="lbl lbl-paycc-new-cc-refund">New CC Refund</span></label>
+							<% else %>
+								<label class="lbl-chk"><%= f.radio_button :cc_option, 'New CC', data: {cc: 'new'} %><span class="lbl lbl-paycc-new-cc">New CC</span></label>
+								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Previous CC', data: {cc: 'prev'} %><span class="lbl lbl-paycc-previous-cc">Previous CC</span></label>
+							<% end %>
+						</span>				
+					</td>
+				</tr>
+				<% new_cc = o.cc_option.in?(['New CC', 'New CC Refund']) %>
+				<% prev_cc = o.cc_option.in?(['Void', 'Tagged Refund', 'Token Refund', 'Previous CC']) %>
+				<tr class="cc-prev" style="<% if !o.pay_cc? || !prev_cc %>display: none;<% end %>">
+					<th>Card Info <span class="req">*</span></th>
+					<td>
+						<% ccp = o.cc_previous %>
+						<%= f.select :cc_previous_id, ccp ? [["##{ccp.num} - #{ccp.date.d} - $#{n2(ccp.amount)} - Card Ending In: #{ccp.cc_last4}", o.cc_previous_id, title: ' ']] : [], {include_blank: 'Select Previous CC Payment...'}, style: 'width: 400px;' %>
+					</td>
+				</tr>
+				<tr class="cc-new" style="<% if !o.pay_cc? || !new_cc %>display: none;<% end %>">
+					<th>Card Info <span class="req">*</span></th>
+					<td class="subform">
+						<table>
+							<tr>
+								<th>Card Number <span class="req">*</span></th>
+								<th>Name on Card <span class="req">*</span></th>
+								<th>Exp. Date <span class="req">*</span></th>
+								<th>Security Code</th>
+							</tr>
+							<tr>
+								<td><%= f.text_field :cc_no, style: 'width: 140px;' %></td>
+								<td><%= f.text_field :cc_name, style: 'width: 200px;' %></td>
+								<td><%= f.text_field :cc_exp, style: 'width: 80px;', placeholder: 'MM/YY' %></td>
+								<script>$('#obj_cc_exp').inputmask({alias: 'datetime', inputFormat: 'mm/yy', placeholder: 'MM/YY'})</script>
+								<td><%= f.text_field :cc_code, style: 'width: 80px;' %></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr class="method-check" style="<% if !o.pay_check? %>display: none;<% end %>">
+					<th>Check # <span class="req">*</span></th>
+					<td><%= f.text_field :check_no, style: 'width: 100px;' %></td>
+				</tr>
+				<% if o.payment? %>
+					<tr class="method-credit" style="<% if !o.pay_credit? %>display: none;<% end %>">
+						<th>Debit GL</th>
+						<td><%= f.text_field :debit_ledger, style: 'width: 100px;' %></td>
+					</tr>
+				<% end %>

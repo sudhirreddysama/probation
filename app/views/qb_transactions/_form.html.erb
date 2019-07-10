@@ -1,0 +1,13 @@
+<% content_for(:head) { %>
+	<%= javascript_include_tag '/qb-transaction-form.js' %>
+<% } %>
+<%= partial 'application/form', o: @obj %>
+<script>
+	init_qb_transaction_form({
+		id: <%= o.id.to_json.html_safe %>,
+		type: "Sale",
+		payeezy_post_id: <%= o.payeezy_post_id.to_json.html_safe %>,
+		sap_exported: <%= o.sap_exported?.to_json.html_safe %>,
+		detail_fields: <%= partial('invoice_detail_fields', {d: {cost_center: o.cost_center, debit_ledger: o.debit_ledger, credit_ledger: o.credit_ledger}, o: o, i: '__NEW_ITEM__'}).to_json.html_safe %>,
+	});
+</script>

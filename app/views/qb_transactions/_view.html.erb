@@ -1,0 +1,230 @@
+<% if !@print %>
+	<div class="btns">
+		<% doc = o.transaction_document %>
+		<% if doc %>
+			<%= link_to fa('print', "Print #{o.type} PDF"), {action: :doc, id: o.id, controller: :qb_transactions}, target: '_blank' %>
+		<% else %>
+			<%= form_tag(action: :gendoc, id: o.id ) %><button><i class="fa fa-print"></i> Generate <%= o.type %> PDF</button></form>
+		<% end %>
+		<% url = {context: nil, controller: :qb_transactions, action: :new, from_transaction: o.id} %>
+		<% if o.sale? %>
+			<%= link_to fa('money', 'Refund Sale'), url + {type: 'Refund'} %>
+		<% end %>
+		<% if o.invoice? %>
+			<%= link_to fa('money', 'Pay Invoice'), url + {type: 'Payment'} %>
+		<% end %>
+		<% if o.payment? %>
+			<%= link_to fa('money', 'Refund Payment'), url + {type: 'AR Refund'} %>
+		<% end %>
+	</div>
+<% end %>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Division', lbl('qbdiv', o.division) %>
+	<%= dl 'Type', lbl('qbttype', o.type) %>
+	<%= dl 'Num', o.num %>
+	<%= dl 'Amount', '$' + n2(o.amount) %>
+	<%= dl 'Date', o.date.d %>
+	<% if o.invoice? || o.sale? %>
+		<%= dl 'Def. Rev.', o.def_revenue_date.d %>
+	<% end %>
+	<% if o.invoice? %>
+		<% style = o.balance_past_due? ? ' style="color: #e00;"'.html_safe : '' %>
+		<% b = o.balance.to_f %>
+		<dl<%= style %>><dt>Balance</dt><dd><%= b != 0 ? '$' + n2(o.balance.to_f) : '' %></dd></dl>
+		<dl<%= style %>><dt>Due Date</dt><dd><%= o.due_date.d %></dd></dl>
+	<% end %>
+	<% if o.voided %>
+		<dl><dt>Void</dt><%= lbl 'qbttype', 'VOIDED' %></dl>
+	<% end %>
+	<%= dl 'Created By', o.created_by&.username %>
+	<%= dl 'Created At', o.created_at.dt %>
+</div>
+<% if o.sale? || o.refund? || o.payment? || o.ar_refund? %>
+	<div class="view">
+		<%= dl "#{o.sale? || o.payment? ? 'Pay' : 'Refund'} Method", lbl('qbpmeth', o.pay_method) %>
+		<% if o.payment? || o.ar_refund? %>
+			<%= dl 'Split', o.split_amount.to_f != 0 ? '$' + n2(o.split_amount) : '' %>
+		<% end %>
+		<% if o.pay_check? %>
+			<%= dl 'Check #', o.check_no %>
+		<% elsif o.pay_credit? %>
+			<%= dl 'Debit GL', o.debit_ledger %>
+		<% elsif o.pay_cc? %>
+			<% pz = o.payeezy_post %>
+			<%= dl 'Payeezy Auth Num', pz ? link_to(pz.authorization_num, context: nil, controller: :payeezy_posts, action: :view, id: pz.id).html_safe : '' %>
+			<%= dl 'Payeezy Receipt', pz ? link_to('<i class="fa fa-file-text-o">&nbsp;</i>Receipt'.html_safe, {context: nil, controller: :payeezy_posts, action: :receipt, id: pz.id}, target: '_blank').html_safe : '' %>
+		<% end %>
+		<% v = o.voided_payeezy_post %>
+		<% if v %>
+			<span style="color: #e00">
+				<%= dl 'Void Auth Num', link_to(v.authorization_num, {context: nil, controller: :payeezy_posts, action: :view, id: v.id}, style: 'color: #e00;').html_safe %>
+				<%= dl 'Void Receipt', link_to('<i class="fa fa-file-text-o">&nbsp;</i>Receipt'.html_safe, {context: nil, controller: :payeezy_posts, action: :receipt, id: v.id}, target: '_blank', style: 'color: #e00;').html_safe %>		
+			</span>
+		<% end %>
+	</div>
+<% end %>
+<div class="view dl-inline">
+	<% if o.invoice? %>
+		<%= dl 'Debit AR', o.qb_debit_ledger ? link_to(o.qb_debit_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_debit_ledger.id) : o.debit_ledger %>
+	<% elsif o.sale? || o.payment? %>
+		<%= dl 'Debit GL', o.qb_debit_ledger ? link_to(o.qb_debit_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_debit_ledger.id) : o.debit_ledger %>
+	<% elsif o.refund? || o.ar_refund? %>
+		<%= dl 'Credit GL', o.qb_credit_ledger ? link_to(o.qb_credit_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_credit_ledger.id) : o.credit_ledger %>
+	<% end %>
+</div>
+<div class="view dl-inline">
+	<% c = o.qb_customer %>
+	<% path = c ? (c.full_id_path_parts.zip(c.full_path_parts).map { |id, name| link_to(name, context: nil, context_id: nil, controller: :qb_customers, action: :view, id: id) }).join('<i class="fa fa-fw fa-angle-right"></i>').html_safe : '' %>
+	<%= dl 'Customer', path %>
+</div>
+<% if o.qb_multi_invoice %>
+	<div class="view dl-inline">
+		<%= dl 'Multi Invoice', link_to(o.qb_multi_invoice.name, context: nil, context_id: nil, controller: :qb_multi_invoices, action: :view, id: o.qb_multi_invoice_id).html_safe %>
+	</div>
+<% end %>
+<% if !o.memo.blank? %>
+	<div class="view dl-inline">
+		<%= dl 'Memo', o.memo %>
+	</div>
+<% end %>
+<div class="view dl-inline">
+	<% t = o.qb_template %>
+	<%= dl 'Template', t ? link_to(o.qb_template.name, context: nil, controller: :qb_templates, action: :view, id: t.id).html_safe : '' %>
+</div>
+<% if o.invoice? || o.sale? %>
+	<%= partial 'invoice_details', o: o, details: o.qb_transaction_details.order('qb_transaction_details.sort') %>
+	<% if o.invoice? %>
+		<%= partial 'qb_late_fees/late_fee', o: o, tpl: o.qb_template %>
+	<% end %>
+<% elsif o.refund? %>
+	<div class="view">
+		<dl style="float: none;"><dt>Refund Items</dt></dl>
+		<table class="sheet wrap">
+			<tr>
+				<th>Cost Center</th>
+				<th>Debit GL</th>
+				<th>Sale #</th>
+				<th>Date</th>
+				<th>Item</th>
+				<th>Description</th>
+				<th class="tr">Orig $</th>
+				<th class="tr">Refund $</th>
+				<th>SAP</th>
+			</tr>
+			<% o.qb_transaction_details.each { |d| %>
+				<% prev = d.previous || {} %>
+				<% t = prev.qb_transaction || {} %>
+				<tr>
+					<td class="tl"><%= link_to_if d.qb_cost_center, d.cost_center, context: nil, controller: :qb_cost_centers, action: :view, id: d.qb_cost_center&.id %></td>
+					<td class="tl"><%= link_to_if d.qb_debit_ledger, d.debit_ledger, context: nil, controller: :qb_ledgers, action: :view, id: d.qb_debit_ledger&.id %></td>
+					<td class="tl"><%= link_to_if prev.qb_transaction, t.num, context: nil, controller: :qb_transactions, action: :view, id: t.id %></td>
+					<td class="tl"><%= t.date.d %></td>
+					<td class="tl"><%= link_to_if prev.qb_item_price, prev.item_name_short, context: nil, controller: :qb_item_prices, action: :view, id: prev.qb_item_price_id %></td>
+					<td class="tl"><%= prev.item_description %></td>
+					<td class="tr"><%= prev ? '$' + n2(prev.amount.to_f) : '' %></td>
+					<td class="tr">$<%= n2 d.amount %>
+					<td><%= partial 'sap_links', d: d %></td>
+				</tr>
+			<% } %>
+			<tr>
+				<td colspan="7" class="tr">Total</td>
+				<td class="tr">$<%= n2 o.amount %></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+<% elsif o.payment? || o.ar_refund? %>
+	<% lbl = o.payment? ? 'Payment' : 'Refund' %>
+	<div class="view">
+		<% if o.payment_for.empty? %>
+			<dl><dt><%= lbl %> For</dt><dd>No items selected</dd></dl>
+		<% else %>
+			<dl style="float: none;"><dt><%= lbl %> For</dt></dl>
+			<table class="sheet wrap">
+				<tr>
+					<th>#</th>
+					<th>Type</th>
+					<th>Date</th>
+					<th>Customer</th>
+					<th>Center</th>
+					<th>AR</th>
+					<th>GL</th>
+					<th>Item</th>
+					<th>Desc</th>
+					<th>Price</th>
+					<th>Qty</th>
+					<th>Amt</th>
+					<th>SAP</th>
+				</tr>
+				<% o.payment_for.each { |d| %>
+					<% t = d.qb_transaction || {} %>
+					<% debit_link = link_to_if(d.qb_debit_ledger, d.debit_ledger, context: nil, controller: :qb_ledgers, action: :view, id: d.qb_debit_ledger.try(:id)) %>
+					<% credit_link = link_to_if(d.qb_credit_ledger, d.credit_ledger, context: nil, controller: :qb_ledgers, action: :view, id: d.qb_credit_ledger.try(:id)) %>
+					<tr>
+						<% if d.qb_transaction_id == o.id %>
+							<td colspan="4">
+						<% else %>
+							<td class="tl"><%= t ? link_to(t.num, context: nil, controller: :qb_transactions, action: :view, id: t.id) : '' %></td>
+							<td class="tl"><%= d.type %></td>
+							<td class="tl"><%= t.date.d %></td>
+							<td class="tl"><%= d.qb_customer ? link_to(d.qb_customer.name, context: nil, controller: :qb_customers, action: :view, id: d.qb_customer.id) : '' %></td>
+						<% end %>
+						<td class="tl"><%= link_to_if d.qb_cost_center, d.cost_center, context: nil, controller: :qb_cost_centers, action: :view, id: d.qb_cost_center.try(:id) %></td>
+						<td class="tl"><%= d.payment? ? credit_link : debit_link %></td>
+						<td class="tl"><%= d.payment? ? debit_link : credit_link %></td>
+						<% if d.invoice? %>
+							<td class="tl"><%= link_to_if d.qb_item_price, d.item_name_short, context: nil, controller: :qb_item_prices, action: :view, id: d.qb_item_price.try(:id) %></td>
+							<td class="tl"><%= d.item_description %></td>
+							<td class="tr"><%= n2 d.price %></td>
+							<td class="tr"><%= d.quantity %></td>
+						<% else %>
+							<td colspan="4"></td>
+						<% end %>
+						<td class="tr"><%= n2 d.amount %></td>
+						<td><%= partial 'sap_links', d: d %></td>
+					</tr>
+				<% } %>
+			</table>
+		<% end %>
+	</div>
+	<div class="view">
+		<dl style="float: none;"><dt><%= lbl %> Details</dt></dl>
+		<table class="sheet wrap">
+			<tr>
+				<th>Cost Center</th>
+				<th>Debit</th>
+				<th>Credit</th>
+				<th>Amount</th>
+				<th>SAP</th>
+				<th>Split</th>
+				<th>Used</th>
+			</tr>
+			<% o.qb_transaction_details.each { |d| %>
+				<tr>
+					<td class="tl"><%= link_to_if d.qb_cost_center, d.cost_center, context: nil, controller: :qb_cost_centers, action: :view, id: d.qb_cost_center.try(:id) %></td>
+					<td class="tl"><%= link_to_if d.qb_debit_ledger, d.debit_ledger, context: nil, controller: :qb_ledgers, action: :view, id: d.qb_debit_ledger.try(:id) %></td>
+					<td class="tl"><%= link_to_if d.qb_credit_ledger, d.credit_ledger, context: nil, controller: :qb_ledgers, action: :view, id: d.qb_credit_ledger.try(:id)  %></td>
+					<td class="tr">$<%= n2 d.amount %>
+					<td><%= partial 'sap_links', d: d %></td>
+					<% if d.split %>
+						<td><i class="fa fa-check"></i></td>
+						<td>
+							<% if d.payment %>
+								<% t = d.payment %>
+								<%= link_to t.date.d, context: nil, context_id: nil, controller: :qb_transactions, action: :view, id: t.id %>
+							<% end %>
+						</td>						
+					<% else %>
+						<td colspan="2"></td>
+					<% end %>
+				</tr>
+			<% } %>
+			<tr>
+				<td colspan="3" class="tr">Total</td>
+				<td class="tr">$<%= n2 o.amount %></td>
+				<td colspan="3"></td>
+			</tr>
+		</table>
+	</div>
+<% end %>

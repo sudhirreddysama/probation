@@ -962,7 +962,7 @@ S2.define('select2/results',[
     }
 
     if (data.title) {
-      option.title = data.title;
+      //option.title = data.title;
     }
 
     if (data.children) {
@@ -3218,7 +3218,7 @@ S2.define('select2/data/select',[
     }
 
     if (data.title) {
-      option.title = data.title;
+      //option.title = data.title;
     }
 
     var $option = $(option);
@@ -3483,7 +3483,7 @@ S2.define('select2/data/ajax',[
       }, function () {
         // Attempt to detect if a request was aborted
         // Only works if the transport exposes a status property
-        if ($request.status && $request.status === '0') {
+        if ('status' in $request && ($request.status === 0 || $request.status === '0')) {
           return;
         }
 

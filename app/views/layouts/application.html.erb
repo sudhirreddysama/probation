@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="<%= [params.popup ? 'popup' : nil, Rails.env.development? ? 'dev' : 'pro'].reject(&:blank?) * ' ' %>">
+<html class="<%= [Rails.env.development? ? 'dev' : 'pro'].reject(&:blank?) * ' ' %>">
 <head>
   <title><%= APP_HUMAN_NAME %> (<%= Rails.env %>)</title>
   <%= stylesheet_link_tag(
@@ -21,24 +21,27 @@
   	<%= flash[:js] %>
   </script>
   <%= javascript_include_tag(
-  	'/jquery-1.12.3.min.js',
-  	'/jquery-ui-1.11.4.custom/jquery-ui.min.js',
+  	'/jquery-1.12.3.js',
+  	'/jquery-ui-1.11.4.custom/jquery-ui.js',
   	'/jQuery-File-Upload-9.12.3/js/jquery.fileupload.js',
   	'/jquery.stickytableheaders.min.js',
 		'/jquery.floatThead._.js',
 		'/jquery.floatThead.js',
-  	'/jquery.inputmask.bundle.js',
+  	'/jquery.inputmask-4.0.1.bundle.js',
   	'/jquery.fileupload.js',
   	'/jquery-ui.multidatespicker.js',
   	'/jquery.floatingscroll.js',
+  	'/jquery.cardswipe-old.js',
+  	'/dragcheck.js',
   	'/ckeditor/ckeditor.js',
   	'/numbro/numbro.js',
   	'/moment/moment.js',
   	'/pikaday/pikaday.js',
   	'/handsontable-0.34.0/handsontable.js',
   	'/js.cookie.js',
-  	'/select2/js/select2.js',
+  	'/select2/js/select2.full.js',
   	'/date.js',
+  	'/colResizable-1.6.min.js',
   	'/rails.js',
   	'/script.js'
   ) %>
@@ -46,7 +49,7 @@
   <%= yield :head %>
 </head>
 <body id="app">
-	<% if !params.popup %>
+	<% if !params[:popup] %>
 		<%= partial 'env' %>
 		<%= partial 'nav_top' %>
 	<% end %>
@@ -55,10 +58,10 @@
 	<% end %>
 	<% if flash[:alert] %>
 		<%= partial 'errors', errors: [flash[:alert]] %>
-	<% end %>		
+	<% end %>
 	<%= partial 'nav' %>
 	<%= yield %>
-	<% if !params.popup %>
+	<% if !params[:popup] %>
 		<div id="pop1" style="display: none;" onclick="_close_popup(); return false;">
 			<div id="popl"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>
 			<div id="pop2"><a href="#" id="popc" class="red" onclick="_close_popup(); return false;"><i class="fa fa-times"></i></a><iframe id="popi" onload="window._popup_load();"></iframe>

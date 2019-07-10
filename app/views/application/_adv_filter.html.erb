@@ -16,7 +16,13 @@
 						<%= select_tag 'adv-filter-add', options_for_select([['Add Field...', nil]] + @model.columns.map(&:name)) %>
 						<%= hidden_field_tag 'filter_op', '' %>
 						<%= hidden_field_tag 'filter_name', '' %>
-						<%= f.select :saved_filter_id, SavedFilter.where('type = ?', params.controller).order('name').map { |s| [s.name, s.id] }, include_blank: 'Load Filter...' %>
+						<% 
+							opts = SavedFilter.where('type = ? and (user_id = ? || shared = 1)', params.controller, @current_user.id).order('shared, name')
+								.group_by(&:shared)
+								.transform_keys { |k| k ? 'Shared Filters' : 'Your Filters' }
+								.each { |k, v| v.map! { |s| [s.name, s.id, data: {user_id: s.user_id}] } }
+						%>
+						<%= f.select :saved_filter_id, opts, {include_blank: 'Load Filter...'}, style: 'max-width: 300px;' %>
 						<% if !@filter.saved_filter_id.blank? %>
 							<a href="#" id="filter-reload" title="Reload Saved Filter"><i class="fa fa-fw fa-refresh"></i></a>
 							<a href="#" id="filter-edit" title="Update Saved Filter"><i class="fa fa-fw fa-pencil-square"></i></a>

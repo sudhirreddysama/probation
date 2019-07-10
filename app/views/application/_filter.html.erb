@@ -2,23 +2,7 @@
 	<%= form_for(:filter, html: {class: 'filter', id: 'filter-form'}, builder: TableFormBuilder) { |f| %>
 		<table class="form">
 			<%= partial 'filter_search_sort', f: f %>
-			<% if @date_types && !@date_types.empty? %>
-				<%= partial 'filter_dates', f: f, o: @filter %>
-			<% end %>
-			<% if @no_types && !@no_types.empty? %>
-				<tr>
-					<th>Numeric Range</th>
-					<td class="nobr inp-row">
-						<%= f.select :no_type, @no_types, {}, style: 'width: 150px;' %>
-						<span style="display: inline-block; width: 48px; text-align: right;">Min:</span>
-						<%= f.text_field :no_min, style: 'width: 100px;' %>
-						<span style="display: inline-block; width: 48px; text-align: right;">Max:</span>
-						<%= f.text_field :no_max, style: 'width: 100px;' %>
-					</td>			
-				</tr>
-			<% end %>		
-			<%= partial 'filter2', f: f %>
-			<%= partial 'adv_filter', f: f %>
+			
 			<tr>
 				<th></th>
 				<td class="btns">
@@ -26,7 +10,6 @@
 					<%= hidden_field_tag 'list_ids' %>
 				</td>
 			</tr>
-			<%= partial 'filter3', f: f %>
 		</table>
 		<%= partial 'filter_gutter' %>
 	<% } %>

@@ -1,0 +1,7 @@
+<tr class="<%= cycle 'odd', 'even' %>">
+	<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+	<td class="nobr"><%= lbl 'qbdiv', o.division %></td>
+	<td class="nobr"><%= yn o.active %></td>
+	<%= partial 'tree_row_extra', o: o %>
+	<td style="padding-left: <%= o.depth * 20 %>px;"><%= link_to o.name, action: :view, id: o.id %></td>
+</tr>

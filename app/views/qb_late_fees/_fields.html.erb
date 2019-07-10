@@ -1,0 +1,73 @@
+<% content_for(:head) { %>
+	<%= javascript_include_tag '/qb-transaction-form.js' %>
+	<style>
+		.inv-num-dd { min-width: 400px; }
+	</style>
+<% } %>
+<%= partial 'division_field', f: f, o: o %>
+<tr>
+	<th>Defaults<%= hidden_field_tag 'obj[process_form]', 1 %></th>
+	<td class="subform tbl-resize-wrap">
+		<%= partial 'qb_late_fees/default_late_fee_fields', o: o, f: f, tpl: nil, prefix: '' %>
+	</td>
+</tr>
+<tr>
+	<th>Invoices/Fees <span class="req">*</span></th>
+	<td class="subform tbl-resize-wrap">
+		<table class="sheet tbl-resize" id="fees-table">
+			<tbody>
+				<tr>
+					<th width="100"><div>Customer</div></th>
+					<th width="100"><div>Invoice #</div></th>
+					<th width="100"><div>Total</div></th>
+					<th width="100"><div>Due</div></th>
+					<th width="100"><div>Cost Centerddd</div></th>
+					<th width="100"><div>Credit GL</div></th>
+					<th><div id="lbl_info">Info</div></th>
+					<th><div id="lbl_name">Item</div></th>
+					<th><div id="lbl_desc">Description</div></th>
+					<th width="50" class="tr"><div id="lbl_price">Price</div></th>
+				</tr>
+			</tbody>
+			<tbody id="new_details">
+				<% o.new_details.each_with_index { |d, i| %>
+					<%= partial 'detail_fields', {d: d, o: o, i: i} %>
+				<% } %>
+				<% details_row_count = o.new_details.size %>
+				<% extra = 3 %>
+				<% mock = {cost_center: o.cost_center, credit_ledger: o.credit_ledger, item_info: o.item_info, item_description: o.item_description, qb_item_price_id: o.qb_item_price_id, item_name: o.item_name, qb_item_price: o.qb_item_price, price: o.amount} %>
+				<% extra.times { |i| %>
+					<%= partial 'detail_fields', d: mock, o: o, i: details_row_count + i %>
+				<% } %>
+				<% details_row_count += extra %>
+			</tbody>
+			<tbody>
+				<tr>
+					<td colspan="10">
+						<a href="#" id="detail_new"><i class="fa fa-plus-circle"></i> Add Item</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</td>
+</tr>
+<script>
+	init_late_fee_form({
+		id: <%= o.id.to_json.html_safe %>,
+		detail_fields: <%= partial('detail_fields', d: mock, o: o, i: '__NEW_ITEM__').to_json.html_safe %>,
+	});
+</script>
+
+
+<tr>
+	<th>Invoice PDF</th>
+	<td>
+		<% if o.new_record? %>
+			<div id="doc_generate"><label><%= f.check_box :doc_generate %> Create a &quot;Invoice Late Fee&quot; PDF for each invoice (original PDF will be preserved)</label></div>
+			<div id="doc_deliver"><label><%= f.check_box :doc_deliver %> Add new &quot;Invoice Late Fee&quot; PDFs to delivery queue</label></div>
+		<% else %>
+			<div id="doc_generate"><%= f.check_box :doc_generate %>Create and/or overwrite &quot;Invoice Late Fee&quot; PDFs</div>
+			<div id="doc_deliver"><label><%= f.check_box :doc_deliver %> Deliver PDFs (PDFs will be added to queue if checked, removed if unchecked, not changed if already delivered)</label></div>
+		<% end %>
+	</td>
+</tr>

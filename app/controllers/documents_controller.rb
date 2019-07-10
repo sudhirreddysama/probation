@@ -42,12 +42,6 @@ class DocumentsController < CrudController
 		html = tpl.apply @context_obj, @current_user
 		render text: html
 	end
-	
-	def test
-		c = FdChurchesController.new
-		c.process(:permit, id: 273)
-		send_data c.response.body
-	end
 
 	private
 	

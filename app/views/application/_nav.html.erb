@@ -1,4 +1,4 @@
-<% if !params.popup %>
+<% if !params[:popup] %>
 	<% if @context_class %>
 		<% tmp = lookup_context.prefixes[0] %>
 		<% lookup_context.prefixes[0] = params.context.pluralize %>
@@ -10,8 +10,8 @@
 <% end %>
 <% if @model %>
 	<% vars = {obj: @obj, model: @model, context: params.context, controller: params.controller, context_obj: @context_obj} %>
-	<% if !params.popup %>
-		<%= partial 'nav_objs', vars %>
+	<% if !params[:popup] %>
+		<%#= partial 'nav_objs', vars %>
 	<% end %>
 	<%= partial 'nav_obj', vars %>
 <% end %>

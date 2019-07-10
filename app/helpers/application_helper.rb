@@ -7,6 +7,14 @@ module ApplicationHelper
 		link_to icon.present? ? raw(fa(icon) + ' ' + text) : text, url + url_also, opt
 	end
 	
+	def top_tab icon, text, cls, opt1 = {}, opt2 = {}, opt3 = {}
+		if cls.can_view? @current_user
+			ct = cls.to_s.underscore
+			c = ct.pluralize
+			tab icon, text, {controller: c, context: nil} + opt1, {} + opt2, {class: (params.context == ct ? 'active' : '')} + opt3
+		end
+	end
+	
 	# Only difference with above is that this will check the equivalence of nil url params. To many calls in the wild to change the original function.
 	#def tab2 icon, text, url, url_also = {}, opt = {}
 	#	if url.all? { |k, v| params[k] == v.to_s }
@@ -23,16 +31,28 @@ module ApplicationHelper
 		render partial: p, locals: l
 	end
 
-	def yn v
+	def yn v, opt = {}
 		str = v.to_s.downcase
 		v = true if str == 'yes'
 		v = false if str == 'no'
-		h = '<span class="' + v.yn + '">' + v.yn + '</span>'
-		h.html_safe
+		yn = v.yn
+		t = opt.upcase ? yn.upcase : yn
+		opt.plain ? t : "<span class=\"#{v.yn}\">#{t}</span>".html_safe
 	end
 	
-	def yn? v
-		return v.nil? ? '' : yn(v)
+	def yn? v, opt = {}
+		return v.nil? ? '' : yn(v, opt)
+	end
+	
+	# Inverted options
+	def yn2 v, opt = {}
+		opt = {upcase: true, plain: true} + opt
+		return yn v, opt
+	end	
+	
+	def yn2? v, opt = {}
+		opt = {upcase: true, plain: true} + opt
+		return yn? v, opt
 	end
 	
 	def nwd *args
@@ -83,7 +103,7 @@ module ApplicationHelper
 		val.presence || '<span class="blank">blank</span>'.html_safe
 	end
 	
-	def file_icon filename = ''
+	def file_icon filename = '', cls = nil
 		fa = case filename.to_s.split('.').last.downcase
 			when 'pdf'
 				'file-pdf-o'
@@ -102,7 +122,7 @@ module ApplicationHelper
 			else
 				'file-o'
 		end
-		return ('<i class="fa fa-' + fa + '"></i>').html_safe
+		return ('<i class="fa ' + (cls ? cls + ' ' : '') + 'fa-' + fa + '"></i>').html_safe
 	end	
 	
 	def id_for_field f
@@ -172,5 +192,27 @@ module ApplicationHelper
 	def options_or_grouped_options_for_select opts = []
 		opts[0] && opts[0][1].is_a?(Array) ? grouped_options_for_select(opts) : options_for_select(opts)
 	end
-
+	
+	def colon_to_arrow txt
+		(txt.to_s.split(':').map { |s| h(s) } * '<i class="fa fa-fw fa-angle-right"></i>').html_safe
+	end
+	
+	def list_checks
+		return @list_checks unless @list_checks.nil?
+		@list_checks = params.action == 'index'
+	end
+	
+	def list_check_all
+		check_box_tag('list_select_all', 1, false) if list_checks
+	end
+	
+	def list_check_id id
+		check_box_tag('list[]', id, false, class: 'list_select', id: nil) if list_checks
+	end
+	
+	# Same helper used by form form builders to generate ids
+	def sanitized_id s
+		s.to_s.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
+	end
+	
 end
