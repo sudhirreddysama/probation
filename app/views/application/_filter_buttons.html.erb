@@ -1,22 +1,2 @@
 <button type="submit" name="apply" value="apply"><i class="fa fa-check"></i> Apply</button>
 <button type="submit" name="clear" value="clear"><i class="fa fa-close"></i> Clear Filter</button>
-<% if @objs.total_entries > 0 %>
-	<% if @export_fields %>
-		<button type="submit" name="export_xls" value="export_xls"><i class="fa fa-download"></i> Export XLS</button>
-	<% end %>
-	<% if @print_all != false %>
-		<button formtarget="_blank" type="submit" name="print" value="print" onclick="return confirm('This will render the printable PDF version of each object and may take a while. Continue?')"><i class="fa fa-print"></i> Print PDF</button>
-	<% end %>
-	<% if @allow_edit_all != false && @model.can_edit?(@current_user) %>
-		<button type="button" name="edit_all" value="edit_all" id="edit-all"><i class="fa fa-edit"></i> Edit All</button>
-	<% end %>
-	<% if @allow_delete_all != false && @model.can_destroy?(@current_user) %>
-		<button type="button" name="delete_all" value="delete_all" id="delete-all"><i class="fa fa-trash"></i> Delete All</button>
-	<% end %>
-	<% if @model.reflections.documents && @allow_generate_doc != false %>
-		<button type="submit" name="process" value="doc_bulk"><i class="fa fa-files-o"></i> Generate Doc.</button>
-	<% end %>
-<% end %>
-<script>
-	var list_count = <%= @objs.total_entries.to_json.html_safe %>;
-</script>

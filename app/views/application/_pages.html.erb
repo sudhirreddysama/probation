@@ -3,11 +3,11 @@
 		<div class="pages">
 			<% if objs.respond_to? :total_pages %>
 				<%= will_paginate objs, previous_label: '<i class="fa fa-chevron-left"></i>', next_label: '<i class="fa fa-chevron-right"></i>' %>
-				<span class="pages-total"><i class="dim">Total:</i> <%= nwd objs.total_entries %></span>
+				<!-- <span class="pages-total"><i class="dim">Total:</i> <%#= nwd objs.total_entries %></span> -->
 			<% else %>
-				<span class="pages-total"><i class="dim">Total:</i> <%= nwd objs.length %></span>
+				 <!-- <span class="pages-total"><i class="dim">Total:</i> <%#= nwd objs.length %></span> -->
 			<% end %>
-			<%= partial 'pages2', objs: objs, objs_unpaginated: objs_unpaginated %>
+			<%#= partial 'pages2', objs: objs, objs_unpaginated: objs_unpaginated %>
 		</div>
 	<% } %>
 <% end %>
