@@ -11,6 +11,7 @@
 	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
 	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
 	is_ny = c.start_with?('ny_') && ct.blank? || ct.to_s.start_with?('ny_') 
+	is_user = c.start_with?('users') && ct.blank? || ct.to_s.start_with?('users') 
 	
 	is_qb = (c.start_with?('qb_') || c.to_s.in?(['sap_exports', 'payeezy_posts'])) && ct.blank? || (ct.to_s.start_with?('qb_') || ct.to_s.in?(['sap_export', 'payeezy_post']))
 	other = %w{documents doc_templates doc_bulks saved_filters db_changes doc_deliveries}
@@ -23,11 +24,13 @@
 <div id="tabs" class="tabs">
 
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params[:context] == 'home' ? 'active' : '') %>
-	<%= tab 'money', "Sales", {controller: :qb_transactions, context: nil, action: :index}, {}, {class: (params[:context] =="qb_transactions" ? 'active' : '')} %>
-	<%#= top_tab 'money', 'Inv/Sale/Pay', QbTransaction %>
-	<%= tab 'dollar', 'Prices', {controller: :qb_item_prices, context: nil}, action: :index %>
-	<%= tab 'payments', 'Payments', {controller: :qb_item_prices, context: nil}, action: :index %>
-	<%= tab 'sap_exports', 'Sap Exports', {controller: :qb_item_prices, context: nil}, action: :index %>
+	<%= tab 'money', "Sales", {controller: :qb_transactions, context: nil, action: :new}, {}, {class: (params[:context] =="qb_transactions" ? 'active' : '')} %>
+	
+	<%= top_tab 'usd', 'Prices', QbItemPrice %>
+
+	<%= tab 'money', 'Payments', {context: nil, controller: :qb_transactions, is_new: false, action: :index} %>
+
+	<%= tab 'cloud-upload', 'Sap Exports', {controller: :sap_exports, context: nil}, action: :index %>
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params[:context] == 'user' ? 'active' : '') %>
 
 	<div class="right">
@@ -47,7 +50,6 @@
 		<div class="clear"></div>
 	</div>
 <% end %>
-
 <% if is_permit %>
 	<div class="tabs">
 		<%= tab 'cutlery', 'Food', {controller: :fd_establishments, context: nil, action: :index}, {}, class: (is_fd ? 'active' : '') %>
@@ -114,13 +116,6 @@
 	</div>
 <% end %>
 
-<% if is_qb %>
-	<div class="tabs">
-		<%= tab 'list', 'List', {context: nil, controller: :qb_transactions, action: :index} %>
-		<%= tab 'plus-circle', 'New', {context: nil, controller: :qb_transactions, action: :new} %>
-		<div class="clear"></div>
-	</div>
-<% end %>
 
 <% if is_other %>
 	<div class="tabs">

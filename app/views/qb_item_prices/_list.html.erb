@@ -1,0 +1,21 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%"><%= list_check_all %>&nbsp;ID<br>Active</th>
+			<th width="1%" class="tr">Price<br>Div</th>
+			<th width="1%">GL<br>Cost&nbsp;Center</th>
+			<th>Item<br>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= list_check_id o.id %>&nbsp;<%= o.id %><br><%= yn o.active %></td>
+				<td class="nobr tr"><%= n2 o.price %><% if o.is_percent %>%<% end %><%= lbl 'qbdiv', o.division %></td>
+				<td class="nobr"><%= o.ledger %> <%= o.qb_ledger.try(:name) %>&nbsp;<br><%= o.cost_center %> <%= o.qb_cost_center.try(:name) %></td>
+				<td><%= link_to blank_tag(colon_to_arrow(o.full_path)), controller: :qb_item_prices, action: :view, id: o.id %><br><%= o.description %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -1,0 +1,51 @@
+<%= partial 'division_field', f: f, o: o %>
+<%= f.tr_check_box :active, label: 'Active', text: 'Uncheck to make inactive' %>
+<%= f.tr_select :parent_id, o.parent ? [[o.parent.full_path, o.parent.id, title: ' ']] : [], {label: 'Parent'}, style: 'width: 400px;' %>
+<%= f.tr_text_field :name, label: 'Name', req: true %>
+<tr>
+	<th>Price</th>
+	<td>
+		<%= f.text_field :price, style: 'width: 100px; text-align: right;', class: 'n2' %>
+		<label><%= f.check_box :is_percent %> Percent</label>
+	</td>
+</tr>
+<%= f.tr_text_field :ledger, label: 'GL', style: 'width: 100px;' %>
+<%= f.tr_text_field :cost_center, label: 'Cost Center', style: 'width: 100px;' %>
+<%= f.tr_text_area :description, label: 'Description', class: 'r2' %>
+<script>
+
+	init_path_select2({
+		select: '#obj_parent_id',
+		url: '<%= url_for context: nil, context_id: nil, controller: :qb_item_prices, action: :autocomplete %>',
+		params: function(params) {
+			params.division = $('#obj_division input:checked').val();
+		}
+	});		
+
+	init_autocomplete({
+		input: '#obj_ledger',
+		params: function(params) {
+			params.type = 'GL';
+		},
+		url: '<%= url_for context: nil, context_id: nil, controller: :qb_ledgers, action: :autocomplete %>',
+		item: function(i) {
+			i.label = i.code + ' ' + i.name;
+			i.value = i.code;
+		},
+		minLength: 0
+	});
+	
+	init_autocomplete({
+		input: '#obj_cost_center',
+		url: '<%= url_for context: nil, context_id: nil, controller: :qb_cost_centers, action: :autocomplete %>',
+		params: function(params) {
+			params.division = $('#obj_division :checked').val();
+		},
+		item: function(i) {
+			i.label = i.code + ' ' + i.name;
+			i.value = i.code;
+		},
+		minLength: 0
+	});
+
+</script>
