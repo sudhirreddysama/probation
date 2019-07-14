@@ -1,0 +1,31 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th class="nobr" width="1%"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
+			<th width="1%">Username</th>
+			<th width="1%">Email</th>
+			<th width="1%">Fullname</th>
+			<th width="1%">Level</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
+				<td class="nobr"><%= yn o.active %></td>
+				<% 
+					l = User::LEVELS.rassoc(o.level.to_s) 
+					ve = User::SUB_LEVELS.rassoc(o.ve_level.to_s) 
+					qb = User::SUB_LEVELS.rassoc(o.qb_level.to_s) 
+				%>
+				<td class="nobr"><%= lbl('user', l[1], l[0]) %></td>
+				<td class="nobr"><%= lbl('user', ve[1], ve[0]) %></td>
+				<td class="nobr"><%= lbl('user', qb[1], qb[0]) %></td>
+				<td class="nobr"><%= o.last_login_at.d %></td>
+				<td class="nobr"><%= link_to o.label, action: :view, id: o.id %></td>
+				<td width="49%"><%= [h(o.name), h(o.title)].reject(&:blank?).join(' &middot; ').html_safe %>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

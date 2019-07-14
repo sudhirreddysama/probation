@@ -1,17 +1,29 @@
-<%= partial 'division_field', f: f, o: o %>
-<%= f.tr_check_box :active, label: 'Active', text: 'Uncheck to make inactive' %>
-<%= f.tr_select :parent_id, o.parent ? [[o.parent.full_path, o.parent.id, title: ' ']] : [], {label: 'Parent'}, style: 'width: 400px;' %>
-<%= f.tr_text_field :name, label: 'Name', req: true %>
+<%#= partial 'division_field', f: f, o: o %>
+<%#= f.tr_check_box :active, label: 'Active', text: 'Uncheck to make inactive' %>
+<%#= f.tr_select :parent_id, o.parent ? [[o.parent.full_path, o.parent.id, title: ' ']] : [], {label: 'Parent'}, style: 'width: 400px;' %>
+<tr>
+	<th style="width: 0px;">Division <span class="req">*</span><%= hidden_field_tag 'obj[process_form]', '1' %></th>
+	<td class="subform">
+		<table>
+			<tr id="division_type_head">
+				<th><%= f.radio_button :type, 'immunization' %> Immunization</th>
+				<th><%= f.radio_button :type, 'tb' %> TB</th>
+				<th><%= f.radio_button :type, 'std' %> STD</th>
+			</tr>
+		</table>
+	</td>
+</tr>
+<%= f.tr_text_field :name, label: 'Name', req: true, style: 'width: 200px;' %>
 <tr>
 	<th>Price</th>
 	<td>
 		<%= f.text_field :price, style: 'width: 100px; text-align: right;', class: 'n2' %>
-		<label><%= f.check_box :is_percent %> Percent</label>
+		<!-- <label><%#= f.check_box :is_percent %> Percent</label> -->
 	</td>
 </tr>
-<%= f.tr_text_field :ledger, label: 'GL', style: 'width: 100px;' %>
-<%= f.tr_text_field :cost_center, label: 'Cost Center', style: 'width: 100px;' %>
-<%= f.tr_text_area :description, label: 'Description', class: 'r2' %>
+<%#= f.tr_text_field :ledger, label: 'GL', style: 'width: 100px;' %>
+<%= f.tr_text_field :cost_center, label: 'Code', style: 'width: 100px;' %>
+<%#= f.tr_text_area :description, label: 'Description', class: 'r2' %>
 <script>
 
 	init_path_select2({

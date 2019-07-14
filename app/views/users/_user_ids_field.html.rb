@@ -1,0 +1,41 @@
+<% ids = ((value || []) + [@current_user.id]).uniq %>
+<%= select_tag field, options_for_select(User.where(id: ids).map { |u| [u.username, u.id, title: "#{u.first_name} #{u.last_name}"] }, value), multiple: true, style: 'width: 400px;' %>
+
+<script>
+	var select = $('#<%= id_for_field field %>');
+	select.select2({
+		ajax: {
+			url: '<%= url_for controller: :users, action: :autocomplete, context: nil %>',
+			delay: 250,
+			complete: function(xhr, status) {
+				select.parent().children('.select2').removeClass('busy-bg');
+			},
+			beforeSend: function(xhr, settings) {
+				select.parent().children('.select2').addClass('busy-bg');
+			},
+			processResults: function(data, params) {
+				return {
+					results: $.map(data.data, function(o) {
+						name = o.first_name + ' ' + o.last_name;
+						return {
+							title: name, 
+							id: o.id, 
+							text: o.username, 
+							username: o.username,
+							name: name
+						};
+					}), 
+					pagination: {more: data.page < data.pages}
+				};
+			},
+		},
+		placeholder: 'Type to Search Users...',
+		templateResult: function(data) {
+			return data.name || data.text;
+		},
+		templateSelection: function(data, li) {
+			return data.username || data.text;
+		},
+		closeOnSelect: false,
+	});
+</script>

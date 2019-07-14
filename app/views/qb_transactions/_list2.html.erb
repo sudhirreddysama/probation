@@ -1,0 +1,27 @@
+<style>
+	tr.voided { opacity: .5; background-color: #ccc !important; color: #888; }
+</style>
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= list_check_all %> ID#</th>
+			<th width="1%" class="nobr">Amount#</th>
+			<th width="1%" class="nobr tr">Payment</th>
+			<th width="1%" class="nobr">cc(first_name)</th>
+			<th width="1%" class="nobr">cc(last_name)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %><% if o.voided %> voided<% end %>">
+				<td class="nobr"><%= list_check_id o.id %><% if o.id.to_s != o.num %> <%= o.id %><% end %></td>
+				<td class="nobr"><%= o.num %></td>
+				<td class="nobr tr">$<%= n2 o.amount %></td>
+				<td class="nobr"><%= o.created_at.to_date %></td>
+				<td class="nobr"><%= o.created_by&.username %></td>
+				<td class="nobr"><%= o.division %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>
