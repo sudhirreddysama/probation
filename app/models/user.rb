@@ -9,7 +9,8 @@ class User < ApplicationRecord
 
 	LEVELS = [
 		['User', 'user'],
-		['Admin', 'admin']
+		['Admin', 'admin'],
+		['Manager', 'manager']
 	]
 	
 	SUB_LEVELS = [

@@ -16,20 +16,20 @@
 <div id="home-btns">
 	<% if @current_user.ve_user? || @current_user.ve_admin? %>
 		<a href="<%= url_for context: nil, context_id: nil, controller: :ve_reservations, action: :availability %>">
-			<i class="fa fa-fw fa-3x fa-truck"></i><br>
-			Vehicle Scheduling<br>&amp; Mileage<br>&nbsp;
+			<i class="fa fa-fw fa-3x fa-user"></i><br>
+			Health Clinic<br> Immunizations<br>
 		</a>
 	<% end %>
 	<% if @current_user.admin? %>
-		<a href="<%= url_for context: nil, context_id: nil, controller: :fd_establishments, action: :index %>" style="color: #888;">
-			<i class="fa fa-fw fa-3x fa-book"></i><br>
-			Environmental<br>Health Permits<br><span class="req">(Preview)</span>
+		<a href="<%= url_for context: nil, context_id: nil, controller: :fd_establishments, action: :index %>">
+			<i class="fa fa-fw fa-3x fa-user"></i><br>
+			Health Clinic<br> TB<br></span>
 		</a>
 	<% end %>
 	<% if @current_user.qb_user? || @current_user.qb_admin? %>
-		<a href="<%= url_for context: nil, context_id: nil, controller: :qb_customers, action: :index %>" style="color: #888;">
-			<i class="fa fa-fw fa-3x fa-usd"></i><br>
-			Environmental<br>Health Billing<br><span class="req">(Preview)</span>
+		<a href="<%= url_for context: nil, context_id: nil, controller: :qb_customers, action: :index %>">
+			<i class="fa fa-fw fa-3x fa-user"></i><br>
+			Health Clinic<br> STD<br></span>
 		</a>
 	<% end %>
 </div>

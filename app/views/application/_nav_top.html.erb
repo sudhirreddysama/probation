@@ -26,9 +26,10 @@
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params[:context] == 'home' ? 'active' : '') %>
 	<%= tab 'money', "Sales", {controller: :qb_transactions, context: nil, action: :new}, {}, {class: (params[:context] =="qb_transactions" ? 'active' : '')} %>
 	
-	<%= top_tab 'usd', 'Prices', QbItemPrice %>
+	<%= top_tab 'usd', 'Shaots', QbItemPrice %>
 
-	<%= tab 'money', 'Payments', {context: nil, controller: :qb_transactions, is_new: false, action: :index} %>
+	<%= tab 'money', 'Payments History', {context: nil, controller: :qb_transactions, is_new: false, action: :index} %>
+	<%= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: nil}, action: :index %>
 
 	<%= tab 'cloud-upload', 'Sap Exports', {controller: :sap_exports, context: nil}, action: :index %>
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params[:context] == 'user' ? 'active' : '') %>
