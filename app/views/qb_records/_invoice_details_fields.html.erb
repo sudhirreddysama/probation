@@ -6,7 +6,6 @@
 			<tbody>
 				<tr>
 					<th><div id="lbl_name"><%= (tpl && tpl.label_item_name).presence || 'Item' %></div></th>
-					<th><div id="lbl_desc"><%= (tpl && tpl.label_item_desc).presence || 'Description' %></div></th>
 					<th width="50" class="tr"><div id="lbl_price"><%= (tpl && tpl.label_item_price).presence || 'Price' %></div></th>
 				</tr>
 			</tbody>
@@ -28,7 +27,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th colspan="2" class="tr"><div>Total:</div></th>
+					<th colspan="1" class="tr"><div>Total:</div></th>
 					<th class="tr"><div><span id="new_amount"><%= n2 o.amount %></span><%= f.hidden_field :new_amount, value: o.amount %></div></th>
 				</tr>
 			</tbody>

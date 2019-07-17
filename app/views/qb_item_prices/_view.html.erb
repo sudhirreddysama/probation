@@ -1,11 +1,7 @@
 <div class="view">
 	<%= dl 'ID', o.id %>
-	<%= dl 'Division', o.division %>
 	<%= dl 'Active', yn(o.active) %>
 	<%= dl 'Price', n2(o.price) + (o.is_percent ? '%' : '') %>
-</div>
-<div class="view dl-inline">
-	<%= dl 'Ledger', o.qb_ledger ? link_to(o.qb_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_ledger.id) : o.ledger %>
 </div>
 <div class="view dl-inline">
 	<%= dl 'Cost Center', o.qb_cost_center ? link_to(o.qb_cost_center.label, context: nil, controller: :qb_cost_centers, action: :view, id: o.qb_cost_center.id) : o.cost_center %>
@@ -13,7 +9,4 @@
 <div class="view dl-inline">
 	<% path = (o.id_path_parts.zip(o.path_parts).map { |id, name| link_to(name, id: id) } + [h(o.name)]).join('<i class="fa fa-fw fa-angle-right"></i>').html_safe %>
 	<%= dl 'Item', path %>
-</div>
-<div class="view dl-inline">
-	<%= dl 'Description', o.description %>
 </div>

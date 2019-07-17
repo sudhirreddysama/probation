@@ -5,7 +5,6 @@
 			<tr id="division_type_head">
 				<th><%= f.radio_button :division, 'immunization' %> Immunization</th>
 				<th><%= f.radio_button :division, 'tb' %> TB</th>
-				<th><%= f.radio_button :division, 'std' %> STD</th>
 			</tr>
 		</table>
 	</td>
@@ -23,7 +22,7 @@
 <%end%>
 <tr>
 	<th>Total Amount <span class="req">*</span></th>
-	<td><%= f.text_field :late_amount, style: 'width: 100px;'%></td>
+	<td><%= f.text_field :amount, style: 'width: 100px;'%></td>
 </tr>
 <%= f.hidden_field :date, value: o.date.d %>
 <%= f.hidden_field :type %>
@@ -34,7 +33,6 @@
 			<tr id="division_type_head">
 				<th><%= f.radio_button :payment_type, 'none' %> None</th>
 				<th><%= f.radio_button :payment_type, 'pay' %> Pay</th>
-				<th><%= f.radio_button :payment_type, 'refund' %> Refund</th>
 			</tr>
 		</table>
 	</td>
@@ -43,7 +41,7 @@
 
 <tr>
 	<th>Amount <span class="req">*</span></th>
-	<td><%= f.text_field :late_amount, style: 'width: 100px;'%></td>
+	<td><%= f.text_field :amount, style: 'width: 100px;'%></td>
 </tr>
 
 <% if o.payeezy_post_id %>
