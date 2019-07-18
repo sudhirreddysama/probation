@@ -19,13 +19,9 @@
 	</tr>
 <% else %>
 	<tr>
-		<td class="tl row-icons-td"><%= hidden_field_tag "#{n}[id]", d.id %>
-			<div class="row-icons">
-				<a href="#" class="row-move move"><i class="fa fa-fw fa-arrows"></i></a>
-				<a href="#" class="row-delete red"><i class="fa fa-fw fa-minus-circle"></i></a>
-			</div>
-			<%= select_tag "#{n}[qb_item_price_id]", options_for_select(d.qb_item_price ? [[d.qb_item_price.full_path, d.qb_item_price_id, title: ' ']] : [], d.qb_item_price_id), class: 'd_qb_item_price_id'%>
+		<td class="tl">
+			<%= select_tag "#{n}[qb_item_price_id]", options_for_select(d.qb_item_price ? [[d.qb_item_price.full_path, d.qb_item_price_id, title: ' ']] : [], d.qb_item_price_id), class: 'd_qb_item_price_id', style: 'width: 100%;' %>
 		</td>
-		<td><%= text_field_tag "#{n}[price]", n2?(d.price), class: 'tr' %></td>
+		<td><%= text_field_tag "#{n}[price]", n2?(d.price), class: 'tr n2 d_price' %></td>
 	</tr>
 <% end %>

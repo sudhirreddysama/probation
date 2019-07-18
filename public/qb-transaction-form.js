@@ -973,7 +973,6 @@ function init_late_fee_form1(rails_data) {
 	}
 	
 	def.qb_item_price_id.on('select2:select select2:unselect', function(e) {
-		debugger;
 		var new_val = this.value;
 		var new_txt = def.qb_item_price_id.find('option:selected').text();
 		tbody.find('tr .d_qb_item_price_id').each(function(i, el) {

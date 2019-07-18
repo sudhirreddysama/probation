@@ -20,10 +20,6 @@
 	<% if o.invoice? || (o.sale? && !o.payeezy_post_id && !o.sap_exported?) %>
 <%= partial 'invoice_details_fields', o: o, f: f %>
 <%end%>
-<tr>
-	<th>Total Amount <span class="req">*</span></th>
-	<td><%= f.text_field :amount, style: 'width: 100px;'%></td>
-</tr>
 <%= f.hidden_field :date, value: o.date.d %>
 <%= f.hidden_field :type %>
 <tr>
@@ -39,10 +35,6 @@
 </tr>
 
 
-<tr>
-	<th>Amount <span class="req">*</span></th>
-	<td><%= f.text_field :amount, style: 'width: 100px;'%></td>
-</tr>
 
 <% if o.payeezy_post_id %>
 			<tr>
@@ -114,3 +106,7 @@
 					</tr>
 				<% end %>
 				<% end %>
+<tr>
+	<th>Total Amount <span class="req">*</span></th>
+	<td><%= f.text_field :amount, style: 'width: 100px;'%></td>
+</tr>
