@@ -2,10 +2,10 @@
 	<thead>
 		<tr>
 			<th class="nobr" width="1%"><%= check_box_tag 'list_select_all', 1, false %> ID</th>
-			<th width="1%">Email</th>
-			<th width="1%">Level</th>
 			<th width="1%">Username</th>
+			<th width="1%">Email</th>
 			<th width="1%">Fullname</th>
+			<th width="1%">Level</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -13,7 +13,7 @@
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= check_box_tag 'list[]', o.id, false, class: 'list_select', id: nil %> <%= o.id %></td>
-				<td class="nobr"><%= o.username %></td>
+				<td><%= link_to o.username, :action => :view, :id => o.id %></td>
 				<td class="nobr"><%= o.email %></td>
 				<td class="nobr"><%= o.first_name %>&nbsp;<%= o.last_name %></td>
 				<% 
