@@ -64,34 +64,6 @@
 		<% end %>
 	</div>
 <% end %>
-<div class="view dl-inline">
-	<% if o.invoice? %>
-		<%= dl 'Debit AR', o.qb_debit_ledger ? link_to(o.qb_debit_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_debit_ledger.id) : o.debit_ledger %>
-	<% elsif o.sale? || o.payment? %>
-		<%= dl 'Debit GL', o.qb_debit_ledger ? link_to(o.qb_debit_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_debit_ledger.id) : o.debit_ledger %>
-	<% elsif o.refund? || o.ar_refund? %>
-		<%= dl 'Credit GL', o.qb_credit_ledger ? link_to(o.qb_credit_ledger.label, context: nil, controller: :qb_ledgers, action: :view, id: o.qb_credit_ledger.id) : o.credit_ledger %>
-	<% end %>
-</div>
-<div class="view dl-inline">
-	<% c = o.qb_customer %>
-	<% path = c ? (c.full_id_path_parts.zip(c.full_path_parts).map { |id, name| link_to(name, context: nil, context_id: nil, controller: :qb_customers, action: :view, id: id) }).join('<i class="fa fa-fw fa-angle-right"></i>').html_safe : '' %>
-	<%= dl 'Customer', path %>
-</div>
-<% if o.qb_multi_invoice %>
-	<div class="view dl-inline">
-		<%= dl 'Multi Invoice', link_to(o.qb_multi_invoice.name, context: nil, context_id: nil, controller: :qb_multi_invoices, action: :view, id: o.qb_multi_invoice_id).html_safe %>
-	</div>
-<% end %>
-<% if !o.memo.blank? %>
-	<div class="view dl-inline">
-		<%= dl 'Memo', o.memo %>
-	</div>
-<% end %>
-<div class="view dl-inline">
-	<% t = o.qb_template %>
-	<%= dl 'Template', t ? link_to(o.qb_template.name, context: nil, controller: :qb_templates, action: :view, id: t.id).html_safe : '' %>
-</div>
 <% if o.invoice? || o.sale? %>
 	<%= partial 'invoice_details', o: o, details: o.qb_transaction_details.order('qb_transaction_details.sort') %>
 	<% if o.invoice? %>

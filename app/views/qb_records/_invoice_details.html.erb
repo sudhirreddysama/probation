@@ -3,58 +3,22 @@
 	<table class="sheet wrap">	
 		<tr>
 			<% tpl = @obj.qb_template %>
-			<th>Cost Center</th>
-			<th>Credit Ledger</th>
-			<th><%= (tpl && tpl.label_item_info).presence || 'Info' %></th>
 			<th><%= (tpl && tpl.label_item_name).presence || 'Item' %></th>
-			<th><%= (tpl && tpl.label_item_desc).presence || 'Description' %></th>
-			<th><%= (tpl && tpl.label_item_price).presence || 'Price' %></th>
-			<th><%= (tpl && tpl.label_item_quantity).presence || 'Qty' %></th>
 			<th><%= (tpl && tpl.label_item_amount).presence || 'Amount' %></th>
-			<% if o.class == QbTransaction %>
-				<% if o.invoice? %>
-					<th>Payment</th>
-				<% elsif o.sale? %>
-					<th>Refund</th>
-				<% end %>
-				<th>SAP</th>
-			<% end %>
 		</tr>
 		<% if details.empty? %>
 			<tr><td colspan="10">No charges on invoice.</td></tr>
 		<% else %>
 			<% details.each { |d| %>
 				<tr>
-					<td class="tl"><%= link_to_if d.qb_cost_center, d.cost_center, context: nil, controller: :qb_cost_centers, action: :view, id: d.qb_cost_center.try(:id) %></td>
-					<td class="tl"><%= link_to_if d.qb_credit_ledger, d.credit_ledger, context: nil, controller: :qb_ledgers, action: :view, id: d.qb_credit_ledger.try(:id) %></td>
-					<td class="tl"><%= d.item_info %></td>
 					<td class="tl"><%= link_to_if d.qb_item_price, d.item_name_short, context: nil, controller: :qb_item_prices, action: :view, id: d.qb_item_price_id %></td>
-					<td class="tl"><%= d.item_description %></td>
-					<td class="tr"><% if d.is_percent %><%= '%g' % d.price.to_f %>%<% else %><%= n2 d.price %><% end %></td>
-					<td class="tr"><% if d.quantity %><%= '%g' % d.quantity %><% end %></td>
 					<td class="tr"><%= n2 d.amount %></td>
-					<% if o.class == QbTransaction %>
-						<td>
-							<% if o.invoice? %>
-								<% if d.payment %>
-									<% t = d.payment %>
-									<%= link_to t.date.d, context: nil, context_id: nil, controller: :qb_transactions, action: :view, id: t.id %>
-								<% end %>
-							<% elsif o.sale? %>
-								<%= d.refunded_by.where('voided = 0').map { |r| link_to n2(r.amount), controller: :qb_transactions, action: :view, id: r.qb_transaction_id }.join(', ').html_safe %>
-							<% end %>
-						</td>
-						<td><%= partial 'sap_links', d: d %></td>
-					<% end %>
 				</tr>
 			<% } %>
 		<% end %>
 		<tr>
-			<th colspan="7" class="tr">Total</th>
+			<th colspan="1" class="tr">Total</th>
 			<td class="tr"><%= n2 o.amount %></td>
-			<% if o.class == QbTransaction %>
-				<th colspan="2" class="tr"></th>
-			<% end %>
 		</tr>
 	</table>
 </div>

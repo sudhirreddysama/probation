@@ -189,8 +189,6 @@ class QbTransaction < QbRecord
 		errors.add :division, '^Division is required' if division.blank?
 		errors.add :type, '^Transaction type is required' if type.blank?
 		errors.add :date, '^Date is required' if !date
-		errors.add :qb_customer_id, '^Customer is required' if !qb_customer
-		errors.add :qb_template_id, '^Template is required' if !qb_template
 		errors.add :doc_deliver_via, '^Deliver via is required to add document to delivery queue' if @doc_deliver_via.blank? && ((@doc_generate && @doc_deliver) || @doc_existing_deliver)
 		errors.add :doc_deliver_email, '^Email is required if delivery is "Email" or "Both"' if @doc_deliver_via.in?(['Email', 'Both']) && @doc_deliver_email.blank? && ((@doc_generate && @doc_deliver) || @doc_existing_deliver)
 		if invoice?
@@ -230,7 +228,6 @@ class QbTransaction < QbRecord
 					o.attributes = detail_attr + attr.except('id') # id removal necessary for multi.
 					qu = o.quantity.to_f
 					pr = o.price.to_f
-					errors.add :base, "^Item ##{i + 1}: Each $ charge must have a cost center and credit GL" if pr != 0 && (o.cost_center.blank? || o.credit_ledger.blank?)
 					o.attributes = {
 						debit_ledger: debit_ledger,
 						amount: ((o.is_percent ? pr / 100 * prev_o.try(:amount).to_f : pr) * (qu == 0 ? 1 : qu)).round(2),

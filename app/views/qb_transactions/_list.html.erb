@@ -20,7 +20,9 @@
 				<td class="nobr"><%= o.num %></td>
 				<td class="nobr tr">$<%= n2 o.amount %></td>
 				<td class="nobr"><%= o.created_at.to_date %></td>
-				<td class="nobr"><%= o.created_by&.username %></td>
+				<td class="nobr">
+					<%= link_to blank_tag(colon_to_arrow( o.created_by&.username)), controller: :qb_transactions, action: :view, id: o.id %></td>
+
 				<td class="nobr"><%= o.division %></td>
 			</tr>
 		<% } %>
