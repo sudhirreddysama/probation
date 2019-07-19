@@ -26,10 +26,10 @@
 			Health Clinic<br> TB<br></span>
 		</a>
 	<% end %>
-	<% if @current_user.qb_user? || @current_user.qb_admin? %>
-		<a href="<%= url_for context: nil, context_id: nil, controller: :qb_customers, action: :index %>">
+	<%# if @current_user.qb_user? || @current_user.qb_admin? %>
+		<!-- <a href="<%= url_for context: nil, context_id: nil, controller: :qb_customers, action: :index %>">
 			<i class="fa fa-fw fa-3x fa-user"></i><br>
 			Health Clinic<br> STD<br></span>
-		</a>
-	<% end %>
+		</a> -->
+	<%# end %>
 </div>
