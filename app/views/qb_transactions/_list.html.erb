@@ -13,7 +13,6 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% reset_cycle %>
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %><% if o.voided %> voided<% end %>">
 				<td class="nobr"><%= list_check_id o.id %><% if o.id.to_s != o.num %> <%= o.id %><% end %></td>

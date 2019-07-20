@@ -30,6 +30,7 @@ class QbTransactionsController < QbRecordsController
 		@cond << 'qb_transactions.balance != 0' if @filter.balance_unpaid.to_i == 1
 		@cond << 'qb_transactions.due_date < date(now())' if @filter.past_due.to_i == 1
 		@objs = @model.eager_load(:qb_customer, :qb_cost_center, :created_by)
+		@objs = @objs.where(division: params["division"]) if params["division"].present?
 		super
 		report if params[:process] == 'report'
 		late_fee_redirect if params[:process] == 'late_fee'

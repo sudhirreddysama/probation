@@ -1,3 +1,0 @@
-class TrRecordsController < CrudController
-
-end

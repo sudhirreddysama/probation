@@ -246,6 +246,7 @@ function init_invoice_details(rails_data) {
 		var price = row.find('.d_price');
 		var is_percent = row.find('.d_is_percent');
 		var quntity = row.find('.d_quantity');
+		var amount = $('#obj_amount');
 		init_path_select2({
 			select: qb_item_price_id,
 			url: ROOT_URL + 'qb_item_prices/autocomplete',
@@ -254,11 +255,13 @@ function init_invoice_details(rails_data) {
 			}
 		});
 		qb_item_price_id.on('select2:select', function(e) {
-			debugger;
 			var data = e.params.data;
 			qb_item_price_id.effect('highlight');
 			item_description.val(data.description).effect('highlight');
 			price.val(n2_float(data.price)).effect('highlight');
+			if amount.val() == ""
+				amount.val(0);
+			amount.val(price.val() + amount.val());
 			is_percent.prop('checked', data.is_percent);
 			if(data.cost_center) {
 				cost_center.val(data.cost_center).effect('highlight');
@@ -315,7 +318,6 @@ function init_invoice_details(rails_data) {
 	var detail_fields = rails_data.detail_fields;
 	var details_row_count = $('#new_details tr').length;
 	$('#detail_new').click(function(e) {
-		debugger;
 		e.preventDefault();
 		var row = $(detail_fields.replace(/__NEW_ITEM__/g, details_row_count++));
 		$('#new_details').append(row);
@@ -704,7 +706,6 @@ function init_qb_transaction_form(rails_data) {
 				$('#division_type_head').removeClass('busy-bg');
 			},
 			success: function(data, status, xhr) {
-				debugger;
 				obj_form.html($(data).html());
 				input_setup(obj_form);
 				rails_data.type = $('.obj_type input:checked').val();
