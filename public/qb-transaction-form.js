@@ -259,9 +259,9 @@ function init_invoice_details(rails_data) {
 			qb_item_price_id.effect('highlight');
 			item_description.val(data.description).effect('highlight');
 			price.val(n2_float(data.price)).effect('highlight');
-			if amount.val() == ""
+			if(amount.val() == "")
 				amount.val(0);
-			amount.val(price.val() + amount.val());
+			amount.val(parseFloat(price.val()) + parseFloat(amount.val()));
 			is_percent.prop('checked', data.is_percent);
 			if(data.cost_center) {
 				cost_center.val(data.cost_center).effect('highlight');
