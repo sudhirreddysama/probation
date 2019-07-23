@@ -220,7 +220,7 @@ function init_invoice_details(rails_data) {
 			last_amount = amount;
 			total += amount;
 		});
-		$('#obj_new_amount').val(total);
+		$('#obj_amount').val(total);
 		$('#new_amount').html(n2(total));
 	};
 	
@@ -247,6 +247,9 @@ function init_invoice_details(rails_data) {
 		var is_percent = row.find('.d_is_percent');
 		var quntity = row.find('.d_quantity');
 		var amount = $('#obj_amount');
+
+
+
 		init_path_select2({
 			select: qb_item_price_id,
 			url: ROOT_URL + 'qb_item_prices/autocomplete',
@@ -255,13 +258,15 @@ function init_invoice_details(rails_data) {
 			}
 		});
 		qb_item_price_id.on('select2:select', function(e) {
+			var amt = 0;
 			var data = e.params.data;
 			qb_item_price_id.effect('highlight');
 			item_description.val(data.description).effect('highlight');
 			price.val(n2_float(data.price)).effect('highlight');
-			if(amount.val() == "")
-				amount.val(0);
-			amount.val(parseFloat(price.val()) + parseFloat(amount.val()));
+			
+			// $('#new_details tr').each(function(i, row) { amt += float($(row).children().find('.d_price').val()) })
+
+			// amount.val(amt);
 			is_percent.prop('checked', data.is_percent);
 			if(data.cost_center) {
 				cost_center.val(data.cost_center).effect('highlight');

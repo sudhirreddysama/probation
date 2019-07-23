@@ -242,7 +242,6 @@ class QbTransaction < QbRecord
 			@new_details.each_with_index { |d, i| 
 				d.attributes = {sort: i} 
 			}
-			errors.add :amount, '^Total invoice amount changed' if @new_amount && @new_amount.to_f != amount.to_f
 			errors.add :amount, '^Total must be greater than zero' if amount.to_f <= 0 && sale?
 		elsif refund? && !sap_exported? && !payeezy_post_id
 			@new_details ||= []

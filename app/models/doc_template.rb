@@ -5,14 +5,7 @@ class DocTemplate < ApplicationRecord
 	has_many :documents
 	
 	TPL_MODELS = [
-		['o', FdEstablishment], 
-		['o', FdChurch], 
-		['o', PlPool],
-		['o', TfFacility], 
-		['o', TrChildCamp], 
-		['o', TrDaycare], 
-		['o', TrTanning], 
-		['o', TrOther]
+		['o', FdEstablishment]
 	]
 	
 	def self.base_vars
