@@ -940,8 +940,10 @@ S2.define('select2/results',[
   };
 
   Results.prototype.option = function (data) {
+    var division = $("#division_type_head input:checked");
     var option = document.createElement('li');
     option.className = 'select2-results__option';
+    if(division && division.length > 0 && data.division != division.val()) return option;
 
     var attrs = {
       'role': 'treeitem',

@@ -27,7 +27,7 @@ class QbItemPricesController < QbRecordsController
 		params.page = params.page ? params.page.to_i : 1
 		objs = @model.where(get_where(cond)).order('full_path').paginate(page: params.page, per_page: 50)
 		data = objs.map { |o|
-			o.attributes.slice(*%w{id path id_path name price is_percent description cost_center ledger})
+			o.attributes.slice(*%w{id path id_path name price is_percent description cost_center ledger division})
 		}
 		render json: {data: data, page: params.page, per_page: 50, total: objs.total_entries, pages: objs.total_pages}
 	end

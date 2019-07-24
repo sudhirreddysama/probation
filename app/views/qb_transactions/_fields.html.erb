@@ -3,7 +3,7 @@
 	<td class="subform">
 		<table>
 			<tr id="division_type_head">
-				<th><%= f.radio_button :division, 'immunization' %> Immunization</th>
+				<th><%= f.radio_button :division, 'immunization', required: true %> Immunization</th>
 				<th><%= f.radio_button :division, 'tb' %> TB</th>
 			</tr>
 		</table>
@@ -15,7 +15,7 @@
 </div>
 <tr>
 	<th>Insight EMR # <span class="req">*</span></th>
-	<td><%= f.text_field :num, style: 'width: 100px;' %></td>
+	<td><%= f.text_field :num, style: 'width: 100px;', required: true %></td>
 </tr>
 	<% if o.invoice? || (o.sale? && !o.payeezy_post_id && !o.sap_exported?) %>
 <%= partial 'invoice_details_fields', o: o, f: f %>
@@ -27,7 +27,7 @@
 	<td class="subform">
 		<table>
 			<tr id="division_type_head">
-				<th><%= f.radio_button :payment_type, 'none' %> None</th>
+				<th><%= f.radio_button :payment_type, 'none', required: true %> None</th>
 				<th><%= f.radio_button :payment_type, 'pay' %> Pay</th>
 			</tr>
 		</table>
@@ -46,7 +46,7 @@
 					<th><% if o.refund? || o.ar_refund? %>Refund<% else %>Pay<% end %> Method <% if o.sale? || o.refund? %><span class="req">*</span><% end %></th>
 					<td id="obj_pay_method">
 						<span class="lbl-chk-grp">
-							<label class="lbl-chk"><%= f.radio_button :pay_method, 'CC' %><span class="lbl lbl-qbpmeth-cc">Credit Card</span></label>
+							<label class="lbl-chk"><%= f.radio_button :pay_method, 'CC', required: true %><span class="lbl lbl-qbpmeth-cc">Credit Card</span></label>
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Check' %><span class="lbl lbl-qbpmeth-check">Check</span></label>
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Cash' %><span class="lbl lbl-qbpmeth-cash">Cash</span></label>
 							<% if o.type == 'Payment' %>
@@ -108,5 +108,5 @@
 				<% end %>
 <tr>
 	<th>Total Amount <span class="req">*</span></th>
-	<td><%= f.text_field :amount, style: 'width: 100px;'%></td>
+	<td><%= f.text_field :amount, style: 'width: 100px;', value: 0, required: true%></td>
 </tr>

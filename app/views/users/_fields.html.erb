@@ -3,7 +3,7 @@
 </style>
 <% admin = params[:controller] == 'users' %>
 <% if admin %>
-	<%= f.tr_text_field :username, label: 'Username', req: true, after: '<div>Start typing to search for AD network/pc login.</div>' %>
+	<%= f.tr_text_field :username, label: 'Username', req: true, after: '<div>Start typing to search for AD network/pc login.</div>', required: true %>
 	<%= f.tr_check_box :auth_ldap, label: 'AD Authenticate', text: 'Authenticate through Active Directory (use network/pc login). If checked, password field is not required. Username must match AD login.' %>
 <% else %>
 	<tr>
@@ -11,9 +11,9 @@
 		<td><%= o.username %></td>
 	</tr>
 <% end %>
-<%= f.tr_text_field :first_name, label: 'First Name', req: true %>
-<%= f.tr_text_field :last_name, label: 'Last Name', req: true %>
-<%= f.tr_text_field :email, label: 'Email', req: true, after: (admin ? '&nbsp;<a href="#" id="email-guess"><i class="fa fa-arrow-left">&nbsp;</i>Guess Email</a>' : '') %>
+<%= f.tr_text_field :first_name, label: 'First Name', req: true, required: true %>
+<%= f.tr_text_field :last_name, label: 'Last Name', req: true, required: true %>
+<%= f.tr_text_field :email, label: 'Email', req: true, required: true, after: (admin ? '&nbsp;<a href="#" id="email-guess"><i class="fa fa-arrow-left">&nbsp;</i>Guess Email</a>' : '') %>
 <%#= f.tr_text_field :phone, label: 'Phone' %>
 <%#= f.tr_text_field :title, label: 'Title' %>
 <% str = (o.new_record? || params.action == 'login_edit') ? '' : '<div>Leave blank to keep current password.</div>' %>
@@ -28,7 +28,7 @@
 		<td>
 			<span class="lbl-chk-grp">
 				<% User::LEVELS.each { |l| %>
-					<label class="lbl-chk"><%= f.radio_button :level, l[1] %><span class="lbl lbl-user-<%= l[1] %>"><%= l[0] %></span></label>
+					<label class="lbl-chk"><%= f.radio_button :level, l[1], required: true %><span class="lbl lbl-user-<%= l[1] %>"><%= l[0] %></span></label>
 				<% } %>
 			</span>&nbsp;&nbsp;&nbsp;
 			<label><%= f.check_box :active %> Active</label>

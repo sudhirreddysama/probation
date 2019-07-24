@@ -6,20 +6,20 @@
 	<td class="subform">
 		<table>
 			<tr id="division_type_head">
-				<th><%= f.radio_button :type, 'immunization' %> Immunization</th>
-				<th><%= f.radio_button :type, 'tb' %> TB</th>
+				<th><%= f.radio_button :division, 'immunization', required: true %> Immunization</th>
+				<th><%= f.radio_button :division, 'tb'%> TB</th>
 			</tr>
 		</table>
 	</td>
 </tr>
-<%= f.tr_text_field :name, label: 'Name', req: true, style: 'width: 200px;' %>
+<%= f.tr_text_field :name, label: 'Name', req: true, style: 'width: 200px;', required: true %>
 <tr>
 	<th>Price</th>
 	<td>
-		<%= f.text_field :price, style: 'width: 100px; text-align: right;', class: 'n2' %>
+		<%= f.text_field :price, style: 'width: 100px; text-align: right;', class: 'n2', required: true  %>
 	</td>
 </tr>
-<%= f.tr_text_field :cost_center, label: 'Code', style: 'width: 100px;' %>
+<%= f.tr_text_field :cost_center, label: 'Code', style: 'width: 100px;', required: true  %>
 <script>
 
 	init_path_select2({
