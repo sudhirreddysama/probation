@@ -18,7 +18,7 @@ if Rails.env.development?
 	require 'core_ext'
 end
 
-APP_HUMAN_NAME = 'Environmental Health Clinic'
+APP_HUMAN_NAME = 'Health Clinic'
 ROOT_PATH = Rails.env.development? ? '/dev/' : '/'
 APP_HOST = 'ehpermits.monroecounty.gov'
 ROOT_URL = 'https://' + APP_HOST + ROOT_PATH

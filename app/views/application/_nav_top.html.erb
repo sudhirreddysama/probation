@@ -25,8 +25,8 @@
 
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params[:context] == 'home' ? 'active' : '') %>
 	<% if @current_user.qb_user? || @current_user.qb_admin? %>
-		<%= tab 'money', "Sales", {controller: :qb_transactions, context: nil, action: :new}, {}, {class: (params[:context] =="qb_transactions" ? 'active' : '')} %>
-		<%= top_tab 'usd', 'Shaots', QbItemPrice %>
+	<%= tab 'money', "Sales", {controller: :qb_transactions, context: nil, action: :new}, {}, {class: (params[:context] =="qb_transactions" ? 'active' : '')} %>
+	<%= top_tab 'usd', 'Shots', QbItemPrice %>
 
 		<%= tab 'money', 'Payments History', {context: nil, controller: :qb_transactions, is_new: false, action: :index} %>
 	<%end%>	

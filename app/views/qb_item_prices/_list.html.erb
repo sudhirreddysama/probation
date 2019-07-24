@@ -1,7 +1,7 @@
 <table class="data">
 	<thead>
 		<tr>
-			<th width="1%"><%= list_check_all %>&nbsp;ID</th>
+			<th width="1%">ID</th>
 			<th width="1%">Name</th>
 			<th width="1%">Price</th>
 			<th width="1%">Code</th>
@@ -12,7 +12,7 @@
 		<% reset_cycle %>
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
-				<td class="nobr"><%= list_check_id o.id %>&nbsp;<%= o.id %></td>
+				<td class="nobr"><%= o.id %></td>
 				<td class="nobr"><%= link_to blank_tag(colon_to_arrow(o.full_path)), controller: :qb_item_prices, action: :view, id: o.id %></td>
 				<td class="nobr"><%= n2 o.price %></td>
 				<td class="nobr"><%= o.cost_center %></td>
