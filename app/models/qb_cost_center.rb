@@ -1,8 +1,8 @@
 class QbCostCenter < QbRecord
 
-	include DbChange::Track
-	include DbGroup::HasGroups
-	has_many :documents, as: :obj
+	# include DbChange::Track
+	# include DbGroup::HasGroups
+	# has_many :documents, as: :obj
 
 	def label; "#{code_was} #{name_was}"; end
 	

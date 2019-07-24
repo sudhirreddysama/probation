@@ -2,7 +2,7 @@ class QbItemPrice < QbRecord
 
 	self.inheritance_column = nil
 
-	include DbChange::Track
+	# include DbChange::Track
 	#include DbGroup::HasGroups
 	#has_many :documents, as: :obj
 

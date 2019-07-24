@@ -8,7 +8,7 @@ class QbTransactionDetail < QbRecord
 	
 	def self.can_create? u, *args; false; end
 	
-	include DbChange::Track
+	# include DbChange::Track
 	#has_many :documents, as: :obj
 
 	def label; "Transaction Detail #{id}"; end

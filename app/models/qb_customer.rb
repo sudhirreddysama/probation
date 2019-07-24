@@ -6,9 +6,9 @@ class QbCustomer < QbRecord
 
 	self.inheritance_column = nil
 
-	include DbChange::Track
-	include DbGroup::HasGroups
-	has_many :documents, as: :obj
+	# include DbChange::Track
+	# include DbGroup::HasGroups
+	# has_many :documents, as: :obj
 
 	def label; name_was; end
 	

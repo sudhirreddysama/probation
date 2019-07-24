@@ -56,7 +56,7 @@ class QbTransactionsController < QbRecordsController
 		@obj.type = "Sale"
 		if request.post?
 			@obj.created_by = @obj.updated_by = @current_user
-			after_new if @obj.save!
+			after_new if @obj.save
 		end	
 	end
 	

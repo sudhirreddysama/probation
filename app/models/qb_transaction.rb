@@ -6,8 +6,8 @@ class QbTransaction < QbRecord
 	
 	self.inheritance_column = nil
 
-	include DbChange::Track
-	has_many :documents, as: :obj, dependent: :destroy
+	# include DbChange::Track
+	# has_many :documents, as: :obj, dependent: :destroy
 
 	def label; [num_was, type_was, date_was.d].reject(&:blank?) * ' '; end
 	
@@ -426,7 +426,7 @@ class QbTransaction < QbRecord
 	end
 	
 	def transaction_document
-		@transaction_document ||= documents.where(type: 'QbTransactionDoc').order('created_at desc').first
+		# @transaction_document ||= documents.where(type: 'QbTransactionDoc').order('created_at desc').first
 	end
 	
 	def handle_before_save
