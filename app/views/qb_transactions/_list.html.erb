@@ -4,7 +4,7 @@
 <table class="data">
 	<thead>
 		<tr>
-			<th width="1%" class="nobr"><%= list_check_all %> ID#</th>
+			<th width="1%" class="nobr"> ID#</th>
 			<th width="1%" class="nobr">Insight EMR#</th>
 			<th width="1%" class="nobr tr">Total</th>
 			<th width="1%" class="nobr">Create At</th>
@@ -15,7 +15,7 @@
 	<tbody>
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %><% if o.voided %> voided<% end %>">
-				<td class="nobr"><%= list_check_id o.id %><% if o.id.to_s != o.num %> <%= o.id %><% end %></td>
+				<td class="nobr"><% if o.id.to_s != o.num %> <%= o.id %><% end %></td>
 				<td class="nobr"><%= o.num %></td>
 				<td class="nobr tr">$<%= n2 o.amount %></td>
 				<td class="nobr"><%= o.created_at.to_date %></td>
