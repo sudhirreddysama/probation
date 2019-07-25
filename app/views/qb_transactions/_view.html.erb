@@ -7,9 +7,6 @@
 			<%= form_tag(action: :gendoc, id: o.id ) %><button><i class="fa fa-print"></i> Generate <%= o.type %> PDF</button></form>
 		<% end %>
 		<% url = {context: nil, controller: :qb_transactions, action: :new, from_transaction: o.id} %>
-		<% if o.sale? %>
-			<%= link_to fa('money', 'Refund Sale'), url + {type: 'Refund'} %>
-		<% end %>
 		<% if o.invoice? %>
 			<%= link_to fa('money', 'Pay Invoice'), url + {type: 'Payment'} %>
 		<% end %>

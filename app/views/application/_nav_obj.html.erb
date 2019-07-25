@@ -5,7 +5,6 @@
 		<%= tab 'search', 'View', url + {action: :view} %>
 		<%= tab 'edit', 'Edit', url + {action: :edit} if obj.can_edit? @current_user %>
 		<%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
-		<%= tab 'clone', 'Clone', url + {action: :copy} if obj.can_clone? @current_user, context_obj %>
 		<% if !params.popup %>
 			<% if obj.respond_to?(:documents) %>
 				<%= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>

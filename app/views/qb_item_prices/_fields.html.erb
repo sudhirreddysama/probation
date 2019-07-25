@@ -16,10 +16,10 @@
 <tr>
 	<th>Price</th>
 	<td>
-		<%= f.text_field :price, style: 'width: 100px; text-align: right;', class: 'n2', required: true  %>
+		<%= f.text_field :price, style: 'width: 100px; text-align: right;', class: 'n2', req: true, required: true  %>
 	</td>
 </tr>
-<%= f.tr_text_field :cost_center, label: 'Code', style: 'width: 100px;', required: true  %>
+<%= f.tr_text_field :cost_center, label: 'Code', style: 'width: 100px;', req: true, required: true  %>
 <script>
 
 	init_path_select2({
