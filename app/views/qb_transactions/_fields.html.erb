@@ -46,6 +46,7 @@
 					<th><% if o.refund? || o.ar_refund? %>Refund<% else %>Pay<% end %> Method <% if o.sale? || o.refund? %><span class="req">*</span><% end %></th>
 					<td id="obj_pay_method">
 						<span class="lbl-chk-grp">
+							
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'CC', required: true %><span class="lbl lbl-qbpmeth-cc">Credit Card</span></label>
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Check' %><span class="lbl lbl-qbpmeth-check">Check</span></label>
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Cash' %><span class="lbl lbl-qbpmeth-cash">Cash</span></label>
@@ -53,17 +54,7 @@
 								<label class="lbl-chk"><%= f.radio_button :pay_method, 'Credit' %><span class="lbl lbl-qbpmeth-credit">Credit</span></label>
 							<% end %>
 						</span>
-						<span class="lbl-chk-grp method-cc" style="<% if !o.pay_cc? %>display: none;<% end %>" id="obj_cc_option">
-							<% if o.refund? || o.ar_refund? %>
-								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Void', data: {cc: 'prev'} %><span class="lbl lbl-paycc-void">Void</span></label>
-								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Tagged Refund', data: {cc: 'prev'} %><span class="lbl lbl-paycc-tagged-refund">Tagged Refund</span></label>
-								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Token Refund', data: {cc: 'prev'} %><span class="lbl lbl-paycc-token-refund">Token Refund</span></label>
-								<label class="lbl-chk"><%= f.radio_button :cc_option, 'New CC Refund', data: {cc: 'new'} %><span class="lbl lbl-paycc-new-cc-refund">New CC Refund</span></label>
-							<% else %>
-								<label class="lbl-chk"><%= f.radio_button :cc_option, 'New CC', data: {cc: 'new'} %><span class="lbl lbl-paycc-new-cc">New CC</span></label>
-								<label class="lbl-chk"><%= f.radio_button :cc_option, 'Previous CC', data: {cc: 'prev'} %><span class="lbl lbl-paycc-previous-cc">Previous CC</span></label>
-							<% end %>
-						</span>				
+									
 					</td>
 				</tr>
 				<% new_cc = o.cc_option.in?(['New CC', 'New CC Refund']) %>

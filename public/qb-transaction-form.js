@@ -548,11 +548,11 @@ function init_obj_form(rails_data) {
 				$('.method-check').show().find(':input').prop('disabled', false);
 			}
 			else if(val == 'CC') {
-				$('.method-cc').show().find(':input').prop('disabled', false);
-				var cc_opt = cc_option_checks.filter(':checked').data('cc');
-				if(cc_opt) {
-					$('.cc-' + cc_opt).show().find(':input').prop('disabled', false);
-				}
+				$('.cc-new').show().find(':input').prop('disabled', false);
+				// var cc_opt = cc_option_checks.filter(':checked').data('cc');
+				// if(cc_opt) {
+				// 	$('.cc-' + cc_opt).show().find(':input').prop('disabled', false);
+				// }
 			}
 			else if(val == 'Credit') {
 				$('.method-credit').show().find(':input').prop('disabled', false);
