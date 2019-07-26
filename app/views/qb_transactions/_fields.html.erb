@@ -48,6 +48,7 @@
 						<span class="lbl-chk-grp">
 							
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'CC', required: true %><span class="lbl lbl-qbpmeth-cc">Credit Card</span></label>
+							<%= f.hidden_field :cc_option, value: 'New CC'%>
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Check' %><span class="lbl lbl-qbpmeth-check">Check</span></label>
 							<label class="lbl-chk"><%= f.radio_button :pay_method, 'Cash' %><span class="lbl lbl-qbpmeth-cash">Cash</span></label>
 							<% if o.type == 'Payment' %>
