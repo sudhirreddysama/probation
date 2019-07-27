@@ -3,7 +3,7 @@
 <%= pages %>
 <% if @objs.empty? %>
 	<%= partial 'empty' %>
-<% elsif params[:is_new] == "false" %>
+<% elsif params[:is_new] == "false" || session[:is_new] == "false"%>
 	<%= partial 'list2', objs: @objs %>
 <%else%>
 	<%= partial 'list', objs: @objs %>

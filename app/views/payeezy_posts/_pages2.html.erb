@@ -1,0 +1,11 @@
+<% purchase, refund, void_purchase, void_refund = objs_unpaginated.where(transaction_approved: true).pluck(
+	'sum(if(transaction_type = "00", dollar_amount, 0))',
+	'sum(if(transaction_type in ("04", "34"), dollar_amount, 0))',
+	'sum(if(transaction_type = "33" and prev_type = "00", dollar_amount, 0))',
+	'sum(if(transaction_type = "33" and prev_type in ("04", "34"), dollar_amount, 0))',
+)[0].map(&:to_f) %>
+<% if purchase != 0 %><span><i class="dim">Purchase:</i> $<%= n2(purchase) %></span><% end %>
+<% if refund != 0 %><span><i class="dim">Refund:</i> $<%= n2(refund) %></span><% end %>
+<% if void_purchase != 0 %><span><i class="dim">Void Purchase:</i> $<%= n2(void_purchase) %></span><% end %>
+<% if void_refund != 0 %><span><i class="dim">Void Refund:</i> $<%= n2(void_refund) %></span><% end %>
+<span><i class="dim">Total:</i> $<%= n2(purchase - refund - void_purchase + void_refund) %></span>

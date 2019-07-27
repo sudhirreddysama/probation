@@ -1,0 +1,31 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th width="1%" class="nobr"><%= list_check_all %> ID</th>
+			<th width="1%" class="nobr">Created</th>
+			<th width="1%" class="nobr">Type</th>
+			<th width="1%" class="nobr tr">Amt</th>
+			<th width="1%" class="nobr">Aprv</th>
+			<th width="1%" class="nobr">Auth</th>
+			<th width="99%" class="nobr">Name</th>
+			<th width="1%" class="nobr">Prev Type</th>
+			<th width="1%" class="nobr">Prev Auth</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= list_check_id o.id %> <%= o.id %></td>
+				<td class="nobr"><%= o.created_at.dt %></td>
+				<td class="nobr"><%= o.type_and_name %></td>
+				<td class="nobr tr"><%= n2 o.dollar_amount %></td>
+				<td class="nobr"><%= yn o.transaction_approved %></td>
+				<td class="nobr"><%= o.authorization_num %></td>
+				<td><%= link_to blank_tag(o.card_name), action: :view, id: o.id %></td>
+				<td class="nobr"><%= o.prev_type_and_name %></td>
+				<td class="nobr"><%= o.prev_authorization_num %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>
