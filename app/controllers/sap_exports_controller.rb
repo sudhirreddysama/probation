@@ -5,6 +5,7 @@ class SapExportsController < CrudController
 	end
 	
 	def index
+		@date_types = [["Created At", "sap_exports.created_at"], ["Cutoff Date", "sap_exports.cutoff_date"]]
 		generic_filter_setup
 		super
 	end

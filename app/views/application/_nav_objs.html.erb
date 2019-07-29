@@ -1,8 +1,8 @@
 <% url = {context: context, controller: controller} %>
 <div class="tabs" id="objs-tabs">
 	<%= partial 'nav_pre', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
-	<% if params[:is_new].present? %>
-		<% url + {is_new: params[:is_new]}  %>
+	<% if params[:is_new].present? || session[:is_new] %>
+		<% url + {is_new: "false"}  %>
 		<% session[:is_new] = params[:is_new] %>
 	<%else%>
 		<% session[:is_new] = params[:is_new] %>

@@ -1,8 +1,11 @@
 <% if @filter %>
 	<%= form_for(:filter, html: {class: 'filter', id: 'filter-form'}, builder: TableFormBuilder) { |f| %>
 		<table class="form">
-			<%= partial 'filter_search_sort', f: f %>
-			
+			<% if @date_types %>
+				<%= partial 'filter_dates', f: f, o: @filter, date_preset_name: 'filter[date_preset]', date_preset_value: @filter.date_preset %>
+			<%else%>
+				<%= partial 'filter_search_sort', f: f %>
+			<% end %>
 			<tr>
 				<th></th>
 				<td class="btns">

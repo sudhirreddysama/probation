@@ -1,7 +1,11 @@
+<%if @date_types %>
+<button type="submit" name="Cashier Summary" value="Cashier Summary"><i class="fa fa-check"></i> Cashier Summary</button>
+<%else%>
 <button type="submit" name="apply" value="apply"><i class="fa fa-check"></i> Apply</button>
 <%if params[:is_new] %>
 	<%= hidden_field_tag :is_new, false %>
 	<%= link_to '<b>x</b> Clear Filter'.html_safe, {context: nil, controller: :qb_transactions, is_new: false, action: :index, clear: true} %>
 <%else%>
 	<button type="submit" name="clear" value="clear"><i class="fa fa-close"></i> Clear Filter</button>
+<%end%>
 <%end%>

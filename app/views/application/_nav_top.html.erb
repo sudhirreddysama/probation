@@ -30,9 +30,11 @@
 
 		<%= tab 'money', 'Payments History', {context: nil, controller: :qb_transactions, is_new: false, action: :index} %>
 	<%end%>	
-	<%= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: nil}, action: :index %>
+	<%#= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: nil}, action: :index %>
+	<%#= tab 'cloud-upload', 'Reports', {:controller => :report, :action => :index}, {}, {:class => 'tab-report'} %>
 
-	<%= tab 'cloud-upload', 'Sap Exports', {controller: :sap_exports, context: nil}, action: :index %>
+
+	<%= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: nil}, action: :index %>
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params[:context] == 'user' ? 'active' : '') %>
 
 	<div class="right">

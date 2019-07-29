@@ -1,11 +1,11 @@
 <tr>
 	<th>Date Range</th>
 	<td class="nobr inp-row">
-		<%= f.select :date_type, @date_types, {}, style: 'width: 150px;' %>
+		<%= f.hidden_field :date_type, value: @date_types.first[1]%>
 		<span style="display: inline-block;">&nbsp;&nbsp;From:</span>
-		<%= f.text_field :from_date, value: o.from_date.d4, class: 'date' %>
+		<%= f.text_field :from_date, value: (o.from_date.d4 || Date.today.d4), class: 'date' %>
 		<span style="display: inline-block;">&nbsp;&nbsp;To:</span>
-		<%= f.text_field :to_date, value: o.to_date.d4, class: 'date' %>
+		<%= f.text_field :to_date, value: (o.to_date.d4 || Date.today.d4), class: 'date' %>
 		<%= partial 'date_presets', :f => f, :o => o, :name => local_assigns[:date_preset_name], :value => local_assigns[:date_preset_value] %>
 	</td>
 </tr>
