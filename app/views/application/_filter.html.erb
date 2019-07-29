@@ -1,7 +1,7 @@
 <% if @filter %>
 	<%= form_for(:filter, html: {class: 'filter', id: 'filter-form'}, builder: TableFormBuilder) { |f| %>
 		<table class="form">
-			<% if @date_types %>
+			<% if @date_types.present? && params[:controller] == "sap_exports" %>
 				<%= partial 'filter_dates', f: f, o: @filter, date_preset_name: 'filter[date_preset]', date_preset_value: @filter.date_preset %>
 			<%else%>
 				<%= partial 'filter_search_sort', f: f %>

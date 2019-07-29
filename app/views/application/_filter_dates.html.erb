@@ -1,7 +1,7 @@
 <tr>
 	<th>Date Range</th>
 	<td class="nobr inp-row">
-		<%= f.hidden_field :date_type, value: @date_types.first[1]%>
+		<%= f.hidden_field :date_type, value: (@date_types.first[1] if @date_types.present?)%>
 		<span style="display: inline-block;">&nbsp;&nbsp;From:</span>
 		<%= f.text_field :from_date, value: (o.from_date.d4 || Date.today.d4), class: 'date' %>
 		<span style="display: inline-block;">&nbsp;&nbsp;To:</span>
