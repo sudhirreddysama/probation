@@ -8,6 +8,7 @@ class CrudController < ApplicationController
 	def self.tab_label; to_s[0..-11].pluralize.titleize; end
 	
 	def index
+		@model ||= params.controller.classify.constantize
 		@objs = (@objs || @model).includes(@inc).references(@ref).where(get_where(@cond))
 		o = get_order_auto
 		@objs = @objs.reorder(o) if o
@@ -57,6 +58,13 @@ class CrudController < ApplicationController
 		elsif params[:process] == 'doc_bulk'
 			doc_bulk_redirect
 		else
+			if @filter.present? && @filter["from_date"] && @filter["to_date"]
+				@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
+				@results = []
+				@objs.group_by(&:pay_method).each do |k,v| 
+					@results.push({type: k, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+				end
+			end
 			@objs_unpaginated = @objs
 			@paginate = false if params[:process]
 			@objs = @objs.paginate(page: params[:page], per_page: 50) if @paginate != false
@@ -243,11 +251,11 @@ class CrudController < ApplicationController
 	
 	def load_model
 		@model_class = params.controller.classify.constantize
-		if params.context
-			@context_class = params.context.classify.constantize
-			@context_model = @context_class
-			@context_obj = @context_model.find params.context_id if params.context_id
-		end
+		# if params.context
+		# 	@context_class = params.context.classify.constantize
+		# 	@context_model = @context_class
+		# 	@context_obj = @context_model.find params.context_id if params.context_id
+		# end
 		@model = @model_class
 		if @context_obj && @context_obj.respond_to?(params.controller)
 			@model =  @context_obj.send(params.controller)

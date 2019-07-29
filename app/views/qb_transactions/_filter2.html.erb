@@ -44,8 +44,6 @@
 	<td><%= f.select :debit_ledgers, @filter.debit_ledgers.map { |i| [i, title: ' '] }, {}, multiple: true, style: 'width: 600px;' %></td>
 </tr>
 
-<%= text_field_tag :is_new, "", @filter.is_new %>
-
 <tr>
 	<th>Credit Ledger(s)</th>
 	<td><%= f.select :credit_ledgers, @filter.credit_ledgers.map { |i| [i, title: ' '] }, {}, multiple: true, style: 'width: 600px;' %></td>
