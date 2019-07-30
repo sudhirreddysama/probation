@@ -61,8 +61,8 @@ class CrudController < ApplicationController
 			if @filter.present? && @filter["from_date"] && @filter["to_date"]
 				@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
 				@results = []
-				@objs.group_by(&:pay_method).each do |k,v| 
-					@results.push({type: k, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+				@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
+					@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
 				end
 			end
 			@objs_unpaginated = @objs

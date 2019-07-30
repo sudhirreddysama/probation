@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th width="1%">Type</th>
+			<th width="1%">Username</th>
 			<th width="1%">Count</th>
 			<th width="1%">Total</th>
 		</tr>
@@ -11,6 +12,7 @@
 		<% @results.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= o.type %></td>
+				<td class="nobr"><%= o.username %></td>
 				<td class="nobr"><%= o[:count] %></td>
 				<td class="nobr"><%= o.total %></td>
 			</tr>
