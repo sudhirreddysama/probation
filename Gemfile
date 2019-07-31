@@ -63,3 +63,7 @@ gem 'exception_notification', '~> 4.2.1'
 gem 'rgb', '~> 0.1.0'
 gem 'icalendar', '~> 2.4.1'
 gem 'activerecord-session_store', '~> 1.1.0'
+
+gem "pdfkit"
+gem "wkhtmltopdf"
+gem 'wkhtmltopdf-binary'

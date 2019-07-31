@@ -58,19 +58,21 @@ class CrudController < ApplicationController
 		elsif params[:process] == 'doc_bulk'
 			doc_bulk_redirect
 		else
-			if @filter.present? && @filter["from_date"] && @filter["to_date"]
-				@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
-				@results = []
-				@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
-					@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
-				end
-			end
+			report if @filter.present? && @filter["from_date"] && @filter["to_date"]
 			@objs_unpaginated = @objs
 			@paginate = false if params[:process]
 			@objs = @objs.paginate(page: params[:page], per_page: 50) if @paginate != false
 		end
 	end
 	
+	def report
+		@results = []
+		@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
+		@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
+			@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+		end
+	end
+
 	def grid
 		index
 		return if performed?
@@ -266,7 +268,12 @@ class CrudController < ApplicationController
 	end
 
 	def load_obj
-		@obj = @model.find(params.id)
+		if params.id == "reports"
+			@obj = SapExport.new
+			report
+		else
+			@obj = @model.find(params.id)
+		end
 		@obj.current_user = @current_user
 		@obj.current_request = request
 	end
