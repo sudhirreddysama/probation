@@ -1,20 +1,60 @@
-<table class="data">
-	<thead>
-		<tr>
-			<th width="1%">Type</th>
-			<th width="1%">Username</th>
-			<th width="1%">Count</th>
-			<th width="1%">Total</th>
-		</tr>
-	</thead>
-	<tbody>
-		<% @results.each { |o| %>
-			<tr class="<%= cycle 'odd', 'even' %>">
-				<td class="nobr"><%= o.type %></td>
-				<td class="nobr"><%= o.username %></td>
-				<td class="nobr"><%= o[:count] %></td>
-				<td class="nobr"><%= o.total %></td>
+<%amount=0%>
+<%if(params.id == "cacheir details") %>
+	<table class="data">
+		<thead>
+			<tr>
+				<th width="1%">ID</th>
+				<th width="1%">Cashierd At</th>
+				<th width="1%">Payment</th>
+				<th width="1%">Division</th>
+				<th width="1%">Insight EMR-ID</th>
+				<th width="1%">Total Customer</th>
 			</tr>
-		<% } %>
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			<% @objs.each { |o| %>
+				<tr class="<%= cycle 'odd', 'even' %>">
+					<td class="nobr"><%= o.id %></td>
+					<td class="nobr"><%= o.date %></td>
+					<td class="nobr"><%= o.pay_method %></td>
+					<td class="nobr"><%= o.division %></td>
+					<td class="nobr"><%= o.num %></td>
+					<td class="nobr"><%= o.amount.to_f %></td>
+					<% amount += o.amount.to_f %>
+				</tr>
+			<% } %>
+			<tr>
+				<td colspan="4"></td>
+				<td> <b>Total Amount : </b></td>
+				<td> <%= amount %></td>
+			</tr>
+		</tbody>
+	</table>
+<%else%>
+	<table class="data">
+		<thead>
+			<tr>
+				<th width="1%">Type</th>
+				<th width="1%">Username</th>
+				<th width="1%">Count</th>
+				<th width="1%">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @results.each { |o| %>
+				<tr class="<%= cycle 'odd', 'even' %>">
+					<td class="nobr"><%= o.type %></td>
+					<td class="nobr"><%= o.username %></td>
+					<td class="nobr"><%= o[:count] %></td>
+					<td class="nobr"><%= o.total %></td>
+					<% amount += o.total %>
+				</tr>
+			<% } %>
+			<tr>
+				<td colspan="2"></td>
+				<td> <b>Total Amount : </b></td>
+				<td> <%= amount %></td>
+			</tr>
+		</tbody>
+	</table>
+<%end%>

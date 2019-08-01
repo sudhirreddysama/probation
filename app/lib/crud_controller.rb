@@ -68,8 +68,10 @@ class CrudController < ApplicationController
 	def report
 		@results = []
 		@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
-		@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
-			@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+		if(params.id != "cacheir details")
+			@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
+				@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+			end
 		end
 	end
 
@@ -268,7 +270,7 @@ class CrudController < ApplicationController
 	end
 
 	def load_obj
-		if params.id == "reports"
+		if params.id == "reports" || params.id == "cacheir details"
 			@obj = SapExport.new
 			report
 		else

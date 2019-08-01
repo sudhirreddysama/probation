@@ -12,14 +12,22 @@
 	</thead>
 	<tbody>
 		<% reset_cycle %>
+		<% amount = 0 %>
 		<% @results.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= o.type %></td>
 				<td class="nobr"><%= o.username %></td>
 				<td class="nobr"><%= o[:count] %></td>
 				<td class="nobr"><%= o.total %></td>
+				<% amount += o.total %>
 			</tr>
+
 		<% } %>
+		<tr>
+			<td colspan="2"></td>
+			<td> <b>Total Amount : </b></td>
+			<td> <%= amount %></td>
+		</tr>
 	</tbody>
 </table>
 
