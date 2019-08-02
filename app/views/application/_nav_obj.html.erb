@@ -3,17 +3,19 @@
 	<% url.id = obj.id %>
 	<div class="tabs" id="obj-tabs">
 		<%= tab 'search', 'View', url + {action: :view} %>
-		<%= tab 'edit', 'Edit', url + {action: :edit} if obj.can_edit? @current_user %>
-		<%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
-		<% if !params.popup %>
-			<% if obj.respond_to?(:documents) %>
-				<%= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
+		<% if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
+			<%= tab 'edit', 'Edit', url + {action: :edit} if obj.can_edit? @current_user %>
+			<%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
+			<% if !params.popup %>
+				<% if obj.respond_to?(:documents) %>
+					<%= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
+				<% end %>
+				<% if obj.respond_to?(:db_changes) %>
+					<%= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: obj.id}, action: :index %>
+				<% end %>
 			<% end %>
-			<% if obj.respond_to?(:db_changes) %>
-				<%= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: obj.id}, action: :index %>
-			<% end %>
+			<%= partial 'nav2', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 		<% end %>
-		<%= partial 'nav2', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 		<div class="clear"></div>
 	</div>
 <% end %>

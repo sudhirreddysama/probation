@@ -76,7 +76,7 @@ class User < ApplicationRecord
 		update_attributes({activation_key: k, activation_key_set: Time.now})
 	end
 	
-	def admin?; level.admin?; end
+	def admin?; (level.admin? || level.manager?); end
 	
 	def qb_admin?; qb_level.admin?; end
 	def ve_admin?; ve_level.admin?; end

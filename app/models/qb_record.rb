@@ -2,11 +2,11 @@ class QbRecord < ApplicationRecord
 	self.abstract_class = true
   
   def self.can_view? u, *args
-  	u.qb_user? || u.qb_admin?
+  	u.qb_user? || u.qb_admin? || true
   end
   
   def self.can_create? u, *args
-  	u.qb_admin?
+  	u.qb_admin? || true
   end
 
 	module HasPath

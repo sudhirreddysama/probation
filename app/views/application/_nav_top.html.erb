@@ -24,12 +24,12 @@
 <div id="tabs" class="tabs">
 
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params[:context] == 'home' ? 'active' : '') %>
-	<% if @current_user.qb_user? || @current_user.qb_admin? %>
+	<%# if @current_user.qb_user? || @current_user.qb_admin? %>
 	<%= tab 'money', "Sales", {controller: :qb_transactions, context: "sales", action: :index}, {}, {class: (params[:context] =="sales" ? 'active' : '')} %>
 	<%= top_tab 'usd', 'Shots', QbItemPrice %>
 
 	<%= tab 'money', 'Payments History', {context: "payment_history", controller: :qb_transactions, action: :index}, {}, {class: (params[:context] =="payment_history" ? 'active' : '')} %>
-	<%end%>	
+	<%#end%>	
 	<%= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: "reports", action: :index}, {}, class: (params[:context] == 'reports' ? 'active' : '') %>
 	<%= tab 'cloud-upload', 'Sap Exports', {:controller => :sap_exports, context: "sap_exports", action: :index}, {}, class: (params[:context] == 'sap_exports' ? 'active' : '')%>
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params[:context] == 'user' ? 'active' : '') %>

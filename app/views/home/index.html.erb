@@ -14,7 +14,7 @@
 	</style>
 <% } %>
 <div id="home-btns">
-	<% if @current_user.ve_user? || @current_user.ve_admin?%>
+	<%# if @current_user.ve_user? || @current_user.ve_admin?%>
 		<a href="<%= url_for controller: :qb_transactions, action: :index, division: 'immunization' %>">
 			<i class="fa fa-fw fa-3x fa-user"></i><br>
 			Health Clinic<br> Immunizations<br>
@@ -23,4 +23,5 @@
 			<i class="fa fa-fw fa-3x fa-user"></i><br>
 			Health Clinic<br> TB<br></span>
 		</a>
+	<%#end%>
 </div>
