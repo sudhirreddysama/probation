@@ -8,6 +8,7 @@
 				<th width="1%">Payment</th>
 				<th width="1%">Division</th>
 				<th width="1%">Insight EMR-ID</th>
+				<th width="1%">Username</th>
 				<th width="1%">Total Customer</th>
 			</tr>
 		</thead>
@@ -19,13 +20,14 @@
 					<td class="nobr"><%= o.pay_method %></td>
 					<td class="nobr"><%= o.division %></td>
 					<td class="nobr"><%= o.num %></td>
+					<td class="nobr"><%= o.created_by&.username %></td>
 					<td class="nobr"><%= o.amount.to_f %></td>
 					<% amount += o.amount.to_f %>
 				</tr>
 			<% } %>
 			<tr>
-				<td colspan="4"></td>
-				<td> <b>Total Amount : </b></td>
+				<td colspan="5"></td>
+				<td> <b>Total Amount:</b></td>
 				<td> <%= amount %></td>
 			</tr>
 		</tbody>
