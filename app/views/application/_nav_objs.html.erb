@@ -8,27 +8,9 @@
 		<% session[:context] ||= params[:context] %>
 	<%end%>
 	<%= tab 'list', 'List', url + {action: :index} %>
-	<%#= tab 'table', 'Grid', url + {action: :grid} %>
 	<% if ((!(context && !context_obj) || params.controller == 'db_groups') && params.context.blank?) || "sales".eql?(context) %>
 		<%= tab 'plus-circle', 'New', url + {action: :new} if model.can_create? @current_user, context_obj %>
 	<% end %>
-	<% if model.respond_to?(:db_groups) && !context %>
-		<%#= tab 'tags', 'Groups', {controller: :db_groups, context: controller.singularize, context_id: nil}, action: :index %>
-	<% end %>
-	
-		<% if controller != 'documents' && !context %>
-			<%#= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: nil}, action: :index %>
-		<% end %>
-		<% if controller != 'db_changes' && !context %>
-			<%#= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: nil}, action: :index %>
-		<% end %>
-		<% if controller != 'saved_filters' && !context %>
-			<%#= tab 'filter', 'Filters', {controller: :saved_filters, context: controller.singularize, context_id: nil}, action: :index %>
-		<% end %>
-	
 	<%= partial 'nav1', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
-	<% if obj && !obj.new_record? %>
-		<%#= tab 'gear', obj.label.truncate(20), url + {id: obj.id, action: :view}, {}, class: 'active' %>
-	<% end %>
 	<div class="clear"></div>
 </div>
