@@ -3,23 +3,7 @@
 	<%= form_tag context: o.class.to_s.underscore, controller: :documents, context_id: o.id, action: :all %>
 		<div class="view">
 			<dl>
-				<dt>Documents</dt>
-				<% if o.can_edit?(@current_user) && !@print %>
-					<dd class="btns">
-						<label class="btn">
-							<i class="fa fa-upload"></i> Upload New File(s)
-							<input type="file" name="obj[upload]" multiple id="document-new" title="Select Files to Upload" style="display: none;">
-						</label>
-						<% if @allow_generate_doc != false %>
-							<%= select_tag 'file_doc_template_id_or_action', options_or_grouped_options_for_select(doc_template_options(controller)), {include_blank: 'New From Template...', class: 'left', style: 'margin-right: 2px;'} %>
-						<% end %>
-						<button id="download_all"><i class="fa fa-download"></i> Download Merged</a>
-						<% if false %><%= link_to fa('file-code-o', 'Generate File'), context: params.controller.singularize, context_id: o.id, controller: :documents, action: :new, 'obj[generated]' => 'pdf' %><% end %>
-						<%= partial 'documents_btns', o: o %>
-					</dd>
-				<% elsif o.documents.empty? %>
-					<dd>None</dd>
-				<% end %>
+				
 			</dl>
 		</div>
 	</div>
@@ -31,7 +15,6 @@
 					<th width="97%">Document (click to download, drag to sort)</th>
 					<th width="1%">Created</th>
 					<th width="1%">User</th>
-					<th width="1%" class="tr">Deliver</th>
 				</tr>
 			</thead>
 			<tbody id="documents-queue"></tbody>

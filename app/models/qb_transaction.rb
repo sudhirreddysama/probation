@@ -6,8 +6,8 @@ class QbTransaction < QbRecord
 	
 	self.inheritance_column = nil
 
-	# include DbChange::Track
-	# has_many :documents, as: :obj, dependent: :destroy
+	include DbChange::Track
+	has_many :documents, as: :obj, dependent: :destroy
 
 	def label; [num_was, type_was, date_was.d].reject(&:blank?) * ' '; end
 	
