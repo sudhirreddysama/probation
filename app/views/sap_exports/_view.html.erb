@@ -32,6 +32,75 @@
 			</tr>
 		</tbody>
 	</table>
+<%elsif "sap_exports".eql?(params.controller) && params.id.to_i > 0 %>
+	<style>
+	tr.invert { background: #000; color: #fff; }
+	tr.invert a { color: #fff; }
+</style>
+<div class="btns">
+	<%= tab 'download', 'Download File', action: :download, id: o.id %>
+</div>
+<div class="view">
+	<%= dl 'ID', o.id %>
+	<%= dl 'Created', o.created_at.dt %>
+	<%= dl 'Cutoff Date', o.cutoff_date.d %>
+	<%= dl '# Lines', o.sap_lines_count %>
+</div>
+<table class="data">
+	<thead>
+		<tr>
+			<th class="tc">View</th>
+			<th>ID</th>
+			<th>Center</th>
+			<th>Credit</th>
+			<th>Reference</th>
+			<th>RefKey1</th>
+			<th>Text</th>
+			<th>DocHead</th>
+			<th>Debit</th>
+			<th>PostDate</th>
+			<th>Assignment</th>
+			<th>RefKey2</th>
+			<th>RefKey3</th>
+			<th class="tr">Amount</th>
+			<th>InvDate</th>
+			<th>Customer</th>
+			<th>Resent</th>
+		</tr>
+	</thead>
+	<% id2 = params.id2.to_i %>
+	<% o.sap_lines.eager_load(:qb_transaction_detail, :pay_qb_transaction_detail).each { |l| %>
+		<tbody class="<%= cycle 'odd', 'even' %>">
+			<tr id="line-<%= l.id %>"<% if l.id == id2 %> class="invert"<% end %>>
+				<td class="tc">
+				<% if l.source %><%= link_to 'View', context: :qb_transaction, context_id: l.source.qb_transaction_id, controller: :qb_transaction_details, action: :view, id: l.source.id %><% end %>
+				</td>
+				<td><%= l.id %></td>
+				<td><%= l.cost_center %></td>
+				<td><%= l.credit %></td>
+				<td><%= l.reference %></td>
+				<td><%= l.reference_key1 %></td>
+				<td><%= l.text %></td>
+				<td><%= l.document_header %></td>
+				<td><%= l.debit %></td>
+				<td><%= l.posting_date.d %></td>
+				<td><%= l.assignment %></td>
+				<td><%= l.reference_key2 %></td>
+				<td><%= l.reference_key3 %></td>
+				<td class="tr"><%= l.amount && '%.2f' % l.amount %></td>
+				<td><%= l.invoice_date.d %></td>
+				<td><%= l.customer %></td>
+				<td><%= l.resent ? 1 : 0 %></td>
+			</tr>
+		</tbody>
+	<% } %>	
+</table>
+<script>
+	var h = window.location.hash;
+	if(h) {
+		$(h).effect('highlight');
+	}
+</script>
 <%else%>
 	<table class="data">
 		<thead>

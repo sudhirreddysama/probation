@@ -1,4 +1,5 @@
 require_relative 'boot'
+require "active_job/railtie"
 
 require 'rails/all'
 
@@ -19,6 +20,6 @@ module Ehpermits2
     
     config.autoload_paths << "#{Rails.root}/app/lib"
 # config.public_file_server.enabled = false
-
+	  config.active_job.queue_adapter = :active_job
   end
 end

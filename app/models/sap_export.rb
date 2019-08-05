@@ -186,6 +186,7 @@ class SapExport < ApplicationRecord
 	end
 	
 	def self.clear_init_create_test
+		puts "Cron job is running.."
 		self.clear_exports
 		self.initialize_exports
 		self.create_test_days
