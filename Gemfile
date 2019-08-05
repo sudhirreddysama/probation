@@ -67,3 +67,4 @@ gem 'activerecord-session_store', '~> 1.1.0'
 gem "pdfkit"
 gem "wkhtmltopdf"
 gem 'wkhtmltopdf-binary'
+gem 'whenever', require: false
