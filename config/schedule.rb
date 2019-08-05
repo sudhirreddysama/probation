@@ -16,6 +16,7 @@
 # every 1.day, at: '00:00 am' do
 #   runner "SapExport.clear_init_create_test"
 # end
+
 env :PATH, ENV['PATH']
 env :GEM_PATH, ENV['GEM_PATH']
 env :GEM_HOME, ENV['GEM_HOME']
@@ -23,8 +24,8 @@ set :environment, "development"
 set :output, {:error => "log/cron_error_log.log", :standard => "log/cron_log.log"}
 
 
-every :minute do
-  	runner "SapExport.clear_init_create_test"
+every 1.day, at: '00:00 am' do
+   rake "test_cron:check_task"
 end
 
 # Learn more: http://github.com/javan/whenever
