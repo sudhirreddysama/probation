@@ -58,10 +58,13 @@ class CrudController < ApplicationController
 		elsif params[:process] == 'doc_bulk'
 			doc_bulk_redirect
 		else
-			report if @filter.present? && @filter["from_date"] && @filter["to_date"]
-			@objs_unpaginated = @objs
-			@paginate = false if params[:process]
-			@objs = @objs.paginate(page: params[:page], per_page: 50) if @paginate != false
+			@results = []
+			if (@filter.present? && @filter["from_date"] && @filter["to_date"])
+				report 
+				@objs_unpaginated = @objs
+				@paginate = false if params[:process]
+				@objs = @objs.paginate(page: params[:page], per_page: 50) if @paginate != false
+			end
 		end
 	end
 	

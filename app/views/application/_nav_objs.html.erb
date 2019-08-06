@@ -1,7 +1,13 @@
 <% url = {context: context, controller: controller} %>
 <div class="tabs" id="objs-tabs">
 	<%= partial 'nav_pre', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
-	<% if [params[:context], session[:context]].include?("payment_history") %>
+	<% if (["sap_exports", "reports"] & [session[:context], params[:context]]).present? %>
+		<% session[:context] = nil %>
+		<% url = url  %>
+	<% elsif "sap_exports".eql?(params.controller) && params.id.to_i > 0 && params[:context].blank? %>
+		<% session[:context] = nil %>
+		<% url = url + {context: "sap_exports"}  %>
+	<% elsif [params[:context], session[:context]].include?("payment_history") %>
 		<% url = {context: "payment_history", controller: "qb_transactions"}  %>
 		<% session[:context] ||= params[:context] %>
 	<%else%>

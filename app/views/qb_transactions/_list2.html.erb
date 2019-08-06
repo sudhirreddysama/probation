@@ -19,7 +19,7 @@
 				<td class="nobr">$<%= n2 o.amount %></td>
 				<td class="nobr">
 					<%#= link_to blank_tag(colon_to_arrow( o.pay_method)), controller: :qb_transactions, action: :view, id: o.id %>
-				<% if o.pay_method == "CC"%>
+				<% if o.pay_method == "CC" && o.payeezy_post%>
 					<%#= link_to blank_tag(o.payeezy_post.card_name), action: :view, id: o.id %>
 					<%= link_to blank_tag(o.pay_method), controller: :payeezy_posts, action: :view, id: o.payeezy_post.id %>
 				<%else%>

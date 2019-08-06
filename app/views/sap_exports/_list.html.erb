@@ -22,6 +22,7 @@
 	</table>
 
 <%else%>
+
 	<div class="btns right" style="margin-top: 4px;">
 		<%= tab 'print', 'Print PDF', {action: :print, id: "reports", from_date: @filter["from_date"], to_date: @filter["to_date"]}, {}, target: '_blank' %>
 	</div>
