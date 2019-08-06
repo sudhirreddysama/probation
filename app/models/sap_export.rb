@@ -81,15 +81,15 @@ class SapExport < ApplicationRecord
 				}
 			end
 			h = {
-				cost_center: detail.cost_center,			
-				credit: detail.credit_ledger,
-				debit: detail.debit_ledger,
+				cost_center: ((detail.qb_transaction.division == "immunization").present? ? '5802050100' : (detail.qb_transaction.division == "tb").present? ? '5802020000' : ''),			
+				credit: '405000',
+				debit: (detail.pay_cc? ? '114040' : (detail.pay_check? ? '100013' : '100013')),
 				amount: detail.amount,
 				document_header: detail.payment? || detail.sale? || detail.refund? ? (
 					detail.pay_cc? ? "#{posting_date.strftime('%m/%d/%Y')} EBS CLEARING" : (detail.pay_cash_check? ? 'Deposit 4' : (detail.pay_credit? ? 'Refund' : ''))
 				) : '',
 				posting_date: posting_date,
-				reference_key2: transaction.num
+				reference_key2: nil
 			}
 			if detail.invoice? || detail.payment? || detail.ar_refund? # Use AR SAP Transfer
 				ref3 = 'EH ITEM'
@@ -144,10 +144,10 @@ class SapExport < ApplicationRecord
 					reference_key1: transaction.id.to_s + detail.document_letter.to_s,
 					resent: nil,
 					text: text,
-					assignment: (detail.pay_cc? ? 'EH CREDIT' : (detail.pay_check? ? 'EH CHECK' : 'EH CASH')),
-					reference_key3: detail.refund? ? 'ehrefund' : 'ehitem',
+					assignment: (detail.pay_cc? ? 'CLINIC CREDIT' : (detail.pay_check? ? 'CLINIC CHECK' : 'CLINIC CASH')),
+					reference_key3: detail.refund? ? '' : 'Shot',
 					invoice_date: transaction.date,
-					customer: nil
+					customer: transaction.num
 				}
 				if h.amount < 0
 					h[:debit], h[:credit] = h.credit, h.debit
