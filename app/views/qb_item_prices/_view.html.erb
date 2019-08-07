@@ -5,9 +5,6 @@
 	<%= dl 'Division', o.division %>
 </div>
 <div class="view dl-inline">
-	<%= dl 'Cost Center', o.qb_cost_center ? link_to(o.qb_cost_center.label, context: nil, controller: :qb_cost_centers, action: :view, id: o.qb_cost_center.id) : o.cost_center %>
-</div>
-<div class="view dl-inline">
 	<% path = (o.id_path_parts.zip(o.path_parts).map { |id, name| link_to(name, id: id) } + [h(o.name)]).join('<i class="fa fa-fw fa-angle-right"></i>').html_safe %>
 	<%= dl 'Item', path %>
 </div>
