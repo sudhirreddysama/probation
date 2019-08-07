@@ -69,7 +69,6 @@
 	<% o.sap_lines.eager_load(:qb_transaction_detail, :pay_qb_transaction_detail).each { |l| %>
 		<tbody class="<%= cycle 'odd', 'even' %>">
 			<tr id="line-<%= l.id %>"<% if l.id == id2 %> class="invert"<% end %>>
-				<td class="tc">
 				<td><%= l.cost_center %></td>
 				<td><%= l.credit %></td>
 				<td><%= l.reference %></td>
