@@ -81,7 +81,7 @@ class SapExport < ApplicationRecord
 				}
 			end
 			h = {
-				cost_center: ((detail.qb_transaction.division == "immunization").present? ? '5802050100' : (detail.qb_transaction.division == "tb").present? ? '5802020000' : ''),			
+				cost_center: ((transaction.division == "immunization").present? ? '5802050100' : (transaction.division == "tb").present? ? '5802020000' : ''),			
 				credit: '405000',
 				debit: (detail.pay_cc? ? '114040' : (detail.pay_check? ? '100013' : '100013')),
 				amount: detail.amount,
