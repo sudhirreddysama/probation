@@ -3,19 +3,13 @@
 	<%= dl 'Active', yn(o.active) %>
 	<% 
 		l = User::LEVELS.rassoc(o.level.to_s) 
-		ve = User::SUB_LEVELS.rassoc(o.ve_level.to_s) 
-		qb = User::SUB_LEVELS.rassoc(o.qb_level.to_s) 
 	%>
 	<%= dl 'Level', l ? lbl('user', l[1], l[0]) : '' %>
-	<%= dl 'Vehicles', l ? lbl('user', ve[1], ve[0]) : '' %>
-	<%= dl 'Billing', l ? lbl('user', qb[1], qb[0]) : '' %>
 	<%= dl 'Username', o.username %>
 	<%= dl 'Name', o.name %>
 </div>
 <div class="view">
 	<%= dl 'Email', o.email %>
-	<%= dl 'Title', o.title %>
-	<%= dl 'Phone', o.phone %>
 </div>
 <div class="view">
 	<%= dl 'AD User', yn(o.auth_ldap) %>
