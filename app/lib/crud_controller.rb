@@ -60,7 +60,11 @@ class CrudController < ApplicationController
 		else
 			@results = []
 			if (@filter.present? && @filter["from_date"] && @filter["to_date"])
-				report 
+				if(@filter.date_type.include?("sap_exports"))
+					sap_export
+				else
+					report
+				end
 				@objs_unpaginated = @objs
 				@paginate = false if params[:process]
 				@objs = @objs.paginate(page: params[:page], per_page: 50) if @paginate != false
@@ -79,6 +83,10 @@ class CrudController < ApplicationController
 		end
 	end
 
+	def sap_export
+		@objs = @objs.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
+	end
+	
 	def grid
 		index
 		return if performed?

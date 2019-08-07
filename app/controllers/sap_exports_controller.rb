@@ -5,7 +5,11 @@ class SapExportsController < CrudController
 	end
 	
 	def index
-		@date_types = [["Created At", "qb_transactions.created_at"], ["Cutoff Date", "sap_exports.cutoff_date"]]
+		if("sap_exports".eql?(params.context))
+			@date_types = ["Cutoff Date", "sap_exports.cutoff_date"]
+		elsif("reports".eql?(params.context))
+			@date_types = ["Created At", "qb_transactions.created_at"]
+		end
 		generic_filter_setup
 		super
 	end

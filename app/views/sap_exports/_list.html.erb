@@ -1,10 +1,9 @@
-<%if params[:context] == 'sap_exports' %>
+<%if params[:context] == 'sap_exports' || (@filter.date_type  && @filter.date_type.include?("sap_exports")) %>
 	<table class="data">
 		<thead>
 			<tr>
 				<th width="1%">ID</th>
 				<th width="1%" class="tr">Lines</th>
-				<th width="1%">Cutoff&nbsp;Date</th>
 				<th width="99%">Created</th>
 			</tr>
 		</thead>
@@ -14,7 +13,6 @@
 				<tr class="<%= cycle 'odd', 'even' %>">
 					<td class="nobr"><%= o.id %></td>
 					<td class="nobr tr"><%= o.sap_lines_count %></td>
-					<td class="nobr"><%= o.cutoff_date.d %></td>
 					<td class="nobr"><%= link_to blank_tag(o.created_at.dt), controller: :sap_exports, action: :view, id: o.id %></td>
 				</tr>
 			<% } %>

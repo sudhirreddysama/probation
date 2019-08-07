@@ -43,14 +43,11 @@
 <div class="view">
 	<%= dl 'ID', o.id %>
 	<%= dl 'Created', o.created_at.dt %>
-	<%= dl 'Cutoff Date', o.cutoff_date.d %>
 	<%= dl '# Lines', o.sap_lines_count %>
 </div>
 <table class="data">
 	<thead>
 		<tr>
-			<th class="tc">View</th>
-			<th>ID</th>
 			<th>Center</th>
 			<th>Credit</th>
 			<th>Reference</th>
@@ -73,13 +70,10 @@
 		<tbody class="<%= cycle 'odd', 'even' %>">
 			<tr id="line-<%= l.id %>"<% if l.id == id2 %> class="invert"<% end %>>
 				<td class="tc">
-				<% if l.source %><%= link_to 'View', context: :qb_transaction, context_id: l.source.qb_transaction_id, controller: :qb_transaction_details, action: :view, id: l.source.id %><% end %>
-				</td>
-				<td><%= l.id %></td>
 				<td><%= l.cost_center %></td>
 				<td><%= l.credit %></td>
 				<td><%= l.reference %></td>
-				<td><%= l.reference_key1 %></td>
+				<td><%= l.reference_key1.to_i %></td>
 				<td><%= l.text %></td>
 				<td><%= l.document_header %></td>
 				<td><%= l.debit %></td>
