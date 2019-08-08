@@ -1,5 +1,0 @@
-<% if @obj.obj_ids_str.blank? %>
-	<p>To apply a late fee to multiple invoices, select the invoices from any &quot;Inv/Sale/Pay&quot; tab then click the &quot;Late Fee&quot; button.
-<% else %>
-	<%= partial 'form', o: @obj %>
-<% end %>

@@ -14,15 +14,12 @@
 <%= f.tr_text_field :first_name, label: 'First Name', req: true, required: true %>
 <%= f.tr_text_field :last_name, label: 'Last Name', req: true, required: true %>
 <%= f.tr_text_field :email, label: 'Email', req: true, required: true, after: (admin ? '&nbsp;<a href="#" id="email-guess"><i class="fa fa-arrow-left">&nbsp;</i>Guess Email</a>' : '') %>
-<%#= f.tr_text_field :phone, label: 'Phone' %>
-<%#= f.tr_text_field :title, label: 'Title' %>
 <% str = (o.new_record? || params.action == 'login_edit') ? '' : '<div>Leave blank to keep current password.</div>' %>
 <% if admin || !o.auth_ldap %>
 	<%= f.tr_password_field :password, label: 'Password', req: o.new_record?, value: o.password, after: '<div>Min: 6 characters, must contain 1 of each: uppercase, lowercase, number, special character (#%$@*...)</div>' + str, tr: {class: 'password'}, autocomplete: 'new-password' %>
 	<%= f.tr_password_field :password_confirmation, label: 'Retype Password', req: o.new_record?, value: o.password_confirmation, tr: {class: 'password'}, autocomplete: 'new-password' %>
 <% end %>
 <% if admin %>
-	<%#= f.tr_check_box :force_new_password, label: 'Force New Password?', text: 'Force user to enter a new password next time they log in.', tr: {class: 'password'} %>
 	<tr>
 		<th>Level <span class="req">*</span></th>
 		<td>
@@ -34,26 +31,6 @@
 			<label><%= f.check_box :active %> Active</label>
 		</td>
 	</tr>
-	<!-- <tr>
-		<th>Vehicles Level</th>
-		<td>
-			<span class="lbl-chk-grp">
-				<% User::SUB_LEVELS.each { |l| %>
-					<label class="lbl-chk"><%= f.radio_button :ve_level, l[1] %><span class="lbl lbl-user-<%= l[1] %>"><%= l[0] %></span></label>
-				<% } %>
-			</span>			
-		</td>
-	</tr>
-	<tr>
-		<th>Billing Level</th>
-		<td>
-			<span class="lbl-chk-grp">
-				<% User::SUB_LEVELS.each { |l| %>
-					<label class="lbl-chk"><%= f.radio_button :qb_level, l[1] %><span class="lbl lbl-user-<%= l[1] %>"><%= l[0] %></span></label>
-				<% } %>
-			</span>
-		</td>
-	</tr>	 -->
 <% else %>
 	<tr>
 		<th>Level</th>

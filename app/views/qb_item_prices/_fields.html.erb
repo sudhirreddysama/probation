@@ -1,6 +1,3 @@
-<%#= partial 'division_field', f: f, o: o %>
-<%#= f.tr_check_box :active, label: 'Active', text: 'Uncheck to make inactive' %>
-<%#= f.tr_select :parent_id, o.parent ? [[o.parent.full_path, o.parent.id, title: ' ']] : [], {label: 'Parent'}, style: 'width: 400px;' %>
 <tr>
 	<th style="width: 0px;">Division</th>
 	<td class="subform">
@@ -20,7 +17,7 @@
 	</td>
 </tr>
 <%= f.tr_text_field :cost_center, label: 'Code', style: 'width: 100px;', req: true, required: true  %>
-<script>
+<!-- <script>
 
 	init_path_select2({
 		select: '#obj_parent_id',
@@ -56,4 +53,4 @@
 		minLength: 0
 	});
 
-</script>
+</script> -->
