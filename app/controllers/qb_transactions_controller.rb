@@ -1,6 +1,7 @@
 class QbTransactionsController < QbRecordsController
 
 	def index
+		session[:context] = params[:context] if params[:context].present?
 		@filter = nil if params[:clear]
 		@search_fields ||= {
 			'qb_transactions.id' => :left,

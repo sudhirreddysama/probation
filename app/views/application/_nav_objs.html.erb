@@ -1,7 +1,9 @@
 <% url = {context: context, controller: controller} %>
 <div class="tabs" id="objs-tabs">
 	<%= partial 'nav_pre', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
-	<% if (["sap_exports", "reports"] & [session[:context], params[:context]]).present? %>
+	<% if "sap_exports".eql?(params.controller) && params.id.to_i > 0 && params[:context].blank? %>
+		<% url = url + {context: session[:context]}  %>
+	<% elsif (["sap_exports", "reports"] & [session[:context], params[:context]]).present? %>
 		<% if @filter.date_type && @filter.date_type.include?("cutoff_date") %>
 			<% url = url  + {context: "sap_exports"} %>
 		<%elsif @filter.date_type %>
@@ -9,9 +11,6 @@
 		<%else%>
 			<% url = url %>
 		<%end%>
-	<% elsif "sap_exports".eql?(params.controller) && params.id.to_i > 0 && params[:context].blank? %>
-		<% session[:context] = nil %>
-		<% url = url + {context: "sap_exports"}  %>
 	<% elsif [params[:context], session[:context]].include?("payment_history") %>
 		<% url = {context: "payment_history", controller: "qb_transactions"}  %>
 		<% session[:context] ||= params[:context] %>

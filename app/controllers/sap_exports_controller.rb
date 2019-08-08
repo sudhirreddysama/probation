@@ -5,6 +5,8 @@ class SapExportsController < CrudController
 	end
 	
 	def index
+		session[:context] = params[:context] if params[:context].present?
+		params.context ||= session[:context]
 		if("sap_exports".eql?(params.context))
 			@date_types = ["Cutoff Date", "sap_exports.cutoff_date"]
 		elsif("reports".eql?(params.context))
