@@ -1,7 +1,9 @@
 <%if ((@date_types.present? && "sap_exports".eql?(params[:controller]) && "reports".eql?(params.context)) || "reports".eql?(session[:context])) %>
 	<br>
 	<button type="submit" name="Cashier Summary" value="Cashier Summary"><i class="fa fa-check"></i> Cashier Summary</button>
-	<%= tab 'print', 'Cachier Details', {controller: :sap_exports, action: :print, id: "cacheir details", url_also: {from_date: @filter["from_date"], to_date: @filter["to_date"]}}, {}, target: '_blank' %>
+	<%#= tab 'print', 'Cachier Details', {controller: :sap_exports, action: :print, id: "cacheir details", url_also: {from_date: @filter["from_date"], to_date: @filter["to_date"]}}, {}, target: '_blank' %>
+	<a id="cacheir_details" href="javascript:void(0)"><%= fa('print') + ' ' + "Cachier Details" %></a>
+
 <%else%>
 	<button type="submit" name="apply" value="apply"><i class="fa fa-check"></i> Apply</button>
 	<%if [params[:context], session[:context]].include?("payment_history") %>
@@ -10,3 +12,10 @@
 		<button type="submit" name="clear" value="clear"><i class="fa fa-close"></i> Clear Filter</button>
 	<%end%>
 <%end%>
+
+<script type="text/javascript">
+	$("a#cacheir_details").on("click", function(){
+		var id = "cacheir details"
+		window.open("/sap_exports/print/"+id+"?from_date="+ $("#filter_from_date").val() +"&to_date="+ $("#filter_to_date").val(), '_blank');
+	})
+</script>
