@@ -22,9 +22,9 @@
 	<div class="bar bar-red">PERMITS APPLICATION IS NOT LIVE - THIS IS A PREVIEW</div>
 <% end %>
 <div id="tabs" class="tabs">
-	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: (params[:context] == 'home' ? 'active' : '') %>
+	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: ([params[:context], session[:context]].include?('home') ? 'active' : '') %>
 
-	<%= tab 'money', "Sales", {controller: :qb_transactions, context: "sales", action: :index}, {}, {class: ([params[:context], session[:context]].include?("sales") ? 'active' : '')} %>
+	<%= tab 'money', "Sales", {controller: :qb_transactions, context: "sales", action: :index, process: ""}, {}, {class: ([params[:context], session[:context]].include?("sales") ? 'active' : '')} %>
 	
 	<%= top_tab 'usd', 'Shots', QbItemPrice %>
 
@@ -34,7 +34,7 @@
 	
 	<%= tab 'cloud-upload', 'Sap Exports', {:controller => :sap_exports, context: "sap_exports", action: :index}, {}, class: ([params[:context], session[:context]].include?('sap_exports') ? 'active' : '')%>
 	
-	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: (params[:context] == 'user' ? 'active' : '') %>
+	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
 
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>

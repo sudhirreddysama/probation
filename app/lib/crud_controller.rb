@@ -58,15 +58,12 @@ class CrudController < ApplicationController
 		elsif params[:process] == 'doc_bulk'
 			doc_bulk_redirect
 		else
-			@results = []
-			if (@filter.present? && @filter["from_date"] && @filter["to_date"])
-				if(@filter.date_type.include?("sap_exports"))
-					sap_export
-				else
-					report
-				end
-				@objs_unpaginated = @objs
-				@paginate = false if params[:process]
+			report if(@filter.present? && @filter["from_date"].present? && @filter["to_date"].present?)
+			@objs_unpaginated = @objs
+			@paginate = false if params[:process]
+			if("reports".eql?(session[:context]))
+				@objs = @results
+			else
 				@objs = @objs.paginate(page: params[:page], per_page: 50) if @paginate != false
 			end
 		end
@@ -74,19 +71,22 @@ class CrudController < ApplicationController
 	
 	def report
 		@results = []
+		@objs = [] if @objs.blank?
 
-		@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day, voided: false)
-		if(params.id != "cacheir details")
-			@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
-				@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+		if(@filter.present? && @filter["from_date"].present? && @filter["to_date"].present?)
+			if(@filter.date_type.include?("sap_exports"))
+				@objs = @objs.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
+			else
+				@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day, voided: false)
+				if(params.id != "cacheir details")
+					@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
+						@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})
+					end
+				end
 			end
 		end
-	end
-
-	def sap_export
-		@objs = @objs.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
-	end
-	
+	end		
+		
 	def grid
 		index
 		return if performed?

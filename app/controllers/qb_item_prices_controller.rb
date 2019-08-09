@@ -3,6 +3,7 @@ class QbItemPricesController < QbRecordsController
 	include QbRecordsController::HasPath
 
 	def index
+		session[:context] = nil
 		generic_filter_setup
 		@cond << collection_conds({
 			active: "#{@model.table_name}.active",
