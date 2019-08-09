@@ -2,7 +2,7 @@
 	<%= partial 'document_temp', d: d %>
 <% else %>
 	<tr class="<%= cycle 'odd', 'even', name: 'documents' %>" id="o-<%= d.id %>" data-id="<%= d.id %>">
-		<td class="nobr"><%= check_box_tag 'list[]', d.id, false, class: 'list_select', id: nil %> <%= d.id %></td>
+		<td></td>
 		<td>
 			<% if @print %>
 				<%= d.name %>
@@ -14,7 +14,6 @@
 				<% end %>
 				<% if d.can_edit? @current_user %>
 					<div class="right">
-						<%= link_to 'edit', {context: d.obj_type.underscore, context_id: d.obj_id, controller: :documents, action: :edit, id: d.id}, class: 'tr-hover dim' %>
 						<a href="#" class="document-edit tr-hover dim">rename</a>
 						<a href="#" class="document-delete tr-hover dim">delete</a>
 					</div>
@@ -23,6 +22,5 @@
 		</td>
 		<td class="nobr"><%= d.created_at.dt %></td>
 		<td class="nobr"><%= d.user.try(:username) %>
-		
 	</tr>
 <% end %>
