@@ -21,6 +21,7 @@
 <% if is_permit %>
 	<div class="bar bar-red">PERMITS APPLICATION IS NOT LIVE - THIS IS A PREVIEW</div>
 <% end %>
+<% if params.action != "print" %>
 <div id="tabs" class="tabs">
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: ([params[:context], session[:context]].include?('home') ? 'active' : '') %>
 
@@ -42,3 +43,4 @@
 	</div>		
 <div class="clear"></div>
 </div>
+<%end%>

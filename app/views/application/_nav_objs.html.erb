@@ -1,12 +1,13 @@
+<% if params.action != "print" %>
 <% url = {context: context, controller: controller} %>
 <div class="tabs" id="objs-tabs">
 	<%= partial 'nav_pre', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 	<% if "sap_exports".eql?(params.controller) && params.id.to_i > 0 && params[:context].blank? %>
 		<% url = url + {context: session[:context]}  %>
 	<% elsif (["sap_exports", "reports"] & [session[:context], params[:context]]).present? %>
-		<% if @filter.date_type && @filter.date_type.include?("cutoff_date") %>
+		<% if @filter && @filter.date_type && @filter.date_type.include?("cutoff_date") %>
 			<% url = url  + {context: "sap_exports"} %>
-		<%elsif @filter.date_type %>
+		<%elsif @filter && @filter.date_type %>
 			<% url = url  + {context: "reports"} %>
 		<%else%>
 			<% url = url %>
@@ -24,3 +25,4 @@
 	<%= partial 'nav1', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 	<div class="clear"></div>
 </div>
+<%end%>
