@@ -73,7 +73,9 @@ class CrudController < ApplicationController
 		@results = []
 		@objs = [] if @objs.blank?
 
-		if(@filter.present? && @filter["from_date"].present? && @filter["to_date"].present?)
+		if(params.id == "cacheir details" && params["from_date"].present? && params["to_date"].present?)
+			@objs = QbTransaction.where(:created_at => params["from_date"].to_time.beginning_of_day..params["to_date"].to_time.end_of_day, voided: false)
+		elsif(@filter.present? && @filter["from_date"].present? && @filter["to_date"].present?)
 			if(@filter.date_type.include?("sap_exports"))
 				@objs = @objs.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
 			else

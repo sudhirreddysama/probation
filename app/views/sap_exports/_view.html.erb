@@ -4,32 +4,32 @@
 	<table class="data">
 		<thead>
 			<tr>
-				<th width="1%">ID</th>
-				<th width="1%">Cashierd At</th>
-				<th width="1%">Payment</th>
-				<th width="1%">Division</th>
-				<th width="1%">Insight EMR-ID</th>
-				<th width="1%">Username</th>
-				<th width="1%">Total Customer</th>
+				<th th width="4%">ID</th>
+				<th th width="10%">Cashierd At</th>
+				<th th width="5%">Payment</th>
+				<th th width="10%">Division</th>
+				<th th width="15%">Insight EMR-ID</th>
+				<th th width="10%">Username</th>
+				<th th width="15%">Total Customer</th>
 			</tr>
 		</thead>
 		<tbody>
 			<% @objs.each { |o| %>
 				<tr class="<%= cycle 'odd', 'even' %>">
-					<td class="nobr"><%= o.id %></td>
-					<td class="nobr"><%= o.date %></td>
-					<td class="nobr"><%= o.pay_method %></td>
-					<td class="nobr"><%= o.division %></td>
-					<td class="nobr"><%= o.num %></td>
-					<td class="nobr"><%= o.created_by&.username %></td>
-					<td class="nobr"><%= o.amount.to_f %></td>
+					<td align="center"><%= o.id %></td>
+					<td align="center"><%= o.date %></td>
+					<td align="center"><%= o.pay_method %></td>
+					<td align="center"><%= o.division %></td>
+					<td align="center"><%= o.num %></td>
+					<td align="center"><%= o.created_by&.username %></td>
+					<td align="center"><%= o.amount.to_f %></td>
 					<% amount += o.amount.to_f %>
 				</tr>
 			<% } %>
 			<tr>
 				<td colspan="5"></td>
-				<td> <b>Total Amount:</b></td>
-				<td> <%= amount %></td>
+				<td  align="center"> <b>Total Amount:</b></td>
+				<td  align="center"> <%= amount %></td>
 			</tr>
 		</tbody>
 	</table>
@@ -49,42 +49,42 @@
 <table class="data">
 	<thead>
 		<tr>
-			<th>Center</th>
-			<th>Credit</th>
-			<th>Reference</th>
-			<th>RefKey1</th>
-			<th>Text</th>
-			<th>DocHead</th>
-			<th>Debit</th>
-			<th>PostDate</th>
-			<th>Assignment</th>
-			<th>RefKey2</th>
-			<th>RefKey3</th>
-			<th class="tr">Amount</th>
-			<th>InvDate</th>
-			<th>Customer</th>
-			<th>Resent</th>
+			<th th width="10%">Center</th>
+			<th th width="10%">Credit</th>
+			<th th width="10%">Reference</th>
+			<th th width="10%">RefKey1</th>
+			<th th width="10%">Text</th>
+			<th th width="10%">DocHead</th>
+			<th th width="10%">Debit</th>
+			<th th width="10%">PostDate</th>
+			<th th width="10%">Assignment</th>
+			<th th width="10%">RefKey2</th>
+			<th th width="10%">RefKey3</th>
+			<th th width="10%">Amount</th>
+			<th th width="10%">InvDate</th>
+			<th th width="10%">Customer</th>
+			<th th width="10%">Resent</th>
 		</tr>
 	</thead>
 	<% id2 = params.id2.to_i %>
 	<% o.sap_lines.eager_load(:qb_transaction_detail, :pay_qb_transaction_detail).each { |l| %>
 		<tbody class="<%= cycle 'odd', 'even' %>">
 			<tr id="line-<%= l.id %>"<% if l.id == id2 %> class="invert"<% end %>>
-				<td><%= l.cost_center %></td>
-				<td><%= l.credit %></td>
-				<td><%= l.reference %></td>
-				<td><%= l.reference_key1.to_i %></td>
-				<td><%= l.text %></td>
-				<td><%= l.document_header %></td>
-				<td><%= l.debit %></td>
-				<td><%= l.posting_date.d %></td>
-				<td><%= l.assignment %></td>
-				<td><%= l.reference_key2 %></td>
-				<td><%= l.reference_key3 %></td>
-				<td class="tr"><%= l.amount && '%.2f' % l.amount %></td>
-				<td><%= l.invoice_date.d %></td>
-				<td><%= l.customer %></td>
-				<td><%= l.resent %></td>
+				<td  align="center"><%= l.cost_center %></td>
+				<td  align="center"><%= l.credit %></td>
+				<td  align="center"><%= l.reference %></td>
+				<td  align="center"><%= l.reference_key1.to_i %></td>
+				<td  align="center"><%= l.text %></td>
+				<td  align="center"><%= l.document_header %></td>
+				<td  align="center"><%= l.debit %></td>
+				<td  align="center"><%= l.posting_date.d %></td>
+				<td  align="center"><%= l.assignment %></td>
+				<td  align="center"><%= l.reference_key2 %></td>
+				<td  align="center"><%= l.reference_key3 %></td>
+				<td  align="center"><%= l.amount && '%.2f' % l.amount %></td>
+				<td  align="center"><%= l.invoice_date.d %></td>
+				<td  align="center"><%= l.customer %></td>
+				<td  align="center"><%= l.resent %></td>
 			</tr>
 		</tbody>
 	<% } %>	
@@ -99,7 +99,7 @@
 	<table class="data">
 		<thead>
 			<tr>
-				<th width="10%">Type1</th>
+				<th width="10%">Type</th>
 				<th width="10%">Username</th>
 				<th width="10%">Count</th>
 				<th width="10%">Total</th>
