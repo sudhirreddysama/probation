@@ -1,4 +1,4 @@
-class QbItemPricesController < QbRecordsController
+class ShotsController < QbRecordsController
 	
 	include QbRecordsController::HasPath
 

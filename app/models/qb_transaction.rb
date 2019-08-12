@@ -33,7 +33,7 @@ class QbTransaction < QbRecord
 	
 	belongs_to :late_qb_cost_center, class_name: 'QbCostCenter', foreign_key: :late_cost_center, primary_key: :code
 	belongs_to :late_qb_credit_ledger, class_name: 'QbLedger', foreign_key: :late_credit_ledger, primary_key: :code
-	belongs_to :late_qb_item_price, class_name: 'QbItemPrice', foreign_key: :late_qb_item_price_id
+	belongs_to :late_shot, class_name: 'Shot', foreign_key: :late_shot_id
 	
 	# DELETE
 	belongs_to :qb_account
@@ -78,7 +78,7 @@ class QbTransaction < QbRecord
 		elsif invoice?
 			self.debit_ledger = ar.presence || QbLedger.default_ar
 			self.credit_ledger = QbLedger.default_gl
-			%w{auto qb_item_price_id item_info item_name item_description amount cost_center credit_ledger}.each { |f| self.send "late_#{f}=", tpl.send("late_#{f}") } if tpl
+			%w{auto shot_id item_info item_name item_description amount cost_center credit_ledger}.each { |f| self.send "late_#{f}=", tpl.send("late_#{f}") } if tpl
 		elsif payment?
 			self.debit_ledger = nil
 			self.credit_ledger = ar.presence || QbLedger.default_ar
@@ -125,10 +125,10 @@ class QbTransaction < QbRecord
 	
 	def dup
 		o = QbTransaction.new(attributes.slice(*%w{type division qb_customer_id qb_template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
-			late_auto late_qb_item_price_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email}))
+			late_auto late_shot_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email}))
 		if o.sale? || o.invoice?
 			o.new_details = new_details.map { |d| 
-				QbTransactionDetail.new(d.attributes.slice(*%w{cost_center debit_ledger credit_ledger item_info qb_item_price_id item_name item_description quantity price is_percent amount}))
+				QbTransactionDetail.new(d.attributes.slice(*%w{cost_center debit_ledger credit_ledger item_info shot_id item_name item_description quantity price is_percent amount}))
 			}
 		end
 		o.date = Date.today
@@ -146,7 +146,7 @@ class QbTransaction < QbRecord
 	def new_details= v
 		@new_details = v.is_a?(Hash) ? v.values : v
 		@new_details.reject! { |o| 
-			o.item_info.blank? && o.qb_item_price_id.blank? && o.item_description.blank? && o.amount.to_f == 0
+			o.item_info.blank? && o.shot_id.blank? && o.item_description.blank? && o.amount.to_f == 0
 		}
 	end
 	
@@ -198,7 +198,7 @@ class QbTransaction < QbRecord
 				errors.add :late_cost_center, '^Late fee cost center is required' if late_cost_center.blank?
 				errors.add :late_credit_ledger, '^Late fee credit GL is required' if late_credit_ledger.blank?
 				errors.add :late_amount, '^Late fee amount is required' if late_amount.to_f == 0
-				errors.add :late_qb_item_price_id, '^Late fee info, name, or description is required' if late_qb_item_price_id.blank? && late_item_info.blank? && late_item_description.blank?
+				errors.add :late_shot_id, '^Late fee info, name, or description is required' if late_shot_id.blank? && late_item_info.blank? && late_item_description.blank?
 			end
 		end
 		details = qb_transaction_details
@@ -231,7 +231,7 @@ class QbTransaction < QbRecord
 					o.attributes = {
 						debit_ledger: debit_ledger,
 						amount: ((o.is_percent ? pr / 100 * prev_o.try(:amount).to_f : pr) * (qu == 0 ? 1 : qu)).round(2),
-						item_name: o.qb_item_price&.full_path,
+						item_name: o.shot&.full_path,
 						document_letter: doc_letters[o.cost_center]
 					}
 				end
@@ -430,7 +430,7 @@ class QbTransaction < QbRecord
 	end
 	
 	def handle_before_save
-		self.late_item_name = late_qb_item_price&.full_path if late_qb_item_price_id_changed? && !@process_multi
+		self.late_item_name = late_shot&.full_path if late_shot_id_changed? && !@process_multi
 		self.date = Time.now.to_date if date.nil?
 		if pay_method == 'CC' && !payeezy_post_id
 			pay = nil

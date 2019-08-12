@@ -6,7 +6,7 @@ class QbTemplate < QbRecord
 	
 	validates_presence_of :name, :address
 	
-	belongs_to :late_qb_item_price, class_name: 'QbItemPrice'
+	belongs_to :late_shot, class_name: 'Shot'
 	
 	DEFAULTS = {
 		label_head_name: 'Project',
@@ -69,14 +69,14 @@ class QbTemplate < QbRecord
 	
 	belongs_to :late_qb_cost_center, class_name: 'QbCostCenter', foreign_key: :late_cost_center, primary_key: :code
 	belongs_to :late_qb_credit_ledger, class_name: 'QbLedger', foreign_key: :late_credit_ledger, primary_key: :code
-	belongs_to :late_qb_item_price, class_name: 'QbItemPrice', foreign_key: :late_qb_item_price_id
+	belongs_to :late_shot, class_name: 'Shot', foreign_key: :late_shot_id
 
 	scope :active, -> { where active: true }
 	scope :active_or_id, -> (id) { id ? active.or(where id: id) : active }
 	scope :default_order, -> { order name: :asc }
 	
 	def handle_before_save
-		self.late_item_name = late_qb_item_price&.full_path if late_qb_item_price_id_changed?
+		self.late_item_name = late_shot&.full_path if late_shot_id_changed?
 	end
 	before_save :handle_before_save
 	

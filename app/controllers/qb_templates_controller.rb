@@ -27,7 +27,7 @@ class QbTemplatesController < QbRecordsController
 			o.attributes.slice(*%w{
 				id division name cost_center label_item_info label_item_name label_item_desc label_item_quantity label_item_price label_item_amount
 				sale_num refund_num invoice_num payment_num ar_refund_num
-				late_auto late_qb_item_price_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email
+				late_auto late_shot_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email
 			})
 		}
 		render json: {data: data, page: params.page, per_page: 50, total: objs.total_entries, pages: objs.total_pages}
