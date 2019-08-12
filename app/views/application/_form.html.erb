@@ -1,7 +1,6 @@
 <%= partial 'errors', :errors => o.errors.full_messages %>
 <%= table_form_for(:obj, html: {id: 'obj_form'}) { |f| %>
 	<%= partial 'fields', f: f, o: o %>	
-	<%= partial 'db_groups_field', f: f, o: o %>
 	<%= partial 'document_field', f: f, o: o %>
 	<tr>
 		<th></th>

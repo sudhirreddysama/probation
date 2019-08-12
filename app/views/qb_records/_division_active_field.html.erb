@@ -1,9 +1,0 @@
-<tr>
-	<th>Division/Active <span class="req">*</span></th>
-	<td id="obj_division">
-		<% QB_DIVS.each { |d| %>
-			<label><%= f.radio_button :division, d %> <%= d %></label>&nbsp;&nbsp;
-		<% } %>
-		<label><%= f.check_box :active %> Active</label>
-	</td>
-</tr>

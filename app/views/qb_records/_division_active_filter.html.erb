@@ -1,7 +1,0 @@
-<tr>
-	<th>Division/Active</th>
-	<td>
-		<%= partial 'field_chk_lbls', opts: QB_DIVS, field: 'filter[division][]', vals: @filter.division || [], lbl: 'qbdiv' %>
-		<%= partial 'field_chk_lbls', opts: [['Active', '1'], ['Inactive', '0']], field: 'filter[active][]', vals: @filter.active || [], lbl: 'active' %>
-	</td>
-</tr>

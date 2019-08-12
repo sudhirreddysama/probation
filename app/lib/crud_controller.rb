@@ -227,7 +227,7 @@ class CrudController < ApplicationController
 	
 	def print_objs
 		@print = true
-		html = render_to_string action: 'print_objs', layout: @print_layout || 'application'
+		html = render_to_string action: 'print_objs', layout: 'pdf_template' || 'application'
 		render_pdf html, filename: "#{params.controller}.pdf"
 	end
 	
@@ -360,7 +360,7 @@ class CrudController < ApplicationController
 	end
 	
 	def print_template path = nil
-		html = render_to_string action: 'print', layout: @print_layout || 'application'
+		html = render_to_string action: 'print', layout: 'pdf_template' || 'application'
 		render_pdf html, filename: "#{params.controller}-#{@obj.id}.pdf", path: path
 	end
 	

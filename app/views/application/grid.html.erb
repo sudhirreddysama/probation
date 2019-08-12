@@ -1,8 +1,0 @@
-<%= partial 'filter' %>
-<%= partial 'pages', objs: @objs, objs_unpaginated: @objs_unpaginated %>
-<% if @objs.empty? %>
-	<%= partial 'empty' %>
-<% else %>
-	<%= partial 'grid' %>
-<% end %>
-<%= partial 'pages', objs: @objs, objs_unpaginated: @objs_unpaginated %>
