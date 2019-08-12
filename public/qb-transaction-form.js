@@ -79,7 +79,7 @@ var set_lbls = function(d) {
 function init_late_fee_fields(opt) {
 	$('#late-table').colResizable({liveDrag: true, minWidth: 20, headerOnly: true, hoverCursor: 'col-resize', dragCursor: 'col-resize', partialRefresh: true});
 	var f = {
-		qb_item_price_id: $('#obj_' + opt.prefix + 'qb_item_price_id'),
+		shot_id: $('#obj_' + opt.prefix + 'shot_id'),
 		cost_center: $('#obj_' + opt.prefix + 'cost_center'),
 		credit_ledger: $('#obj_' + opt.prefix + 'credit_ledger'),
 		item_info: $('#obj_' + opt.prefix + 'item_info'),
@@ -88,15 +88,15 @@ function init_late_fee_fields(opt) {
 	}
 	
 	init_path_select2({
-		select: f.qb_item_price_id,
-		url: ROOT_URL + 'qb_item_prices/autocomplete',
+		select: f.shot_id,
+		url: ROOT_URL + 'shots/autocomplete',
 		params: function(params) {
 			params.division = $('#obj_division input:checked').val();
 		}
 	});
-	f.qb_item_price_id.on('select2:select', function(e) {
+	f.shot_id.on('select2:select', function(e) {
 		var data = e.params.data;
-		f.qb_item_price_id.effect('highlight');
+		f.shot_id.effect('highlight');
 		f.item_description.val(data.description).effect('highlight').trigger('change');
 		f.amount.val(n2_float(data.price)).effect('highlight').trigger('change');
 		if(data.cost_center) {
@@ -163,8 +163,8 @@ function init_template_select_events(ts, type, multi) {
 			$('#obj_late_credit_ledger').val(d.late_credit_ledger).effect('highlight');
 			$('#obj_late_amount').val(d.late_amount ? n2(float(d.late_amount)) : '').effect('highlight');
 			$('#obj_late_email').val(d.late_email).effect('highlight');
-			var lpid = $('#obj_late_qb_item_price_id');
-			var option = d.late_qb_item_price_id ? new Option(d.late_item_name, d.late_qb_item_price_id, true, true) : new Option('', '', true, true);
+			var lpid = $('#obj_late_shot_id');
+			var option = d.late_shot_id ? new Option(d.late_item_name, d.late_shot_id, true, true) : new Option('', '', true, true);
 			option.setAttribute('title', ' ');
 			lpid.append(option).trigger('change');
 			lpid.find('~ .select2 .select2-selection').effect('highlight');
@@ -241,7 +241,7 @@ function init_invoice_details(rails_data) {
 			item: function(i) { i.label = i.code + ' ' + i.name; i.value = i.code; },
 			minLength: 0
 		});			
-		var qb_item_price_id = row.find('.d_qb_item_price_id');
+		var shot_id = row.find('.d_shot_id');
 		var item_description = row.find('.d_item_description');
 		var price = row.find('.d_price');
 		var is_percent = row.find('.d_is_percent');
@@ -251,16 +251,16 @@ function init_invoice_details(rails_data) {
 
 
 		init_path_select2({
-			select: qb_item_price_id,
-			url: ROOT_URL + 'qb_item_prices/autocomplete',
+			select: shot_id,
+			url: ROOT_URL + 'shots/autocomplete',
 			params: function(params) {
 				params.division = $('#obj_division input:checked').val();
 			}
 		});
-		qb_item_price_id.on('select2:select', function(e) {
+		shot_id.on('select2:select', function(e) {
 			var amt = 0;
 			var data = e.params.data;
-			qb_item_price_id.effect('highlight');
+			shot_id.effect('highlight');
 			item_description.val(data.description).effect('highlight');
 			price.val(n2_float(data.price)).effect('highlight');
 			
@@ -869,13 +869,13 @@ function init_late_fee_form1(rails_data) {
 	$('#fees-table').colResizable({liveDrag: true, minWidth: 20, headerOnly: true, hoverCursor: 'col-resize', dragCursor: 'col-resize', partialRefresh: true});
 	var def = init_late_fee_fields({prefix: ''});
 	var val = {
-		qb_item_price_id: def.qb_item_price_id.val(),
+		shot_id: def.shot_id.val(),
 		cost_center: def.cost_center.val(),
 		credit_ledger: def.credit_ledger.val(),
 		item_info: def.item_info.val(),
 		item_description: def.item_description.val(),
 		amount: def.amount.val(),
-		item_name: def.qb_item_price_id.find('option:selected').text()
+		item_name: def.shot_id.find('option:selected').text()
 	}
 	
 	// Calculate whole fees table.
@@ -887,7 +887,7 @@ function init_late_fee_form1(rails_data) {
 		var cost_center = row.find('.d_cost_center');
 		var credit_ledger = row.find('.d_credit_ledger');			
 		var item_info = row.find('.d_item_info');
-		var qb_item_price_id = row.find('.d_qb_item_price_id');
+		var shot_id = row.find('.d_shot_id');
 		var item_description = row.find('.d_item_description');
 		var qb_transaction_id = row.find('.d_qb_transaction_id');
 		var qb_customer_full_path = row.find('.d_qb_customer_full_path');		
@@ -902,10 +902,10 @@ function init_late_fee_form1(rails_data) {
 			item_info.val(val.item_info);
 			item_description.val(val.item_description);
 			price.val(val.amount)
-			if(val.qb_item_price_id) {
-				var o = new Option(val.item_name, val.qb_item_price_id, true, true);
+			if(val.shot_id) {
+				var o = new Option(val.item_name, val.shot_id, true, true);
 				o.setAttribute('title', ' ');
-				qb_item_price_id.append(o);
+				shot_id.append(o);
 			}
 		}
 		init_autocomplete({
@@ -923,15 +923,15 @@ function init_late_fee_form1(rails_data) {
 			minLength: 0
 		});			
 		init_path_select2({
-			select: qb_item_price_id,
-			url: ROOT_URL + 'qb_item_prices/autocomplete',
+			select: shot_id,
+			url: ROOT_URL + 'shots/autocomplete',
 			params: function(params) {
 				params.division = $('#obj_division input:checked').val();
 			}
 		});
-		qb_item_price_id.on('select2:select', function(e) {
+		shot_id.on('select2:select', function(e) {
 			var data = e.params.data;
-			qb_item_price_id.effect('highlight');
+			shot_id.effect('highlight');
 			item_description.val(data.description).effect('highlight');
 			price.val(n2_float(data.price)).effect('highlight');
 			if(data.cost_center) {
@@ -978,19 +978,19 @@ function init_late_fee_form1(rails_data) {
 		}
 	}
 	
-	def.qb_item_price_id.on('select2:select select2:unselect', function(e) {
+	def.shot_id.on('select2:select select2:unselect', function(e) {
 		var new_val = this.value;
-		var new_txt = def.qb_item_price_id.find('option:selected').text();
-		tbody.find('tr .d_qb_item_price_id').each(function(i, el) {
+		var new_txt = def.shot_id.find('option:selected').text();
+		tbody.find('tr .d_shot_id').each(function(i, el) {
 			var $el = $(el);
-			if(($el.val() || '') == (val.qb_item_price_id || '')) {	
+			if(($el.val() || '') == (val.shot_id || '')) {	
 				var o = new_val ? new Option(new_txt, new_val, true, true) : new Option('', '', true, true);
 				o.setAttribute('title', ' ');
 				$el.append(o).trigger('change')
 				$el.trigger('change').find('~ .select2 .select2-selection').effect('highlight');
 			}
 		});
-		val.qb_item_price_id = new_val;
+		val.shot_id = new_val;
 		val.item_name = new_txt;
 	});
 	def.cost_center.on('autocompletechange change', function(e) {

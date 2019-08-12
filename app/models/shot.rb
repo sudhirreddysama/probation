@@ -1,4 +1,4 @@
-class QbItemPrice < QbRecord
+class Shot < QbRecord
 
 	self.inheritance_column = nil
 

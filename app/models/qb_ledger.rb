@@ -27,7 +27,7 @@ class QbLedger < QbRecord
 		find_by(config: 'Default GL').code
 	end
 	
-	has_many :qb_item_prices, primary_key: :code, foreign_key: :ledger
+	has_many :shots, primary_key: :code, foreign_key: :ledger
 	
 	def qb_transactions
 		QbTransaction.where('? in (qb_transactions.debit_ledger, qb_transactions.credit_ledger)', code)

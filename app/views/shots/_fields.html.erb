@@ -21,7 +21,7 @@
 
 	init_path_select2({
 		select: '#obj_parent_id',
-		url: '<%= url_for context: nil, context_id: nil, controller: :qb_item_prices, action: :autocomplete %>',
+		url: '<%= url_for context: nil, context_id: nil, controller: :shots, action: :autocomplete %>',
 		params: function(params) {
 			params.division = $('#obj_division input:checked').val();
 		}

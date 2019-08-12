@@ -1,6 +1,6 @@
 class QbLateFee < QbRecord
 
-	belongs_to :qb_item_price
+	belongs_to :shot
 	
 	has_many :qb_transaction_details
 	has_many :qb_transactions, through: :qb_transaction_details
@@ -24,7 +24,7 @@ class QbLateFee < QbRecord
 				qb_transaction_id: i.id,
 				cost_center: i.late_cost_center,
 				credit_ledger: i.late_credit_ledger,
-				qb_item_price_id: i.late_qb_item_price_id,
+				shot_id: i.late_shot_id,
 				item_info: i.late_item_info,
 				item_description: i.late_item_description,
 				price: i.late_amount
@@ -67,7 +67,7 @@ class QbLateFee < QbRecord
 	def new_details= v
 		@new_details = v.is_a?(Hash) ? v.values : v
 		@new_details.reject! { |o| 
-			o.qb_transaction_id.blank? # && o.item_info.blank? && o.qb_item_price_id.blank? && o.item_description.blank? && o.price.to_f == 0
+			o.qb_transaction_id.blank? # && o.item_info.blank? && o.shot_id.blank? && o.item_description.blank? && o.price.to_f == 0
 		}
 	end
 	
@@ -82,12 +82,12 @@ class QbLateFee < QbRecord
 			o.attributes = attr
 			t = o.qb_transaction
 			o.amount = o.price = o.price.to_f
-			o.item_name = o.qb_item_price&.full_path
+			o.item_name = o.shot&.full_path
 			o.type = 'Invoice'
 			o.debit_ledger = t&.debit_ledger
 			o.qb_customer_id = t&.qb_customer_id
 			o.sort = t.qb_transaction_details.maximum('sort').to_i + 1 if !o.id && t
-			errors.add :base, "^Item ##{i + 1}: Invoice selected but no line item data entered." if o.qb_item_price.blank? && o.item_info.blank? && o.item_description.blank? && o.price.to_f == 0
+			errors.add :base, "^Item ##{i + 1}: Invoice selected but no line item data entered." if o.shot.blank? && o.item_info.blank? && o.item_description.blank? && o.price.to_f == 0
 			errors.add :base, "^Item ##{i + 1}: Each charge must have a cost center and credit GL" if o.price != 0 && (o.cost_center.blank? || o.credit_ledger.blank?)
 			o
 		}
@@ -95,7 +95,7 @@ class QbLateFee < QbRecord
 		@deleted_details = details.select { |d| d.id && !d.id.in?(ids) && !d.sap_or_pay_or_late_fee_delivery_lock? }
 		self.qb_transaction_details_count = @new_details.size
 		self.total = @new_details.sum &:amount # Not right! Doesn't include locked.
-		self.item_name = qb_item_price&.full_path if qb_item_price_id_changed?		
+		self.item_name = shot&.full_path if shot_id_changed?		
 	end
 	before_validation :handle_validation
 	

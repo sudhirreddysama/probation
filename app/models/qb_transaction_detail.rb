@@ -14,7 +14,7 @@ class QbTransactionDetail < QbRecord
 	def label; "Transaction Detail #{id}"; end
 	
 	belongs_to :qb_transaction
-	belongs_to :qb_item_price
+	belongs_to :shot
 	belongs_to :sap_line
 	has_one :sap_export, through: :sap_line
 	belongs_to :pay_sap_line, class_name: 'SapLine'

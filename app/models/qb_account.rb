@@ -11,7 +11,7 @@ class QbAccount < QbRecord
 	include HasPath
 	
 	has_many :qb_transactions
-	has_many :qb_item_prices
+	has_many :shots
 	
 	validates_presence_of :name, :division
 	

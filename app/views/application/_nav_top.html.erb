@@ -27,7 +27,7 @@
 
 	<%= tab 'money', "Sales", {controller: :qb_transactions, context: "sales", action: :index, process: ""}, {}, {class: ([params[:context], session[:context]].include?("sales") ? 'active' : '')} %>
 	
-	<%= top_tab 'usd', 'Shots', QbItemPrice %>
+	<%= top_tab 'usd', 'Shots', Shot %>
 
 	<%= tab 'money', 'Payments History', {context: "payment_history", controller: :qb_transactions, action: :index}, {}, {class: ((params[:context] =="payment_history" || "payeezy_posts".eql?(c)) ? 'active' : '')} %>
 	
