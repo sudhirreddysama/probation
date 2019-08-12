@@ -40,7 +40,7 @@ class SapExport < ApplicationRecord
 	def data_file_name
 		e = Rails.env.development? ? 'dev' : 'pro'
 		ts = created_at.strftime('%Y%m%d')
-		"export-eh-#{e}-#{ts}.txt"
+		"export-hd-#{e}-#{ts}.txt"
 	end
 	
 	def self.run date = nil, ts = nil
