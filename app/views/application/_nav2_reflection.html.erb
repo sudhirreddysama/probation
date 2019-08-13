@@ -1,6 +1,0 @@
-<% model.reflect_on_all_associations(:has_many).each { |a| %>
-	<% c = (a.name.to_s.camelize + 'Controller').constantize rescue nil %> 
-	<% if c && c < CrudController %>
-		<%= tab '', c.tab_label, {context_id: obj.id, context: model.to_s.underscore, controller: a.name}, action: nil  %>
-	<% end %>
-<% } %>

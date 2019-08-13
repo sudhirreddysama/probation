@@ -22,7 +22,6 @@
 	<% if ((!(context && !context_obj) || params.controller == 'db_groups') && params.context.blank?) || "sales".eql?(context) %>
 		<%= tab 'plus-circle', 'New', url + {action: :new} if model.can_create? @current_user, context_obj %>
 	<% end %>
-	<%= partial 'nav1', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 	<div class="clear"></div>
 </div>
 <%end%>

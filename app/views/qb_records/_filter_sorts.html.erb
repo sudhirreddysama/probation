@@ -1,9 +1,0 @@
-<% if params.action == 'tree' %>
-	<span class="dim">&nbsp;&nbsp;Sorted by Name/Hierarchy</span>
-	<%= f.hidden_field :sort1 %>
-	<%= f.hidden_field :sort2 %>
-	<%= f.hidden_field :dir1 %>
-	<%= f.hidden_field :dir2 %>
-<% else %>
-	<%= partial 'application/filter_sorts', f: f %>
-<% end%>

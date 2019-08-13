@@ -146,25 +146,7 @@ class Document < ApplicationRecord
 		return if !generated
 		render_pdf if !rendered_pdf
 	end
-	
-	def send_email
-		Notifier.document(self).deliver_now
-		update_attribute :deliver_emailed_at, Time.now
-	end
-	
-	def self.process_email_queue n = 10
-		sys = System.first
-		return if sys.doc_email_working
-		sys.update_attribute :doc_email_working, true
-		Document.email_queue.limit(n).each { |d|
-			Kernel.suppress(ActiveRecord::RecordNotFound) { # Skip if deleted
-				d.reload # In case it was edited.
-				d.send_email if !d.deliver_emailed_at && d.doc_delivery && d.deliver_email.to_s != ''
-			}
-		}
-		sys.update_attribute :doc_email_working, false
-	end
-	
+
 	module Common
 	
 		def doc_template_id_or_action

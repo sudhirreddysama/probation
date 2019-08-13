@@ -10,11 +10,7 @@
 				<% if obj.respond_to?(:documents) %>
 					<%= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
 				<% end %>
-				<% if obj.respond_to?(:db_changes) %>
-					<%= tab 'clock-o', 'Log', {controller: :db_changes, context: controller.singularize, context_id: obj.id}, action: :index %>
-				<% end %>
 			<% end %>
-			<%= partial 'nav2', obj: obj, model: model, context: context, controller: controller, context_obj: context_obj %>
 		<% end %>
 		<div class="clear"></div>
 	</div>
