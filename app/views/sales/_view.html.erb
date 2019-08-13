@@ -63,7 +63,4 @@
 <% end %>
 <% if o.invoice? || o.sale? %>
 	<%= partial 'invoice_details', o: o, details: o.sale_details.order('sale_details.sort') %>
-	<% if o.invoice? %>
-		<%= partial 'qb_late_fees/late_fee', o: o, tpl: o.qb_template %>
-	<% end %>
 <% end %>
