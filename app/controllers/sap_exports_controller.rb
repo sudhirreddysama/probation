@@ -10,7 +10,7 @@ class SapExportsController < CrudController
 		if("sap_exports".eql?(params.context))
 			@date_types = ["Cutoff Date", "sap_exports.cutoff_date"]
 		elsif("reports".eql?(params.context))
-			@date_types = ["Created At", "qb_transactions.created_at"]
+			@date_types = ["Created At", "sales.created_at"]
 		end
 		generic_filter_setup
 		super

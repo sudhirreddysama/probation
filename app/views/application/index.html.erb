@@ -3,7 +3,7 @@
 <%= pages %>
 <% if @objs.empty? %>
 	<%= partial 'empty' %>
-<% elsif (params[:context] == "payment_history" || session[:context] == "payment_history") && "qb_transactions".eql?(params[:controller]) %>
+<% elsif (params[:context] == "payment_history" || session[:context] == "payment_history") && "sales".eql?(params[:controller]) %>
 	<%= partial 'list2', objs: @objs %>
 <%else%>
 	<%= partial 'list', objs: @objs %>

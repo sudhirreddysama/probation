@@ -1,4 +1,4 @@
-class QbTransaction < QbRecord
+class Sale < QbRecord
 	
 	def self.can_create? u, *args
 		u.qb_user? || u.qb_admin? || true
@@ -12,20 +12,20 @@ class QbTransaction < QbRecord
 	def label; [num_was, type_was, date_was.d].reject(&:blank?) * ' '; end
 	
 	belongs_to :qb_customer
-	has_many :qb_transaction_details, {autosave: true, dependent: :destroy}, -> { order 'sort' }
+	has_many :sale_details, {autosave: true, dependent: :destroy}, -> { order 'sort' }
 	belongs_to :payeezy_post
 	belongs_to :qb_multi_invoice
 	belongs_to :qb_template
 	belongs_to :created_by, class_name: 'User'
 	belongs_to :updated_by, class_name: 'User'
-	belongs_to :previous, class_name: 'QbTransaction'
-	belongs_to :cc_previous, class_name: 'QbTransaction'
+	belongs_to :previous, class_name: 'Sale'
+	belongs_to :cc_previous, class_name: 'Sale'
 	belongs_to :voided_payeezy_post, class_name: 'PayeezyPost'
-	has_many :refunded_by_details, through: :qb_transaction_details, source: :refunded_by
-	has_many :previous_details, through: :qb_transaction_details, source: :previous
-	has_many :payment_for, class_name: 'QbTransactionDetail', foreign_key: 'payment_id', dependent: :nullify
-	has_many :payments, through: :qb_transaction_details, source: :payment
-	has_many :sap_lines, through: :qb_transaction_details
+	has_many :refunded_by_details, through: :sale_details, source: :refunded_by
+	has_many :previous_details, through: :sale_details, source: :previous
+	has_many :payment_for, class_name: 'SaleDetail', foreign_key: 'payment_id', dependent: :nullify
+	has_many :payments, through: :sale_details, source: :payment
+	has_many :sap_lines, through: :sale_details
 	
 	belongs_to :qb_debit_ledger, class_name: 'QbLedger', foreign_key: :debit_ledger, primary_key: :code
 	belongs_to :qb_credit_ledger, class_name: 'QbLedger', foreign_key: :credit_ledger, primary_key: :code
@@ -90,7 +90,7 @@ class QbTransaction < QbRecord
 	
 	# This assumes you're creating a refund from a sale, a payment from an invoice, a ar_refund from a payment.
 	def build_transaction typ = nil
-		o = QbTransaction.new(attributes.slice(*%w{division qb_customer_id qb_template_id cost_center}) + {type: typ})
+		o = Sale.new(attributes.slice(*%w{division qb_customer_id qb_template_id cost_center}) + {type: typ})
 		attr = {}
 		if o.refund?
 			attr = {
@@ -108,7 +108,7 @@ class QbTransaction < QbRecord
 				}}
 			}
 		elsif o.payment? || o.ar_refund?
-			unpaid = qb_transaction_details.needs_payment
+			unpaid = sale_details.needs_payment
 			attr = {
 				amount: unpaid.sum { |d| (d.payment? ? -1 : 1) * d.amount } * (o.ar_refund? ? -1 : 1),
 				new_payment_for_ids: unpaid.map(&:id)
@@ -124,11 +124,11 @@ class QbTransaction < QbRecord
 	end
 	
 	def dup
-		o = QbTransaction.new(attributes.slice(*%w{type division qb_customer_id qb_template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
+		o = Sale.new(attributes.slice(*%w{type division qb_customer_id qb_template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
 			late_auto late_shot_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email}))
 		if o.sale? || o.invoice?
 			o.new_details = new_details.map { |d| 
-				QbTransactionDetail.new(d.attributes.slice(*%w{cost_center debit_ledger credit_ledger item_info shot_id item_name item_description quantity price is_percent amount}))
+				SaleDetail.new(d.attributes.slice(*%w{cost_center debit_ledger credit_ledger item_info shot_id item_name item_description quantity price is_percent amount}))
 			}
 		end
 		o.date = Date.today
@@ -140,7 +140,7 @@ class QbTransaction < QbRecord
 	end
 	
 	def new_details
-		@new_details ||= qb_transaction_details.order('sort')
+		@new_details ||= sale_details.order('sort')
 	end
 	
 	def new_details= v
@@ -160,15 +160,15 @@ class QbTransaction < QbRecord
 	
 	def payment_for_options
 		return [] if !qb_customer_id
-		objs = QbTransactionDetail.where(qb_customer_id: qb_customer_id, payment_id: nil) # Find stuff for the customer not paid for yet.
-		objs = objs.or(QbTransactionDetail.where(id: new_payment_for_ids)) if !new_payment_for_ids.empty? # Also include stuff that's already selected, like when editing an invoice
-		objs = objs.where.not(qb_transaction_id: id) if id # DON'T include items from the same transaction, otherwise the split payment will show up when editing. Or changing Invoice to Payment will cause problems.
+		objs = SaleDetail.where(qb_customer_id: qb_customer_id, payment_id: nil) # Find stuff for the customer not paid for yet.
+		objs = objs.or(SaleDetail.where(id: new_payment_for_ids)) if !new_payment_for_ids.empty? # Also include stuff that's already selected, like when editing an invoice
+		objs = objs.where.not(sale_id: id) if id # DON'T include items from the same transaction, otherwise the split payment will show up when editing. Or changing Invoice to Payment will cause problems.
 		objs = objs.payable # Only include the types we can pay for
 		return objs
 	end
 	
 	def new_refund_items
-		@new_refund_items ||= qb_transaction_details.map { |d| d.attributes + {refunding: true} }
+		@new_refund_items ||= sale_details.map { |d| d.attributes + {refunding: true} }
 	end
 	
 	def new_refund_items= v
@@ -177,9 +177,9 @@ class QbTransaction < QbRecord
 	
 	def refund_options
 		return [] if !previous
-		objs = QbTransactionDetail.where(qb_transaction_id: previous_id) # Find stuff for the previous Sale		
+		objs = SaleDetail.where(sale_id: previous_id) # Find stuff for the previous Sale		
 		selected = @new_refund_items.select(&:refunding).map(&:previous_id) if @new_refund_items
-		objs = objs.or(QbTransactionDetail.where(id: selected)) if !selected.empty? # Include stuff that's already selected 
+		objs = objs.or(SaleDetail.where(id: selected)) if !selected.empty? # Include stuff that's already selected 
 		objs = objs.where(type: ['Sale']).where('amount != 0 and voided = 0')
 		return objs	
 	end
@@ -201,7 +201,7 @@ class QbTransaction < QbRecord
 				errors.add :late_shot_id, '^Late fee info, name, or description is required' if late_shot_id.blank? && late_item_info.blank? && late_item_description.blank?
 			end
 		end
-		details = qb_transaction_details
+		details = sale_details
 		if sale? || payment?
 			if pay_method_changed? && pay_method != 'Credit'
 				self.debit_ledger = QbLedger.gl_for_pay_method(pay_method)
@@ -281,7 +281,7 @@ class QbTransaction < QbRecord
 				end
 			else
 				totals_ar = Hash.new { |h, k| h[k] = 0 }
-				@pay_for = QbTransactionDetail.find(@new_payment_for_ids)
+				@pay_for = SaleDetail.find(@new_payment_for_ids)
 				self.split_amount = amount					
 				@pay_for.each { |d|
 					amt = d.amount.to_f * (d.payment? ? -1 : 1) * (payment? ? 1 : -1)
@@ -400,7 +400,7 @@ class QbTransaction < QbRecord
 				d.save
 				d = nil
 			end
-			d ||= documents.build(type: 'QbTransactionDoc', user: updated_by)
+			d ||= documents.build(type: 'SaleDoc', user: updated_by)
 			d.attributes = {
 				regenerate: true,
 				name: "#{type}.pdf",
@@ -426,7 +426,7 @@ class QbTransaction < QbRecord
 	end
 	
 	def transaction_document
-		# @transaction_document ||= documents.where(type: 'QbTransactionDoc').order('created_at desc').first
+		# @transaction_document ||= documents.where(type: 'SaleDoc').order('created_at desc').first
 	end
 	
 	def handle_before_save
@@ -473,7 +473,7 @@ class QbTransaction < QbRecord
 			y = date.year
 			pre = "#{num}#{y}-"
 			self.num = qb_account.next_invoice_no(date.year) if type == 'Invoice' && qb_account
-			n = DB.query('select max(substring_index(t.num, "-", -1)) n from qb_transactions t where t.num like ? and not id <=> ?', "#{pre}%", id).first.n.to_i + 1
+			n = DB.query('select max(substring_index(t.num, "-", -1)) n from sales t where t.num like ? and not id <=> ?', "#{pre}%", id).first.n.to_i + 1
 			self.num = pre + ('%04i' % n)
 		elsif num.blank?
 			self.num = id.to_s # Wont work on create. Also set in after_save
@@ -517,7 +517,7 @@ class QbTransaction < QbRecord
 	# True if ANY details have a payment_id (not equal to self). Some might be paid, some not. Note this is VERY DIFFERENT than checking payeezy_post_id, which checks for CC transaction.
 	def has_payment?
 		return @has_payment if !@has_payment.nil?
-		@has_payment = !qb_transaction_details.where('payment_id != ?', id).empty?
+		@has_payment = !sale_details.where('payment_id != ?', id).empty?
 	end
 	
 	# Used by multi invoices to see if the invoice can be deleted.
@@ -563,7 +563,7 @@ class QbTransaction < QbRecord
 			end
 		end
 		payment_for.update_all payment_id: nil
-		qb_transaction_details.update_all voided: true
+		sale_details.update_all voided: true
 		update_columns voided: true, voided_payeezy_post_id: v&.id
 		QbRecord.update_customer_balance
 		return true

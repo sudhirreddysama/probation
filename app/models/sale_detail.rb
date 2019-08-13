@@ -1,8 +1,8 @@
-class QbTransactionDetail < QbRecord
+class SaleDetail < QbRecord
 	
-	include QbTransaction::Types
+	include Sale::Types
 	
-	delegate :pay_method, :pay_cc?, :pay_cash?, :pay_check?, :pay_credit?, :pay_cash_check?, :pay_cash_check_cc?, to: :qb_transaction
+	delegate :pay_method, :pay_cc?, :pay_cash?, :pay_check?, :pay_credit?, :pay_cash_check?, :pay_cash_check_cc?, to: :sale
 	
 	self.inheritance_column = nil
 	
@@ -13,20 +13,20 @@ class QbTransactionDetail < QbRecord
 
 	def label; "Transaction Detail #{id}"; end
 	
-	belongs_to :qb_transaction
+	belongs_to :sale
 	belongs_to :shot
 	belongs_to :sap_line
 	has_one :sap_export, through: :sap_line
 	belongs_to :pay_sap_line, class_name: 'SapLine'
 	has_one :pay_sap_export, through: :pay_sap_line, source: :sap_export
-	belongs_to :payment, class_name: 'QbTransaction'
+	belongs_to :payment, class_name: 'Sale'
 	belongs_to :qb_customer
 	
-	# previous points to the qb_transaction_detail it is refunding
-	belongs_to :previous, class_name: 'QbTransactionDetail'
+	# previous points to the sale_detail it is refunding
+	belongs_to :previous, class_name: 'SaleDetail'
 	
-	# refunded_by points to the qb_transaction_details that have refunded it - there may be more than 1
-	has_many :refunded_by, class_name: 'QbTransactionDetail', foreign_key: :previous_id
+	# refunded_by points to the sale_details that have refunded it - there may be more than 1
+	has_many :refunded_by, class_name: 'SaleDetail', foreign_key: :previous_id
 	
 	belongs_to :qb_multi_invoice_detail
 	belongs_to :qb_late_fee

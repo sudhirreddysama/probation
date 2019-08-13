@@ -15,11 +15,11 @@
 <% } %>
 <div id="home-btns">
 	<%# if @current_user.ve_user? || @current_user.ve_admin?%>
-		<a href="<%= url_for controller: :qb_transactions, action: :index, division: 'immunization' %>">
+		<a href="<%= url_for controller: :sales, action: :index, division: 'immunization' %>">
 			<i class="fa fa-fw fa-3x fa-user"></i><br>
 			Health Clinic<br> Immunizations<br>
 		</a>
-		<a href="<%= url_for controller: :qb_transactions, action: :index, division: 'tb' %>">
+		<a href="<%= url_for controller: :sales, action: :index, division: 'tb' %>">
 			<i class="fa fa-fw fa-3x fa-user"></i><br>
 			Health Clinic<br> TB<br></span>
 		</a>

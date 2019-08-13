@@ -6,7 +6,7 @@ class QbCostCenter < QbRecord
 
 	def label; "#{code_was} #{name_was}"; end
 	
-	has_many :qb_transactions
+	has_many :sales
 	
 	validates_presence_of :name, :division, :code 
 	
@@ -16,12 +16,12 @@ class QbCostCenter < QbRecord
 	
 	has_many :shots, primary_key: :code, foreign_key: :cost_center
 	
-	def qb_transactions
-		QbTransaction.where('? in (qb_transactions.cost_center, qb_transactions.cost_center)', code)
+	def sales
+		Sale.where('? in (sales.cost_center, sales.cost_center)', code)
 	end
 	
-	def qb_transaction_details
-		QbTransactionDetail.where('? in (qb_transaction_details.cost_center, qb_transaction_details.cost_center)', code)
+	def sale_details
+		SaleDetail.where('? in (sale_details.cost_center, sale_details.cost_center)', code)
 	end
 	
 end

@@ -57,7 +57,7 @@ function is_num_tpl(n) {
 	return !n || !n.trim().match(/\d/)
 }
 
-var render_qb_transaction_for_previous_payment_select = function(item) {
+var render_sale_for_previous_payment_select = function(item) {
 	return '#' + item.num + ' - ' + ymd2mdy(item.date) + ' - $' + n2_float(item.amount) + ' - Card Ending In: ' + item.cc_last4;
 }
 
@@ -430,7 +430,7 @@ function init_obj_form(rails_data) {
 		$('#refund-table').colResizable({liveDrag: true, minWidth: 20, headerOnly: true, hoverCursor: 'col-resize', dragCursor: 'col-resize', partialRefresh: true});
 		init_select2({
 			select: '#obj_previous_id', 
-			url: ROOT_URL + 'qb_transactions/autocomplete',
+			url: ROOT_URL + 'sales/autocomplete',
 			params: function(params) {
 				params.type = ['Sale'];
 				params.qb_customer_id = $('#obj_qb_customer_id').val();
@@ -479,14 +479,14 @@ function init_obj_form(rails_data) {
 			var d = e.params.data;
 			if(d) {
 				var ccpid = $('#obj_cc_previous_id');
-				var option = d.payeezy_post_id ? new Option(render_qb_transaction_for_previous_payment_select(d), d.id, true, true) : new Option('', '', true, true);
+				var option = d.payeezy_post_id ? new Option(render_sale_for_previous_payment_select(d), d.id, true, true) : new Option('', '', true, true);
 				option.setAttribute('title', ' ');
 				ccpid.append(option);		
 				ccpid.trigger('change').find('~ .select2 .select2-selection').effect('highlight');
 			}
 			$('#refunds-thead').addClass('busy-bg');
 			$.ajax({
-				url: ROOT_URL + 'qb_transactions/refund_items_fields/' + (rails_data.id || ''),
+				url: ROOT_URL + 'sales/refund_items_fields/' + (rails_data.id || ''),
 				data: $('#obj_previous_id, #refunds :input').serialize(),
 				success: function(data, status, xhr) {
 					$('#refunds').html(data);
@@ -563,13 +563,13 @@ function init_obj_form(rails_data) {
 		//toggle_method();	
 		init_select2({
 			select: '#obj_cc_previous_id',
-			url: ROOT_URL + 'qb_transactions/autocomplete',
+			url: ROOT_URL + 'sales/autocomplete',
 			params: function(params) {
 				params.qb_customer_id = $('#obj_qb_customer_id').val();
 				params.payeezy = 1
 			},
 			item: function(item) {
-				item.text = render_qb_transaction_for_previous_payment_select(item);
+				item.text = render_sale_for_previous_payment_select(item);
 			},
 			placeholder: 'Select Previous CC Payment...'
 		});
@@ -609,7 +609,7 @@ function init_obj_form(rails_data) {
 		$('#obj_qb_customer_id').change(function(e) {
 			$('#unpaid-thead').addClass('busy-bg');
 			$.ajax({
-				url: ROOT_URL + 'qb_transactions/payment_for_ids_fields/' + (rails_data.id || ''),
+				url: ROOT_URL + 'sales/payment_for_ids_fields/' + (rails_data.id || ''),
 				data: $('#obj_qb_customer_id, #unpaid :input').serialize(),
 				success: function(data, status, xhr) {
 					$('#unpaid').html(data);
@@ -700,12 +700,12 @@ function init_obj_form(rails_data) {
 	}
 }
 
-function init_qb_transaction_form(rails_data) {
+function init_sale_form(rails_data) {
 	var obj_form = $('#obj_form');
 	obj_form.on('change', '.obj_type input', function() {		
 		$('#division_type_head').addClass('busy-bg');
 		$.ajax({
-			url: ROOT_URL + 'qb_transactions/fields/',
+			url: ROOT_URL + 'sales/fields/',
 			data: $('#obj_division input, .obj_type input, #obj_date, #obj_qb_template_id, #obj_num, #obj_qb_customer_id').serialize(),
 			complete: function(xhr, status) {
 				$('#division_type_head').removeClass('busy-bg');
@@ -889,7 +889,7 @@ function init_late_fee_form1(rails_data) {
 		var item_info = row.find('.d_item_info');
 		var shot_id = row.find('.d_shot_id');
 		var item_description = row.find('.d_item_description');
-		var qb_transaction_id = row.find('.d_qb_transaction_id');
+		var sale_id = row.find('.d_sale_id');
 		var qb_customer_full_path = row.find('.d_qb_customer_full_path');		
 		var invoice_total = row.find('.d_invoice_total');
 		var invoice_due_date = row.find('.d_invoice_due_date');
@@ -943,8 +943,8 @@ function init_late_fee_form1(rails_data) {
 			calculate_late_fee_details_fields();
 		});
 		init_select2({
-			select: qb_transaction_id,
-			url: ROOT_URL + 'qb_transactions/autocomplete',
+			select: sale_id,
+			url: ROOT_URL + 'sales/autocomplete',
 			params: function(params) {
 				params.type = 'Invoice';
 				params.division = $('#obj_division input:checked').val();

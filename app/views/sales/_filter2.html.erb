@@ -1,0 +1,98 @@
+<% show_customer = params.controller != 'qb_customers' && params.context != 'qb_customer' %>
+<tr>
+	<th>Type/Status</th>
+	<td>
+		<%= partial 'field_chk_lbls', opts: ['Sale', 'Refund', 'Invoice', 'Payment', 'AR Refund'], field: 'filter[type][]', vals: @filter.type || [], lbl: 'qbttype' %>
+		&nbsp;<label><%= f.check_box :balance_unpaid %> Unpaid</label>
+		&nbsp;<label><%= f.check_box :past_due %> Past Due</label>
+		<script>
+			$('#filter_past_due').change(function(e) {
+				$('#filter_balance_unpaid').prop('checked', $(this).prop('checked'));
+			});
+		</script>
+	</td>
+</tr>
+<tr>
+	<th>Div./Pay Meth.</th>
+	<td>
+		<span id="filter_division"><%= partial 'field_chk_lbls', opts: QB_DIVS, field: 'filter[division][]', vals: @filter.division || [], lbl: 'qbdiv' %></span>
+		<%= partial 'field_chk_lbls', opts: ['CC', 'Check', 'Cash', 'Credit'], field: 'filter[pay_method][]', vals: @filter.pay_method || [], lbl: 'qbpmeth' %>
+	</td>
+</tr>
+<% if show_customer %>
+	<tr>
+		<th>Customer(s)</th>
+		<% opts = @filter.qb_customer_ids.empty? ? [] : QbCustomer.find(@filter.qb_customer_ids).map { |c| [c.name, c.id, title: ' '] } %>
+		<td><%= f.select :qb_customer_ids, opts, {}, multiple: true, style: 'width: 600px;' %></td>
+	</tr>
+	<script>	
+		init_path_select2({
+			select: '#filter_qb_customer_ids',
+			url: '<%= url_for context: nil, context_id: nil, controller: :qb_customers, action: :autocomplete %>',
+			params: function(params) {
+				params.division = $('#filter_division input:checked').val();
+			}
+		});
+	</script>
+<% end %>
+<tr>
+	<th>Cost Center(s)</th>
+	<td><%= f.select :cost_centers, @filter.cost_centers.map { |i| [i, title: ' '] }, {}, multiple: true, style: 'width: 600px;' %></td>
+</tr>
+<tr>
+	<th>Debit Ledger(s)</th>
+	<td><%= f.select :debit_ledgers, @filter.debit_ledgers.map { |i| [i, title: ' '] }, {}, multiple: true, style: 'width: 600px;' %></td>
+</tr>
+
+<tr>
+	<th>Credit Ledger(s)</th>
+	<td><%= f.select :credit_ledgers, @filter.credit_ledgers.map { |i| [i, title: ' '] }, {}, multiple: true, style: 'width: 600px;' %></td>
+</tr>
+<tr>
+	<th>User(s)</th>
+	<% opts = @filter.user_ids.empty? ? [] : User.find(@filter.user_ids).map { |c| [c.username, c.id, title: ' '] } %>
+	<td>
+		<%= f.select :user_ids, opts, {}, multiple: true, style: 'width: 500px;' %>
+		<a href="#" id="select_user"><i class="fa fa-arrow-left">&nbsp;</i><%= @current_user.username %></a>
+	</td>
+</tr>
+<script>
+	
+	init_select2({
+		select: '#filter_user_ids',
+		url: '<%= url_for context: nil, context_id: nil, controller: :users, action: :autocomplete %>',
+		item: function(item) {
+			item.text = item.username;
+		}
+	});
+	
+	function init_cc_ledger_select2(s, url) {
+		init_select2({
+			select: s,
+			url: url,
+			params: function(params) {
+				params.division = $('#filter_division input:checked').val();
+			},
+			item: function(item) {
+				item.id = item.code;
+				item.text = item.code;
+			},
+			templateResult: function(item) {
+				if(!item.code) return item.text;
+				return item.code + ' ' + item.name;
+			},
+			tags: true
+		});	
+	}
+	var url = '<%= url_for context: nil, context_id: nil, controller: :qb_ledgers, action: :autocomplete %>';
+	var url2 = '<%= url_for context: nil, context_id: nil, controller: :qb_cost_centers, action: :autocomplete %>';
+	init_cc_ledger_select2('#filter_debit_ledgers', url);
+	init_cc_ledger_select2('#filter_credit_ledgers', url);
+	init_cc_ledger_select2('#filter_cost_centers', url2);
+	
+	$('#select_user').click(function(e) {
+		$('#filter_user_ids').append
+		$('#filter_user_ids').select2('trigger', 'select', {data: {id: '<%= @current_user.id %>', text: <%= raw @current_user.username.to_json %>, title: ' '}});
+	});
+
+</script>

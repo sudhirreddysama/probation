@@ -205,10 +205,10 @@ class PayeezyPost < ApplicationRecord
 		return transaction_approved
 	end
 	
-	has_one :qb_transaction
-	has_one :voided_qb_transaction, foreign_key: :voided_payeezy_post_id, class_name: 'QbTransaction'
+	has_one :sale
+	has_one :voided_sale, foreign_key: :voided_payeezy_post_id, class_name: 'Sale'
 	def source
-		qb_transaction || voided_qb_transaction
+		sale || voided_sale
 	end
 	
 	# One time fix to re-set card types from payeezy response that were not properly stored from public orders side due to a (fixed) bug.

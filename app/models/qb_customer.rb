@@ -23,8 +23,8 @@ class QbCustomer < QbRecord
 		where('qb_customers.type is not null').order('type').group('type').pluck(:type)
 	end
 	
-	has_many :qb_transactions
-	has_many :qb_transaction_details
+	has_many :sales
+	has_many :sale_details
 	
 	def qb_customers
 		QbCustomer.where 'id_path like ?', full_id_path.to_s + '%'
@@ -45,11 +45,11 @@ class QbCustomer < QbRecord
 	belongs_to :qb_ledger, foreign_key: :ledger, primary_key: :code
 	
 	def build_transaction typ = nil
-		o = qb_transactions.build({type: typ, division: division})
+		o = sales.build({type: typ, division: division})
 		o.set_defaults_for_type
 		if o.payment? || o.ar_refund?
 			o.amount = balance.to_f * (o.ar_refund? ? -1 : 1)
-			o.payment_for_ids = qb_transaction_details.needs_payment.pluck(:id)
+			o.payment_for_ids = sale_details.needs_payment.pluck(:id)
 		end
 		return o
 	end

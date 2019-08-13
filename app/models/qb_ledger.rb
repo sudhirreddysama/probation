@@ -8,7 +8,7 @@ class QbLedger < QbRecord
 
 	def label; "#{code_was} #{name_was}"; end
 	
-	#has_many :qb_transactions
+	#has_many :sales
 	
 	validates_presence_of :name, :code, :type
 	
@@ -29,12 +29,12 @@ class QbLedger < QbRecord
 	
 	has_many :shots, primary_key: :code, foreign_key: :ledger
 	
-	def qb_transactions
-		QbTransaction.where('? in (qb_transactions.debit_ledger, qb_transactions.credit_ledger)', code)
+	def sales
+		Sale.where('? in (sales.debit_ledger, sales.credit_ledger)', code)
 	end
 	
-	def qb_transaction_details
-		QbTransactionDetail.where('? in (qb_transaction_details.debit_ledger, qb_transaction_details.credit_ledger)', code)
+	def sale_details
+		SaleDetail.where('? in (sale_details.debit_ledger, sale_details.credit_ledger)', code)
 	end
 	
 	scope :active, -> { where active: true }

@@ -2,11 +2,11 @@
 	<div class="btns">
 		<% doc = o.transaction_document %>
 		<% if doc %>
-			<%= link_to fa('print', "Print #{o.type} PDF"), {action: :doc, id: o.id, controller: :qb_transactions}, target: '_blank' %>
+			<%= link_to fa('print', "Print #{o.type} PDF"), {action: :doc, id: o.id, controller: :sales}, target: '_blank' %>
 		<% else %>
 			<%= form_tag(action: :gendoc, id: o.id ) %><button><i class="fa fa-print"></i> Generate <%= o.type %> PDF</button></form>
 		<% end %>
-		<% url = {context: nil, controller: :qb_transactions, action: :new, from_transaction: o.id} %>
+		<% url = {context: nil, controller: :sales, action: :new, from_transaction: o.id} %>
 		<% if o.invoice? %>
 			<%= link_to fa('money', 'Pay Invoice'), url + {type: 'Payment'} %>
 		<% end %>
@@ -62,5 +62,8 @@
 	</div>
 <% end %>
 <% if o.invoice? || o.sale? %>
-	<%= partial 'invoice_details', o: o, details: o.qb_transaction_details.order('qb_transaction_details.sort') %>
+	<%= partial 'invoice_details', o: o, details: o.sale_details.order('sale_details.sort') %>
+	<% if o.invoice? %>
+		<%= partial 'qb_late_fees/late_fee', o: o, tpl: o.qb_template %>
+	<% end %>
 <% end %>

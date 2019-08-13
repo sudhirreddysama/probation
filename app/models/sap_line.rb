@@ -4,11 +4,11 @@ class SapLine < ApplicationRecord
 	
 	belongs_to :sap_export
 	
-	has_one :qb_transaction_detail
-	has_one :pay_qb_transaction_detail, class_name: 'QbTransactionDetail', foreign_key: :pay_sap_line_id
+	has_one :sale_detail
+	has_one :pay_sale_detail, class_name: 'SaleDetail', foreign_key: :pay_sap_line_id
 	
 	def source
-		qb_transaction_detail || pay_qb_transaction_detail
+		sale_detail || pay_sale_detail
 	end
 	
 	# document header fields:

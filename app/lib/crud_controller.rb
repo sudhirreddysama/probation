@@ -74,12 +74,12 @@ class CrudController < ApplicationController
 		@objs = [] if @objs.blank?
 
 		if(params.id == "cacheir details" && params["from_date"].present? && params["to_date"].present?)
-			@objs = QbTransaction.where(:created_at => params["from_date"].to_time.beginning_of_day..params["to_date"].to_time.end_of_day, voided: false)
+			@objs = Sale.where(:created_at => params["from_date"].to_time.beginning_of_day..params["to_date"].to_time.end_of_day, voided: false)
 		elsif(@filter.present? && @filter["from_date"].present? && @filter["to_date"].present?)
 			if(@filter.date_type.include?("sap_exports"))
 				@objs = @objs.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day)
 			else
-				@objs = QbTransaction.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day, voided: false)
+				@objs = Sale.where(:created_at => @filter["from_date"].to_time.beginning_of_day..@filter["to_date"].to_time.end_of_day, voided: false)
 				if(params.id != "cacheir details")
 					@objs.group_by{|e| [e.created_by_id, e.pay_method]}.each do |k,v| 
 						@results.push({type: k[1], username: User.find(k[0]).username, count: v.count, total: v.map{|y| y[:amount].to_f}.reduce(:+)})

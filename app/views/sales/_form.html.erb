@@ -3,7 +3,7 @@
 <% } %>
 <%= partial 'application/form', o: @obj %>
 <script>
-	init_qb_transaction_form({
+	init_sale_form({
 		id: <%= o.id.to_json.html_safe %>,
 		type: "Sale",
 		payeezy_post_id: <%= o.payeezy_post_id.to_json.html_safe %>,

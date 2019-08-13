@@ -1,0 +1,9 @@
+<% s1 = d.sap_export %>
+<% s2 = d.pay_sap_export %>
+<% if s1 && (!s2 || s2.id != s1.id) %>
+	<% icon = d.invoice? || d.payment? || d.ar_refund? ? 'arrow-circle-o-right' : 'arrow-circle-right' %>
+	<%= link_to fa(icon).html_safe, {context: nil, controller: :sap_exports, action: :view, id: s1.id, id2: d.sap_line_id, anchor: "line-#{d.sap_line_id}"} %>
+<% end %>
+<% if s2 %>
+	<%= link_to fa('arrow-circle-right').html_safe, {context: nil, controller: :sap_exports, action: :view, id: s2.id, id2: d.pay_sap_line_id, anchor: "line-#{d.pay_sap_line_id}"} %>
+<% end %>

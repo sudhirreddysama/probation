@@ -13,7 +13,7 @@
 			<% url = url %>
 		<%end%>
 	<% elsif [params[:context], session[:context]].include?("payment_history") %>
-		<% url = {context: "payment_history", controller: "qb_transactions"}  %>
+		<% url = {context: "payment_history", controller: "sales"}  %>
 		<% session[:context] ||= params[:context] %>
 	<%else%>
 		<% session[:context] ||= params[:context] %>

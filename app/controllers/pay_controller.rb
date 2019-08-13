@@ -13,7 +13,7 @@ class PayController < ApplicationController
 			end
 			if params[:num]
 				@num = params[:num]
-				i = QbTransaction.find_by 'upper(num) = ? and type = "Invoice"', @num.to_s.upcase.strip
+				i = Sale.find_by 'upper(num) = ? and type = "Invoice"', @num.to_s.upcase.strip
 				if i					
 					session[:invoice_ids] ||= []
 					session[:invoice_ids] << i.id
@@ -23,7 +23,7 @@ class PayController < ApplicationController
 				@errors = ['Invoice not found!']
 			end
 		end
-		@invoices = session[:invoice_ids].empty? ? [] : QbTransaction.where(id: session[:invoice_ids]).order(DB.escape('field(id, ?)', session[:invoice_ids])).to_a
+		@invoices = session[:invoice_ids].empty? ? [] : Sale.where(id: session[:invoice_ids]).order(DB.escape('field(id, ?)', session[:invoice_ids])).to_a
 		@total = @invoices.sum { |i| i.amount.to_f }
 		@pay = params[:pay]
 		if request.post? && @pay
@@ -38,7 +38,7 @@ class PayController < ApplicationController
 			@errors << 'Zip code is required.' if @pay.zip_code.blank?
 			@errors << 'Error calculating invoice total. Please check the total and try again.' if @total.to_f != @pay[:total].to_f
 			if @errors.empty?
-				t = QbTransaction.new({
+				t = Sale.new({
 					cc_no: @pay.cc_no,
 					cc_name: @pay.cc_name,
 					cc_exp: @pay.cc_exp,
@@ -54,7 +54,7 @@ class PayController < ApplicationController
 					pay_method: 'CC',
 					amount: @total,
 					process_form: true,
-					new_payment_for_ids: @invoices.map { |i| i.qb_transaction_detail_ids }.flatten,
+					new_payment_for_ids: @invoices.map { |i| i.sale_detail_ids }.flatten,
 					doc_generate: true,
 					doc_deliver: false
 				})
@@ -75,7 +75,7 @@ class PayController < ApplicationController
 	end
 
 	def done
-		@pay = QbTransaction.find session[:pid]
+		@pay = Sale.find session[:pid]
 		@doc = @pay.documents.find session[:did]
 	end
 

@@ -20,10 +20,10 @@ if o.payment? || o.ar_refund?
 	cids = []
 	tids = []
 	o.payment_for.each { |d|
-		tids << d.qb_transaction_id
+		tids << d.sale_id
 		cids << d.qb_customer_id
 	}
-	objs = QbTransaction.where('(qb_transactions.id in (?) or (qb_transactions.qb_customer_id in (?) and qb_transactions.balance != 0))', tids.uniq, cids.uniq).order('qb_transactions.date asc, qb_transactions.id asc')
+	objs = Sale.where('(sales.id in (?) or (sales.qb_customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
 	objs_by_cid = objs.group_by &:qb_customer_id
 	customers = QbCustomer.find(cids)
 	# What to do if objs involve multiple tpls?!?!?!?!?!?!?!?!?
@@ -39,7 +39,7 @@ end
 
 show_invoice_paid_column = false
 if o.invoice?
-	show_invoice_paid_column = o.qb_transaction_details.find &:payment
+	show_invoice_paid_column = o.sale_details.find &:payment
 	colspan += 1
 end
 
@@ -89,7 +89,7 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 <table id="layout">
 <thead>
 	<tr><td colspan="<%= colspan %>">
-		<% if o.invoice? && o.balance.to_f == 0 %><div id="paid">PAID <%= o.payments.maximum('qb_transactions.date').d %></div><% end %>
+		<% if o.invoice? && o.balance.to_f == 0 %><div id="paid">PAID <%= o.payments.maximum('sales.date').d %></div><% end %>
 		<div style="position: relative;">
 			<div id="top-pay">
 				<div>
@@ -172,6 +172,12 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 					<% end %>
 				</table>
 			</div>
+			<div id="top-bill">
+				<table class="bdr">
+					<tr><th>Bill To</th></tr>
+					<tr><td><div class="lines5"><%= nl2br_h bill_to %></div></td></tr>			
+				</table>
+			</div>
 			<% if tpl.show_head_fac %>
 				<div id="top-fac">
 					<table class="bdr">
@@ -225,10 +231,10 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 </thead>
 <tbody>
 	<% if o.invoice? || o.sale? || o.refund? %>
-		<% o.qb_transaction_details.each { |d| %>
+		<% o.sale_details.each { |d| %>
 			<tr class="bv">
 				<% i = o.refund? ? d.previous : d %>
-				<% if o.refund? %><td width="1%" class="tr nobr"><%= i.qb_transaction&.num %></td><% end %>
+				<% if o.refund? %><td width="1%" class="tr nobr"><%= i.sale&.num %></td><% end %>
 				<% if show_invoice_paid_column %><td class="nobr"><%= d.payment&.date.d %></td><% end %>
 				<% if tpl.show_item_info %><td><%= i.item_info %></td><% end %>
 				<% if tpl.show_item_name %><td><%= i.item_name_short %></td><% end %>

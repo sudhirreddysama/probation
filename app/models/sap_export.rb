@@ -2,7 +2,7 @@ class SapExport < ApplicationRecord
 
 	def self.can_create? u, *args; false; end
 
-	has_many :qb_transactions
+	has_many :sales
 	has_many :sap_lines
 	
 	def label; created_at.dt; end
@@ -49,21 +49,21 @@ class SapExport < ApplicationRecord
 		export = SapExport.create :created_at => ts || Time.now, :cutoff_date => date
 		logger.info "Creating SapExport #{export.id} #{date}"
 		# Rails generated aliases for where condition:
-		# qb_transaction_details <-- select from
-		# qb_transactions <-- transaction
-		# payments_qb_transaction_details <-- transaction record of the payment
-		QbTransactionDetail.eager_load(:qb_transaction, :payment).where(
+		# sale_details <-- select from
+		# sales <-- transaction
+		# payments_sale_details <-- transaction record of the payment
+		SaleDetail.eager_load(:sale, :payment).where(
 			# Forget about zero dollar noise and stuff that's in the future (after the export date)
-			'qb_transaction_details.amount != 0 and date(qb_transactions.date) <= ? and qb_transaction_details.type in ("Sale", "Invoice", "Payment", "Refund", "AR Refund") and ' +
+			'sale_details.amount != 0 and date(sales.date) <= ? and sale_details.type in ("Sale", "Invoice", "Payment", "Refund", "AR Refund") and ' +
 			# Include everything that hasn't been exported yet
-			'(qb_transaction_details.sap_line_id is null or ' +
+			'(sale_details.sap_line_id is null or ' +
 			# Or has a payment but the payment_id hasn't been sent to SAP yet. Also make sure the payment isn't in the future
-			'(qb_transaction_details.payment_id is not null and qb_transaction_details.pay_sap_line_id is null and date(payments_qb_transaction_details.date) <= ?))',
+			'(sale_details.payment_id is not null and sale_details.pay_sap_line_id is null and date(payments_sale_details.date) <= ?))',
 			date, date
 		).each { |detail|
-			transaction = detail.qb_transaction
+			transaction = detail.sale
 			payment_detail = detail.payment
-			logger.info "Export QbTransactionDetail ID: #{detail.id} QbTransactionID: #{detail.qb_transaction_id} Type: #{detail.type}"		
+			logger.info "Export SaleDetail ID: #{detail.id} SaleID: #{detail.sale_id} Type: #{detail.type}"		
 			posting_date = transaction.date
 			if !detail.invoice? && (detail.pay_cash? || detail.pay_check? || detail.pay_cc?)
 				posting_date -= 1
@@ -169,12 +169,12 @@ class SapExport < ApplicationRecord
 	def self.clear_exports
 		DB.query 'truncate table sap_exports'
 		DB.query 'truncate table sap_lines'
-		DB.query 'update qb_transaction_details set sap_line_id = null, pay_sap_line_id = null'
+		DB.query 'update sale_details set sap_line_id = null, pay_sap_line_id = null'
 	end
 	
 	def self.initialize_exports
 		before = '2019-03-01'
-		DB.query 'update qb_transaction_details d join qb_transactions t on t.id = d.qb_transaction_id set d.sap_line_id = 0, d.pay_sap_line_id = 0 where date(created_at) < ?', before
+		DB.query 'update sale_details d join sales t on t.id = d.sale_id set d.sap_line_id = 0, d.pay_sap_line_id = 0 where date(created_at) < ?', before
 	end
 	
 	def self.create_test_days

@@ -6,7 +6,7 @@
 	<%= link_to fa('code', 'Raw Response'), {action: :raw_response, id: o.id}, target: '_blank' %>
 </div>
 <div class="view dl-inline">
-	<%= dl 'Created From', o.source ? link_to(o.source.label, {context: nil, controller: :qb_transactions, action: :view, id: o.source.id}) : 'None' %>
+	<%= dl 'Created From', o.source ? link_to(o.source.label, {context: nil, controller: :sales, action: :view, id: o.source.id}) : 'None' %>
 </div>
 <div class="view">
 	<%= dl 'ID', o.id %>

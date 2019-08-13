@@ -14,7 +14,7 @@ class Shot < QbRecord
 	include HasPath
 	
 	#belongs_to :qb_account
-	has_many :qb_transaction_details
+	has_many :sale_details
 	
 	#TYPES = [
 	#	'Discount',

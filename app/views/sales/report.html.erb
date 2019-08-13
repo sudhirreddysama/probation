@@ -1,0 +1,105 @@
+<%
+accounts = @objs.group_by { |o| o.qb_cost_center.try(:label) || 'Unknown' }
+filter = @filter
+%>
+<!doctype html>
+<html>
+<head>
+<style>
+body, html { font: 10px/1.5 sans-serif; padding: 0; margin: 0; box-sizing: border-box; }
+* { box-sizing: inherit; font-family: inherit; font-size: inherit; }
+table { border-collapse: collapse; margin: 1em 0; width: 99.9%; }
+th, td { text-align: left; margin: 0; border-bottom: 1px solid #aaa; padding: 1px 4px 0 0; white-space: nowrap; background: #fff; vertical-align: top; }
+th:last-child, td:last-child { padding-right: 0; }
+.tl { text-align: left !important; }
+.tr { text-align: right !important; }
+.tc { text-align: center !important; }
+p { padding: 0; margin: 1em 0; } 
+h1 { font-size: 16px; text-align: center; font-weight: bold; }
+th { font-weight: bold; }
+ol, ul { margin: 1em 0; padding: 0; margin-left: 30px; }
+.page-break, .page-break br { page-break-before: always; height: 0; overflow: hidden; }
+thead { display: table-header-group }
+tfoot { display: table-row-group }
+tr { page-break-inside: avoid }
+.u { text-decoration: underline; }
+body { width: 8 in; }
+}
+@media screen { 
+	body { padding: 4px; }
+}	
+#filter > div { width: 50%; float: left; }
+</style>
+</head>
+<body>
+<h1>Transactions Detail Report</h1>
+<%= render(layout: 'filter_print', locals: {filter: @filter}) { %>
+	<% only = [filter[:balance_unpaid].to_i == 1 ? 'Unpaid' : nil, filter[:past_due].to_i == 1 ? 'Past Due' : nil].compact * ' & ' %>
+	<% if !only.blank? %>
+		<div><b>Only <%= only %></b></div>
+	<% end %>
+	<% if !filter[:division].empty? %>
+		<div><b>Division(s):</b> <%= filter[:division] * ', ' %></div>
+	<% end %>
+	<% if !filter[:pay_method].empty? %>
+		<div><b>Pay Method(s):</b> <%= filter[:pay_method] * ', ' %></div>
+	<% end %>
+	<% if !filter[:type].empty? %>
+		<div><b>Type(s):</b> <%= filter[:type] * ', ' %></div>
+	<% end %>
+	<% if !filter[:user_ids].empty? %>
+		<div><b>User(s):</b> <%= User.find(filter[:user_ids]).map(&:username) * ', ' %></div>
+	<% end %>
+	<% if !filter[:qb_customer_ids].empty? %>
+		<div style="width: 100%;"><b>Customer(s):</b> <%= QbCustomer.find(filter[:qb_customer_ids]).map(&:name) * ', ' %></div>
+	<% end %>
+	<% if !filter[:cost_centers].empty? %>
+		<div style="width: 100%;"><b>Cost Center(s):</b> <%= QbLedger.find(filter[:cost_centers]).map(&:label) * ', ' %></div>
+	<% end %>
+	<% if !filter[:debit_ledgers].empty? %>
+		<div style="width: 100%;"><b>Debit Ledger(s):</b> <%= QbLedger.find(filter[:debit_ledgers]).map(&:label) * ', ' %></div>
+	<% end %>
+	<% if !filter[:credit_ledgers].empty? %>
+		<div style="width: 100%;"><b>Credit Ledger(s):</b> <%= QBLedger.find(filter[:credit_ledgers]).map(&:label) * ', ' %></div>
+	<% end %>
+<% } %>
+<table>
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th>Name</th>
+			<th>Pay&nbsp;Method</th>
+			<th class="tr">Check&nbsp;#</th>
+			<th class="tr">Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% tot = 0.0 %>
+		<% accounts.keys.sort.each { |k| objs = accounts[k] %>
+			<tr>
+				<th colspan="5"><%= k %></th>
+			</tr>
+			<% subtot = 0.0 %>
+			<% objs.each { |o| %>
+				<tr>
+					<td><%= o.type %></td>
+					<td><%= o.qb_customer.try(:name) %></td>
+					<td><%= o.pay_method %></td>
+					<td class="tr"><%= o.check_no %></td>
+					<td class="tr"><%= n2 o.amount %></td>
+					<% subtot += o.amount.to_f %>
+					<% tot += o.amount.to_f %>
+				</tr>
+			<% } %>
+			<tr>
+				<th class="tr" colspan="4"><%= k %> Total</th>
+				<th class="tr"><%= n2 subtot %></th>
+			</tr>
+		<% } %>
+			<tr>
+				<th class="tr" colspan="4">TOTAL</th>
+				<th class="tr"><%= n2 tot %></th>
+			</tr>
+	</tbody>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <% n = "obj[new_details][#{i}]" %>
-<% if d.is_a?(QbTransactionDetail) && d.sap_or_pay_lock? %>
+<% if d.is_a?(SaleDetail) && d.sap_or_pay_lock? %>
 	<tr class="d_lock">
 		<th class="tl row-icons-td"><%= hidden_field_tag "#{n}[id]", d.id %>
 			<div class="row-icons">

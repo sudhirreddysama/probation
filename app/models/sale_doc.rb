@@ -1,4 +1,4 @@
-class QbTransactionDoc < Document
+class SaleDoc < Document
 	
 	#def can_edit? u, *args; false; end
 	
@@ -8,19 +8,19 @@ class QbTransactionDoc < Document
 			tids = []
 			cids = []
 			obj.payment_for.each { |d|
-				tids << d.qb_transaction_id
+				tids << d.sale_id
 				cids << d.qb_customer_id
 			}
-			objs = QbTransaction.where('qb_transactions.type = "Invoice" and (qb_transactions.id in (?) or (qb_transactions.qb_customer_id in (?) and qb_transactions.balance != 0))', tids.uniq, cids.uniq).order('qb_transactions.date asc, qb_transactions.id asc')
+			objs = Sale.where('sales.type = "Invoice" and (sales.id in (?) or (sales.qb_customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
 			customers = QbCustomer.find(cids)
 			objs.each { |o|
 				t = Tempfile.new(["invoice-#{o.id}", '.pdf'])
-				QbTransactionDoc.new(obj: o).render_pdf(false, t.path)
+				SaleDoc.new(obj: o).render_pdf(false, t.path)
 				append << t.path
 			}
 			to_path = Tempfile.new(["invoice-#{obj.id}", '.pdf']).path if !append.empty?
 		end
-		html = ApplicationController.render(template: 'qb_transactions/transaction', assigns: {obj: obj}, layout: false)
+		html = ApplicationController.render(template: 'sales/transaction', assigns: {obj: obj}, layout: false)
 		IO.popen("wkhtmltopdf -s Letter -T .35in -B .25in -L .25in -R .25in --header-right '[page]/[toPage]' --header-font-size 10 --header-spacing 0 " +
 			"--javascript-delay 1000 --enable-local-file-access --disable-smart-shrinking --print-media-type - #{get_data ? '-' : Shellwords.escape(to_path.presence || path)}", 'w+') { |io|
 			io.write html

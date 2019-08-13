@@ -67,7 +67,7 @@
 		</tr>
 	</thead>
 	<% id2 = params.id2.to_i %>
-	<% o.sap_lines.eager_load(:qb_transaction_detail, :pay_qb_transaction_detail).each { |l| %>
+	<% o.sap_lines.eager_load(:sale_detail, :pay_sale_detail).each { |l| %>
 		<tbody class="<%= cycle 'odd', 'even' %>">
 			<tr id="line-<%= l.id %>"<% if l.id == id2 %> class="invert"<% end %>>
 				<td ><%= l.cost_center %></td>

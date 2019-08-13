@@ -1,0 +1,28 @@
+<% options = o.payment_for_options.to_a %>
+<% if options.empty? %>
+	<tr class="empty">
+		<th colspan="13" class="tc">No unpaid items found.</th>
+	</tr>
+<% else %>
+	<% options.each { |d| %>
+		<tr>
+			<td><div><%= check_box_tag 'obj[new_payment_for_ids][]', d.id, d.id.in?(o.new_payment_for_ids), data: {amount: d.amount, type: d.type} %></div></td>
+			<th><div><%= link_to d.sale.num, {controller: :sales, id: d.sale.id, action: :view}, target: '_blank' %></div></th>
+			<th><div><%= d.type %></div></th>
+			<th><div><%= d.sale.date.d %></div></th>
+			<th><div><%= link_to_if d.qb_customer, d.qb_customer.try(:name), {controller: :qb_customers, action: :view, id: d.qb_customer_id}, target: '_blank' %></div></th>
+			<th><div><%= d.cost_center %></div></th>
+			<th><div><%= d.invoice? ? d.debit_ledger : d.credit_ledger %></div></th>
+			<th><div><%= d.invoice? ? d.credit_ledger : d.debit_ledger %></div></th>
+			<% if d.invoice? %>
+				<th><div><%= d.item_name_short %></div></th>
+				<th><div><%= d.item_description %></div></th>
+				<th class="tr"><div><%= n2 d.price %></div></th>
+				<th class="tr"><div><%= d.quantity %></div></th>
+			<% else %>
+				<th colspan="4"></th>
+			<% end %>
+			<th class="tr"><div><%= n2 d.amount %></div></th>
+		</tr>
+	<% } %>
+<% end %>

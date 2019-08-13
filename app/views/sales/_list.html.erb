@@ -17,7 +17,7 @@
 			<tr class="<%= cycle 'odd', 'even' %><% if o.voided %> voided<% end %>">
 				<td class="nobr"><% if o.id.to_s != o.num %> <%= o.id %><% end %></td>
 				<td class="nobr">
-					<%= link_to blank_tag(colon_to_arrow( o.num)), controller: :qb_transactions, action: :view, id: o.id %></td>
+					<%= link_to blank_tag(colon_to_arrow( o.num)), controller: :sales, action: :view, id: o.id %></td>
 				<td class="nobr tr">$<%= n2 o.amount %></td>
 				<td class="nobr"><%= o.created_at.to_date %></td>
 				<td class="nobr"><%= o.created_by&.username %></td>
