@@ -14,6 +14,10 @@ class ShotsController < QbRecordsController
 		@objs = @model.eager_load(:qb_ledger)
 		super
 	end
+
+	def view
+		session['context'] = "shots"
+	end
 	
 	def default_filter
 		super + {active: ['1']}

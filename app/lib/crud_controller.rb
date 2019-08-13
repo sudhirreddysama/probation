@@ -13,50 +13,8 @@ class CrudController < ApplicationController
 		o = get_order_auto
 		@objs = @objs.reorder(o) if o
 		@objs = @objs.where(id: params.list_ids.split(',')) if !params.list_ids.blank?
-		if params[:group_op] == 'delete'
-			@db_group.destroy
-			redirect_to({}, notice: 'Group has been deleted.')
-		elsif params[:group_op] == 'edit'		
-			@db_group.update_attributes({
-				name: params[:group_name],
-				"#{@model_class.to_s.underscore}_ids" => @objs.pluck(:id)
-			})
-			redirect_to({}, notice: 'Group has been saved.')
-		elsif params[:group_op] == 'remove'
-			ids_attr = "#{@model_class.to_s.underscore}_ids"
-			@db_group.send "#{ids_attr}=", (@db_group.send(ids_attr) - @objs.pluck(:id)).uniq
-			redirect_to({}, notice: 'Items have been removed from group.')
-		elsif !params[:alter_db_group_id].blank?
-			gid = params[:alter_db_group_id]
-			g = gid == 'new' ? @model.db_groups.create(name: params[:group_name]) : @model.db_groups.find(gid)
-			ids_attr = "#{@model_class.to_s.underscore}_ids"
-			g.send "#{ids_attr}=", (g.send(ids_attr) + @objs.pluck(:id)).uniq
-			session[filter_name][:db_group_id] = g.id
-			redirect_to({}, notice: 'Items have been added to group.')
-		elsif params[:export_xls]
-			export_objs @objs, @export_fields
-		elsif params[:print]
+		if params[:print]
 			print_objs
-		elsif params[:process] == 'edit_all'
-			return if !require_model_can_edit?
-			obj = @filter.edit.inject({}) { |m, v|  
-				m[v.name] = v.value
-				m
-			}
-			@objs.find_each { |o|
-				o.current_user = @current_user
-				o.update_attributes obj
-			}
-			redirect_to({}, notice: 'All records have been updated.')
-		elsif params[:process] == 'delete_all'
-			return if !require_model_can_destroy?
-			@objs.find_each { |o| 
-				o.current_user = @current_user
-				o.destroy
-			}
-			redirect_to({}, notice: 'All records have been deleted.')
-		elsif params[:process] == 'doc_bulk'
-			doc_bulk_redirect
 		else
 			report if(@filter.present? && @filter["from_date"].present? && @filter["to_date"].present?)
 			@objs_unpaginated = @objs
@@ -89,78 +47,6 @@ class CrudController < ApplicationController
 		end
 	end		
 		
-	def grid
-		index
-		return if performed?
-		@cols = []
-		can_edit = @model.can_edit?(@current_user)
-		@model.columns.each { |col|
-			next if @col_skip && col.name.in?(@col_skip)
-			label = col.name.titleize
-			label += ' ID' if col.name.index('_id', 1)
-			c = {name: col.name, label: label, db_type: col.type} 
-			if !can_edit
-				c.editor = false
-			end
-			if col.name == 'id'
-				c.readOnly = true
-				c.disableVisualSelection = true
-			end
-			# :string, :text, :integer, :float, :decimal, :datetime, :timestamp, :time, :date, :binary, :boolean, :json
-			if c.db_type == :integer
-				c.type = 'numeric'
-				if col.sql_type != 'year(4)'
-					c.format = '0,0'
-				end
-			elsif c.db_type == :float
-				c.type = 'numeric'
-				c.format = '0,0.00000'
-			elsif c.db_type == :decimal
-				c.type = 'numeric'
-				c.format = '0,0.' + ('0' * col.scale)
-			elsif c.db_type == :boolean
-				c.type = 'checkbox'
-				c.readOnly = true if !can_edit
-			elsif c.db_type == :date
-				c.type = 'date'
-				c.dateFormat = 'M/D/YYYY'
-				c.correctFormat = true
-			elsif c.db_type.in?([:datetime, :timestamp])
-				c.type = 'date'
-				c.dateFormat = 'M/D/YYYY h:mma'
-				c.correctFormat = true
-			elsif c.db_type == :time
-				c.type = 'time'
-				c.timeFormat = 'h:mm:ss a'
-				c.correctFormat = true
-			else
-				next if col.limit && col.limit > 510
-				c.type = 'text'
-			end
-			@cols << c if c
-			if @extra_cols
-				c2 = @extra_cols[c.name.to_sym]
-				if c2.is_a? Array
-					@cols += c2 if c2
-				elsif c2
-					@cols << c2
-				end
-			end
-		}
-
-		@data = @objs.map { |o| 
-			@cols.map { |c|
-				v = o.instance_eval("self.#{c.name}") rescue nil
-				if c.db_type == :date
-					v = v.d4
-				elsif c.db_type.in?([:datetime, :timestamp])
-					v = v.dt4
-				end
-				v
-			}
-		}		
-	end
-	
 	def new
 		if request.post? && @obj.save
 			after_new
@@ -171,22 +57,6 @@ class CrudController < ApplicationController
 		if request.post? && @obj.update_attributes(params.obj)
 			after_edit
 		end
-	end
-	
-	def multiedit
-		render_nothing and return unless request.post?
-		data = Hash.new { |h, k| h[k] = {} }
-		(params.objs || []).each { |id, attr|
-			obj = @model.find(id)
-			if obj.can_edit? @current_user
-				obj.current_user = @current_user
-				obj.current_request = request
-				if !obj.update_attributes(attr)
-					data[id].errors = obj.errors.full_messages
-				end
-			end
-		}
-		render json: data.to_json
 	end
 
 	def copy

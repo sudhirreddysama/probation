@@ -31,15 +31,6 @@ class DocTemplatesController < CrudController
 			html = render_to_string layout: 'generated', template: 'doc_templates/generated'
 			render_pdf html, filename: "#{@obj.name}.pdf", wkhtmltopdf: "-T #{@obj.margin_top || 1}in -B #{@obj.margin_bottom || 1}in -L #{@obj.margin_left || 1}in -R #{@obj.margin_right || 1}in"
 		end
-	
-		def word
-			load_obj
-			@fmt = :doc
-			html = render_to_string layout: 'generated', template: 'doc_templates/generated'
-			html = html.gsub("src=\"#{root_path}", "src=\"#{root_url}").gsub("href=\"#{root_path}", "href=\"#{root_url}")
-			send_data html, filename: "#{@obj.name}.doc", type: 'application/msword'
-		end
-	
 	end
 	
 	include DocumentsCommon
