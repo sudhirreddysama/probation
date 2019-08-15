@@ -2,7 +2,6 @@
 
 o = @obj 
 tpl = o.qb_template
-bill_to = o.qb_customer.try(:bill_to) || ''
 fac = o.qb_customer.try(:facility_address) || ''
 pay_to = tpl&.address.presence || <<~ADR
 	Monroe County Department of Public Health
@@ -14,22 +13,6 @@ phone = tpl&.phone.presence
 
 colspan = 0
 colspan += 2 if o.refund?
-
-if o.payment? || o.ar_refund?
-	colspan = 5
-	cids = []
-	tids = []
-	o.payment_for.each { |d|
-		tids << d.sale_id
-		cids << d.qb_customer_id
-	}
-	objs = Sale.where('(sales.id in (?) or (sales.qb_customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
-	objs_by_cid = objs.group_by &:qb_customer_id
-	customers = QbCustomer.find(cids)
-	# What to do if objs involve multiple tpls?!?!?!?!?!?!?!?!?
-else
-	customers = [o.qb_customer]
-end
 
 tpl = QbTemplate.get_tpl(tpl)
 
@@ -102,12 +85,6 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 					<% if o.sale? %>
 						SALES RECEIPT
 					<% elsif o.refund? %>
-						REFUND				
-					<% elsif o.invoice? %>
-						INVOICE
-					<% elsif o.payment? %>
-						PAYMENT
-					<% elsif o.ar_refund? %>
 						REFUND
 					<% end %>
 				</b></div>
@@ -123,20 +100,6 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 							<th width="25%" class="tc">Refund #</th>
 							<th width="25%" class="tc">Refund Method</th>
 							<th width="25%" class="tc">Check #</th>
-						<% elsif o.invoice? %>
-							<th width="33%" class="tc">Date</th>
-							<th width="33%" class="tc">Invoice #</th>
-							<th width="33%" class="tc">Due Date</th>
-						<% elsif o.payment? %>
-							<th width="25%" class="tc">Date</th>
-							<th width="25%" class="tc">Payment #</th>
-							<th width="25%" class="tc">Pay Method</th>
-							<th width="25%" class="tc">Check #</th>
-						<% elsif o.ar_refund? %>
-							<th width="25%" class="tc">Date</th>
-							<th width="25%" class="tc">Refund #</th>
-							<th width="25%" class="tc">Refund Method</th>
-							<th width="25%" class="tc">Check #</th>
 						<% else %>
 						<% end %>
 					</tr>
@@ -147,20 +110,6 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 							<td class="tc"><b><%= o.pay_method %></b></td>
 							<td class="tc"><b><%= o.check_no %></b></td>
 						<% elsif o.refund? %>
-							<td class="tc"><b><%= o.date.d4 %></b></td>
-							<td class="tc nobr"><b><%= o.num %></b></td>
-							<td class="tc"><b><%= o.pay_method %></b></td>
-							<td class="tc"><b><%= o.check_no %></b></td>
-						<% elsif o.invoice? %>
-							<td class="tc"><b><%= o.date.d4 %></b></td>
-							<td class="tc nobr"><b><%= o.num %></b></td>
-							<td class="tc"><b><%= o.due_date.d4 %></b></td>
-						<% elsif o.payment? %>
-							<td class="tc"><b><%= o.date.d4 %></b></td>
-							<td class="tc nobr"><b><%= o.num %></b></td>
-							<td class="tc"><b><%= o.pay_method %></b></td>
-							<td class="tc"><b><%= o.check_no %></b></td>
-						<% elsif o.ar_refund? %>
 							<td class="tc"><b><%= o.date.d4 %></b></td>
 							<td class="tc nobr"><b><%= o.num %></b></td>
 							<td class="tc"><b><%= o.pay_method %></b></td>
@@ -186,36 +135,10 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 					</table>
 				</div>
 			<% end %>
-			<div id="top-space">&nbsp;</div>			
-			<% if o.invoice? %>
-				<div id="foot">
-					<div id="foot-h">
-						TO PROPERLY CREDIT YOUR ACCOUNT, PLEASE SEND IN THIS PAYMENT SLIP WITH YOUR PAYMENT<br>
-						<% url = 'https://ehpermits.monroecounty.gov/' + (Rails.env.development? ? 'dev/' : '') + 'pay' %>
-						PAY ONLINE: <u><a href="<%= url %>"><%= url %></a></u><% if phone %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QUESTIONS/PAY BY PHONE: <%= phone %><% end %><br>
-						Make checks payable to: Monroe County Department of Public Health
-					</div>
-					<div id="foot-info">
-						<% if tpl.show_foot_name %><%= tpl.label_foot_name %>: <%= o.qb_customer.try(:name) %><br><% end %>
-						<% if tpl.show_foot_num %><%= tpl.label_foot_num %>: <%= o.qb_customer.try(:account_no) %><br><% end %>
-						Invoice #: <%= o.num %><br>
-					</div>
-					<div id="foot-bill">
-						Bill To
-						<div class="lines5"><%= nl2br_h(bill_to) %></div>
-					</div>
-					<div id="foot-pay"><%= nl2br_h(pay_to) %></div>
-					<div id="foot-tot" class="big tr">
-						Total: <b>$<%= n2 o.amount %></b>
-					</div>
-				</div>
-			<% end %>
+			<div id="top-space">&nbsp;</div>
 		</div>
 	</td></tr>
 	<tr class="bdr">
-		<% if o.payment? || o.ar_refund? %>
-		<% else %>
-			<% if o.payment? || o.ar_refund? %><th width="1%" class="nobr">Paid Date</th><% end %>
 			<% if show_invoice_paid_column %><th width="1%" class="nobr">Paid Date</th><% end %>
 			<% if o.refund? %><th width="1%" class="tr nobr">Sale #</th><% end %>
 			<% if tpl.show_item_info %><th class="nobr"><%= tpl.label_item_info %></th><% end %>
@@ -226,7 +149,6 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 			<% if tpl.show_item_amount %><th width="1%" class="tr nobr"><%= tpl.label_item_amount %></th><% end %>
 			<% if o.refund? %><th width="1%" class="tr nobr">Refund</th><% end %>
 			<% if o.payment? || o.ar_refund? %><th width="1%" class="tr nobr">Due</th><% end %>
-		<% end %>
 	</tr>
 </thead>
 <tbody>
@@ -245,53 +167,13 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 				<% if o.refund? %><td class="tr nobr">$<%= n2 d.amount %></td><% end %>
 			</tr>
 		<% } %>
-	<% elsif o.payment? || o.ar_refund? %>
-		<% customers.each { |c| %>
-			<tr class="bdr">
-				<td><%= c.name %></td>
-				<th width="1%" class="tr">Charged</th>
-				<th width="1%" class="tr">Paid</th>
-				<th width="1%" class="tr">Due</th>
-				<th width="1%" class="tr">Credit</th>
-			</tr>
-			<% objs_by_cid[c.id].each { |o| %>
-				<tr class="bv">
-					<td><%= o.type %> <%= o.num %></td>
-					<% if o.invoice? || o.ar_refund? %>
-						<td class="tr nobr"><%= n2 o.amount %></td>
-						<td></td>
-						<td class="tr nobr"><%= n2 o.balance %></td>
-						<td></td>
-					<% else %>
-						<td></td>
-						<td class="tr nobr"><%= n2 o.amount %></td>
-						<td></td>
-						<td class="tr nobr"><%= n2 o.balance %></td>
-					<% end %>
-				</tr>
-			<% } %>
-			<tr class="bdr">
-				<% if c.balance.to_f < 0 %>
-					<td class="tr big" colspan="5">Customer Available Credits: $<%= n2(0 - c.balance.to_f) %></td>
-				<% else %>
-					<td class="tr big" colspan="5">Customer Amount Due: $<%= n2 c.balance %></td>
-				<% end %>
-			</tr>
-		<% } %>
 	<% end %>
 </tbody>
 <tfoot>
 	<% if o.invoice? || o.sale? || o.refund? %>
 		<tr><td class="bdr tr big" colspan="<%= colspan %>">Total: <b>$<%= n2 o.amount %></b></td></tr>
-		<% if o.invoice? %>
-			<tr><td class="bdr tr big" colspan="<%= colspan %>">Customer Balance: <b>$<%= n2 o.qb_customer.balance %></b></td></tr>
-		<% end %>
-	<% end %>
-	<% if o.invoice? %>
-		<tr><td colspan="<%= colspan %>">Failure to remit payment by the due date will result in a late fee added to your balance due.<br>
-		Late fees are $50 if your balance due is $100 or more; or $25 if your balance due is under $100.</td></tr>
-		<tr><td colspan="<%= colspan %>"><div id="foot-space">&nbsp;</div></td></tr>
 	<% end %>
 </tfoot>
+</table>
 </body>
 </html>
