@@ -1,8 +1,5 @@
-class CostCenter < Record
+class Costcenter < Record
 
-	# include DbChange::Track
-	# include DbGroup::HasGroups
-	# has_many :documents, as: :obj
 
 	def label; "#{code_was} #{name_was}"; end
 	

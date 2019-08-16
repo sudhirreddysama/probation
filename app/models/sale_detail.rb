@@ -33,7 +33,7 @@ class SaleDetail < Record
 	
 	belongs_to :qb_debit_ledger, class_name: 'QbLedger', foreign_key: :debit_ledger, primary_key: :code
 	belongs_to :qb_credit_ledger, class_name: 'QbLedger', foreign_key: :credit_ledger, primary_key: :code	
-	belongs_to :cost_center, foreign_key: :cost_center, primary_key: :code
+	belongs_to :costcenter, foreign_key: :cost_center, primary_key: :code
 	
 	belongs_to :qb_late_fee_document, class_name: 'Document'
 	

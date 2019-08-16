@@ -9,7 +9,7 @@
 		</thead>
 		<tbody>
 			<% reset_cycle %>
-			<% objs.each { |o| %>
+			<% (objs || []).each { |o| %>
 				<tr class="<%= cycle 'odd', 'even' %>">
 					<td class="nobr"><%= o.id %></td>
 					<td class="nobr tr"><%= o.sap_lines_count %></td>
@@ -36,7 +36,7 @@
 		<tbody>
 			<% reset_cycle %>
 			<% amount = 0 %>
-			<% @results.each { |o| %>
+			<% (@results || []).each { |o| %>
 				<tr class="<%= cycle 'odd', 'even' %>">
 					<td class="nobr"><%= o.type %></td>
 					<td class="nobr"><%= o.username %></td>

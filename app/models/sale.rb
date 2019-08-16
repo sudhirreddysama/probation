@@ -29,9 +29,9 @@ class Sale < Record
 	
 	belongs_to :qb_debit_ledger, class_name: 'QbLedger', foreign_key: :debit_ledger, primary_key: :code
 	belongs_to :qb_credit_ledger, class_name: 'QbLedger', foreign_key: :credit_ledger, primary_key: :code
-	belongs_to :cost_center, foreign_key: :cost_center, primary_key: :code
+	belongs_to :costcenter, foreign_key: :cost_center, primary_key: :code
 	
-	belongs_to :late_cost_center, class_name: 'CostCenter', foreign_key: :late_cost_center, primary_key: :code
+	belongs_to :late_cost_center, class_name: 'Costcenter', foreign_key: :late_cost_center, primary_key: :code
 	belongs_to :late_qb_credit_ledger, class_name: 'QbLedger', foreign_key: :late_credit_ledger, primary_key: :code
 	belongs_to :late_shot, class_name: 'Shot', foreign_key: :late_shot_id
 	
