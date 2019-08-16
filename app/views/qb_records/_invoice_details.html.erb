@@ -11,7 +11,7 @@
 		<% else %>
 			<% details.each { |d| %>
 				<tr>
-					<td class="tl"><%= link_to_if d.shot, d.item_name_short, context: nil, controller: :shots, action: :view, id: d.shot_id %></td>
+					<td class="tl"><%= d.item_name_short %></td>
 					<td class="tr"><%= n2 d.amount %></td>
 				</tr>
 			<% } %>

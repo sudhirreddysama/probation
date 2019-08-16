@@ -117,7 +117,7 @@ class SapExport < ApplicationRecord
 					assignment: 'EH Accounts',
 					reference_key3: ref3,
 					invoice_date: transaction.date,
-					customer: transaction.qb_customer_id
+					customer: transaction.customer_id
 				}
 				if h.amount < 0
 					ref3 = 'EH REFUND'

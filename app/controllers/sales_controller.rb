@@ -5,7 +5,7 @@ class SalesController < QbRecordsController
 		@filter = nil if params[:clear]
 		@search_fields ||= {
 			'sales.id' => :left,
-			'qb_customers.full_path' => :like,
+			'customers.full_path' => :like,
 			'sales.num' => :like,
 			'sales.memo' => :like,
 			'sales.check_no' => :like,
@@ -17,13 +17,13 @@ class SalesController < QbRecordsController
 		}	
 
 		generic_filter_setup([
-			['Customer Name', 'qb_customers.full_path'],
+			['Customer Name', 'customers.full_path'],
 			['User Name', 'users.username'],
 		])
 		@cond << collection_conds({
 			type: "#{@model.table_name}.type",
 			division: "#{@model.table_name}.division",
-			qb_customer_ids: "#{@model.table_name}.qb_customer_id",
+			customer_ids: "#{@model.table_name}.customer_id",
 			cost_centers: "#{@model.table_name}.cost_center",
 			debit_ledgers: "#{@model.table_name}.debit_ledger",
 			credit_ledgers: "#{@model.table_name}.credit_ledger",
@@ -32,7 +32,7 @@ class SalesController < QbRecordsController
 		})
 		@cond << 'sales.balance != 0' if @filter.balance_unpaid.to_i == 1
 		@cond << 'sales.due_date < date(now())' if @filter.past_due.to_i == 1
-		@objs = @model.eager_load(:qb_customer, :qb_cost_center, :created_by)
+		@objs = @model.eager_load(:customer, :qb_cost_center, :created_by)
 
 		@objs = @objs.where(division: params["division"]) if params["division"].present?
 		super
@@ -75,18 +75,18 @@ class SalesController < QbRecordsController
 		# TO DO: Should not return payeezy posts that don't have a transarmor token for the "prev cc" options that require it. A refund on a new card will miss the transarmor.
 		search_fields = {'sales.num' => :like}
 		cond = []
-		if !params.qb_customer_id.blank?
-			cond << DB.escape('qb_customers.id = ?', params.qb_customer_id.to_i)
-		elsif params.context != 'qb_customer'
-			search_fields['qb_customers.full_path'] = :like 
+		if !params.customer_id.blank?
+			cond << DB.escape('customers.id = ?', params.customer_id.to_i)
+		elsif params.context != 'customer'
+			search_fields['customers.full_path'] = :like 
 		end
 		cond += search_filter(params.term, search_fields)
 		cond << DB.escape('sales.type in (?)', params.type) if !params.type.blank?
 		cond << 'payeezy_post_id is not null' if params.payeezy
 		params.page = params.page ? params.page.to_i : 1
-		objs = @model.eager_load(:qb_customer, :qb_account).where(get_where(cond)).order('sales.id desc').paginate(page: params.page, per_page: 50)
+		objs = @model.eager_load(:customer, :qb_account).where(get_where(cond)).order('sales.id desc').paginate(page: params.page, per_page: 50)
 		data = objs.map { |o|
-			o.attributes.slice(*%w{id created_at num type qb_customer_id qb_account_id amount pay_method cc_last4 payeezy_post_id date due_date}) + {qb_customer_full_path: o.qb_customer&.full_path}
+			o.attributes.slice(*%w{id created_at num type customer_id qb_account_id amount pay_method cc_last4 payeezy_post_id date due_date}) + {customer_full_path: o.customer&.full_path}
 		}
 		render json: {data: data, page: params.page, per_page: 50, total: objs.total_entries, pages: objs.total_pages}
 	end
@@ -182,7 +182,7 @@ class SalesController < QbRecordsController
 		if params.from_transaction
 			@obj = Sale.find(params.from_transaction).build_transaction params.type
 		elsif params.from_customer
-			@obj = QbCustomer.find(params.from_customer).build_transaction params.type
+			@obj = Customer.find(params.from_customer).build_transaction params.type
 		else
 			super
 		end

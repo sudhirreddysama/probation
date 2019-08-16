@@ -20,7 +20,7 @@ class SaleDetail < QbRecord
 	belongs_to :pay_sap_line, class_name: 'SapLine'
 	has_one :pay_sap_export, through: :pay_sap_line, source: :sap_export
 	belongs_to :payment, class_name: 'Sale'
-	belongs_to :qb_customer
+	belongs_to :customer
 	
 	# previous points to the sale_detail it is refunding
 	belongs_to :previous, class_name: 'SaleDetail'

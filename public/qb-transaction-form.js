@@ -1,7 +1,7 @@
 function init_customer_select(s) {
 	return init_path_select2({
 		select: s,
-		url: ROOT_URL + 'qb_customers/autocomplete',
+		url: ROOT_URL + 'customers/autocomplete',
 		params: function(params) {
 			params.division = $('#obj_division input:checked').val();
 		},
@@ -345,7 +345,7 @@ function init_obj_form(rails_data) {
 	
 	var type = rails_data.type;
 	
-	init_customer_select('#obj_qb_customer_id').on('select2:select', function(e) {
+	init_customer_select('#obj_customer_id').on('select2:select', function(e) {
 		var d = e.params.data;
 		if(d.ledger) {
 			if(type == 'Invoice' || type == 'AR Refund') {
@@ -355,7 +355,7 @@ function init_obj_form(rails_data) {
 				$('#obj_credit_ledger').val(d.ledger).effect('highlight');
 			}
 		}
-		$('#cust-view').show().attr('href', ROOT_URL + 'qb_customers/view/' + d.id);
+		$('#cust-view').show().attr('href', ROOT_URL + 'customers/view/' + d.id);
 		var b = float(d.balance);
 		$('#balance').show().text('$' + n2(b)).css({color: (b > 0 ? '#800' : '#888')});
 		if(d.division && !$('#obj_division input:checked').val()) {
@@ -433,10 +433,10 @@ function init_obj_form(rails_data) {
 			url: ROOT_URL + 'sales/autocomplete',
 			params: function(params) {
 				params.type = ['Sale'];
-				params.qb_customer_id = $('#obj_qb_customer_id').val();
+				params.customer_id = $('#obj_customer_id').val();
 			},
 			item: function(item) {		
-				item.text = '#' + item.num + ' - ' + ymd2mdy(item.date) + ' - ' + item.pay_method + ' - $' + n2(float(item.amount)) + ' - ' + item.qb_customer_full_path;
+				item.text = '#' + item.num + ' - ' + ymd2mdy(item.date) + ' - ' + item.pay_method + ' - $' + n2(float(item.amount)) + ' - ' + item.customer_full_path;
 			}
 		});
 		var set_amt_from_chk = function(tr, chk, amt) {
@@ -565,7 +565,7 @@ function init_obj_form(rails_data) {
 			select: '#obj_cc_previous_id',
 			url: ROOT_URL + 'sales/autocomplete',
 			params: function(params) {
-				params.qb_customer_id = $('#obj_qb_customer_id').val();
+				params.customer_id = $('#obj_customer_id').val();
 				params.payeezy = 1
 			},
 			item: function(item) {
@@ -606,11 +606,11 @@ function init_obj_form(rails_data) {
 	
 		$('#payment-table').colResizable({liveDrag: true, minWidth: 20, headerOnly: true, hoverCursor: 'col-resize', dragCursor: 'col-resize', partialRefresh: true});
 		
-		$('#obj_qb_customer_id').change(function(e) {
+		$('#obj_customer_id').change(function(e) {
 			$('#unpaid-thead').addClass('busy-bg');
 			$.ajax({
 				url: ROOT_URL + 'sales/payment_for_ids_fields/' + (rails_data.id || ''),
-				data: $('#obj_qb_customer_id, #unpaid :input').serialize(),
+				data: $('#obj_customer_id, #unpaid :input').serialize(),
 				success: function(data, status, xhr) {
 					$('#unpaid').html(data);
 				},
@@ -706,7 +706,7 @@ function init_sale_form(rails_data) {
 		$('#division_type_head').addClass('busy-bg');
 		$.ajax({
 			url: ROOT_URL + 'sales/fields/',
-			data: $('#obj_division input, .obj_type input, #obj_date, #obj_qb_template_id, #obj_num, #obj_qb_customer_id').serialize(),
+			data: $('#obj_division input, .obj_type input, #obj_date, #obj_qb_template_id, #obj_num, #obj_customer_id').serialize(),
 			complete: function(xhr, status) {
 				$('#division_type_head').removeClass('busy-bg');
 			},
@@ -795,13 +795,13 @@ function init_multi_invoice_form(rails_data) {
 	// Transaction details	
 	var init_invoice_row = function(row) {
 		var ar = init_ledger_select(row.find('.i_debit_ledger', 'AR'));
-		init_customer_select(row.find('.i_qb_customer_id')).on('select2:select', function(e) {
+		init_customer_select(row.find('.i_customer_id')).on('select2:select', function(e) {
 			var d = e.params.data;
 			if(d.ledger) {
 				ar.val(d.ledger).effect('highlight');
 			}
 			row.find('.i_cinfo').show();
-			row.find('.i_link').attr('href', ROOT_URL + 'qb_customers/view/' + d.id);
+			row.find('.i_link').attr('href', ROOT_URL + 'customers/view/' + d.id);
 			var b = float(d.balance);
 			row.find('.i_balance').text('$' + n2(b)).css({color: (b > 0 ? '#800' : '#888')});
 		}).on('select2:unselect', function(e) {
@@ -890,7 +890,7 @@ function init_late_fee_form1(rails_data) {
 		var shot_id = row.find('.d_shot_id');
 		var item_description = row.find('.d_item_description');
 		var sale_id = row.find('.d_sale_id');
-		var qb_customer_full_path = row.find('.d_qb_customer_full_path');		
+		var customer_full_path = row.find('.d_customer_full_path');		
 		var invoice_total = row.find('.d_invoice_total');
 		var invoice_due_date = row.find('.d_invoice_due_date');
 		var price = row.find('.d_price');
@@ -956,7 +956,7 @@ function init_late_fee_form1(rails_data) {
 				if(!item.id) {
 					return item.text;
 				}
-				return $('<span>').text(item.num + ' - ' + ymd2mdy(item.date) + ' - ' + item.qb_customer_full_path);
+				return $('<span>').text(item.num + ' - ' + ymd2mdy(item.date) + ' - ' + item.customer_full_path);
 			},
 			opts: {
 				dropdownCssClass: 'inv-num-dd'
@@ -964,12 +964,12 @@ function init_late_fee_form1(rails_data) {
 		}).on('select2:select', function(e) {
 			var d = e.params && e.params.data;
 			if(d) {
-				qb_customer_full_path.text(d.qb_customer_full_path);
+				customer_full_path.text(d.customer_full_path);
 				invoice_total.text(n2(float(d.amount)));
 				invoice_due_date.text(ymd2mdy(d.due_date));
 			}
 		}).on('select2:unselect', function(e) {
-			qb_customer_full_path.text('');
+			customer_full_path.text('');
 			invoice_total.text('');
 			invoice_due_date.text('');
 		});

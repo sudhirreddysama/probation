@@ -9,10 +9,10 @@ class SaleDoc < Document
 			cids = []
 			obj.payment_for.each { |d|
 				tids << d.sale_id
-				cids << d.qb_customer_id
+				cids << d.customer_id
 			}
-			objs = Sale.where('sales.type = "Invoice" and (sales.id in (?) or (sales.qb_customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
-			customers = QbCustomer.find(cids)
+			objs = Sale.where('sales.type = "Invoice" and (sales.id in (?) or (sales.customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
+			customers = Customer.find(cids)
 			objs.each { |o|
 				t = Tempfile.new(["invoice-#{o.id}", '.pdf'])
 				SaleDoc.new(obj: o).render_pdf(false, t.path)

@@ -3,7 +3,7 @@ class SaleDetailsController < CrudController
 	def index
 		@search_fields ||= {
 			'sale_details.id' => :left,
-			'qb_customers.full_path' => :like,
+			'customers.full_path' => :like,
 			'sales.num' => :like,
 			'sales.memo' => :like,
 			'sales.check_no' => :like,
@@ -20,18 +20,18 @@ class SaleDetailsController < CrudController
 			['Transaction Date', 'sales.date']
 		]
 		generic_filter_setup([
-			['Customer Name', 'qb_customers.full_path'],
+			['Customer Name', 'customers.full_path'],
 		])
 		@cond << collection_conds({
 			type: "#{@model.table_name}.type",
 			division: "sales.division",
-			qb_customer_ids: "#{@model.table_name}.qb_customer_id",
+			customer_ids: "#{@model.table_name}.customer_id",
 			cost_centers: "#{@model.table_name}.cost_center",
 			debit_ledgers: "#{@model.table_name}.debit_ledger",
 			credit_ledgers: "#{@model.table_name}.credit_ledger",
 		})
 		@cond << 'sale_details.payment_id is null' if @filter.no_payment_id.to_i == 1
-		@objs = @model.eager_load(:qb_customer, :sale)
+		@objs = @model.eager_load(:customer, :sale)
 		super
 	end
 	

@@ -11,7 +11,7 @@ class Sale < QbRecord
 
 	def label; [num_was, type_was, date_was.d].reject(&:blank?) * ' '; end
 	
-	belongs_to :qb_customer
+	belongs_to :customer
 	has_many :sale_details, {autosave: true, dependent: :destroy}, -> { order 'sort' }
 	belongs_to :payeezy_post
 	belongs_to :qb_multi_invoice
@@ -65,7 +65,7 @@ class Sale < QbRecord
 	
 	# Called on a mock object when switching between transaction types on the form.
 	def set_defaults_for_type
-		ar = qb_customer&.ledger
+		ar = customer&.ledger
 		tpl = qb_template
 		self.cost_center = tpl&.cost_center
 		self.num = tpl&.num(type)
@@ -90,7 +90,7 @@ class Sale < QbRecord
 	
 	# This assumes you're creating a refund from a sale, a payment from an invoice, a ar_refund from a payment.
 	def build_transaction typ = nil
-		o = Sale.new(attributes.slice(*%w{division qb_customer_id qb_template_id cost_center}) + {type: typ})
+		o = Sale.new(attributes.slice(*%w{division customer_id qb_template_id cost_center}) + {type: typ})
 		attr = {}
 		if o.refund?
 			attr = {
@@ -124,7 +124,7 @@ class Sale < QbRecord
 	end
 	
 	def dup
-		o = Sale.new(attributes.slice(*%w{type division qb_customer_id qb_template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
+		o = Sale.new(attributes.slice(*%w{type division customer_id qb_template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
 			late_auto late_shot_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email}))
 		if o.sale? || o.invoice?
 			o.new_details = new_details.map { |d| 
@@ -159,8 +159,8 @@ class Sale < QbRecord
 	end
 	
 	def payment_for_options
-		return [] if !qb_customer_id
-		objs = SaleDetail.where(qb_customer_id: qb_customer_id, payment_id: nil) # Find stuff for the customer not paid for yet.
+		return [] if !customer_id
+		objs = SaleDetail.where(customer_id: customer_id, payment_id: nil) # Find stuff for the customer not paid for yet.
 		objs = objs.or(SaleDetail.where(id: new_payment_for_ids)) if !new_payment_for_ids.empty? # Also include stuff that's already selected, like when editing an invoice
 		objs = objs.where.not(sale_id: id) if id # DON'T include items from the same transaction, otherwise the split payment will show up when editing. Or changing Invoice to Payment will cause problems.
 		objs = objs.payable # Only include the types we can pay for
@@ -216,7 +216,7 @@ class Sale < QbRecord
 			self.cost_center = previous.try(:cost_center)
 			self.debit_ledger = previous.try(:credit_ledger)
 		end
-		detail_attr = {qb_customer_id: qb_customer_id, type: type, cost_center: cost_center, debit_ledger: debit_ledger, credit_ledger: credit_ledger}		
+		detail_attr = {customer_id: customer_id, type: type, cost_center: cost_center, debit_ledger: debit_ledger, credit_ledger: credit_ledger}		
 		doc_letters = Hash.new { |h, k| h[k] = (h.size + 1).alph }
 		if invoice? || (sale? && !payeezy_post_id && !sap_exported?)
 			@new_details ||= []
@@ -375,13 +375,13 @@ class Sale < QbRecord
 	
 	def doc_deliver_via
 		return @doc_deliver_via if @doc_deliver_via
-		@doc_deliver_via = transaction_document ? transaction_document.deliver_via.to_s : qb_customer&.contact_via.to_s
+		@doc_deliver_via = transaction_document ? transaction_document.deliver_via.to_s : customer&.contact_via.to_s
 	end
 	attr_writer :doc_deliver_via
 	
 	def doc_deliver_email
 		return @doc_deliver_email if @doc_deliver_email
-		@doc_deliver_email = transaction_document ? transaction_document.deliver_email.to_s : qb_customer&.email.to_s
+		@doc_deliver_email = transaction_document ? transaction_document.deliver_email.to_s : customer&.email.to_s
 	end
 	attr_writer :doc_deliver_email
 	
@@ -406,22 +406,22 @@ class Sale < QbRecord
 				name: "#{type}.pdf",
 				generated: true,
 				deliver: doc_deliver,
-				deliver_via: doc_deliver_via, #qb_customer.contact_via.presence || 'Postal',
-				deliver_email: doc_deliver_email #qb_customer.email
+				deliver_via: doc_deliver_via, #customer.contact_via.presence || 'Postal',
+				deliver_email: doc_deliver_email #customer.email
 			}
 			d.save
 		elsif d && !doc_existing_deliver.nil?
 			d.deliver = doc_existing_deliver
 			if d.deliver_changed?
 				if d.deliver
-					d.deliver_via = doc_deliver_via, #qb_customer.contact_via.presence || 'Postal'
-					d.deliver_email = doc_deliver_email #qb_customer.email
+					d.deliver_via = doc_deliver_via, #customer.contact_via.presence || 'Postal'
+					d.deliver_email = doc_deliver_email #customer.email
 				end
 			end
 			d.save
 		end
 		if((doc_generate && doc_deliver) || doc_existing_deliver) && save_contact_via
-			qb_customer.update_attributes(contact_via: doc_deliver_via, email: doc_deliver_email)
+			customer.update_attributes(contact_via: doc_deliver_via, email: doc_deliver_email)
 		end
 	end
 	

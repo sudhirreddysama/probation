@@ -2,8 +2,8 @@
 
 o = @obj 
 tpl = o.qb_template
-bill_to = o.qb_customer.try(:bill_to) || ''
-fac = o.qb_customer.try(:facility_address) || ''
+bill_to = o.customer.try(:bill_to) || ''
+fac = o.customer.try(:facility_address) || ''
 pay_to = tpl&.address.presence || <<~ADR
 	Monroe County Department of Public Health
 	Bureau of Public Health Engineering
@@ -21,14 +21,14 @@ if o.payment? || o.ar_refund?
 	tids = []
 	o.payment_for.each { |d|
 		tids << d.sale_id
-		cids << d.qb_customer_id
+		cids << d.customer_id
 	}
-	objs = Sale.where('(sales.id in (?) or (sales.qb_customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
-	objs_by_cid = objs.group_by &:qb_customer_id
-	customers = QbCustomer.find(cids)
+	objs = Sale.where('(sales.id in (?) or (sales.customer_id in (?) and sales.balance != 0))', tids.uniq, cids.uniq).order('sales.date asc, sales.id asc')
+	objs_by_cid = objs.group_by &:customer_id
+	customers = Customer.find(cids)
 	# What to do if objs involve multiple tpls?!?!?!?!?!?!?!?!?
 else
-	customers = [o.qb_customer]
+	customers = [o.customer]
 end
 
 tpl = QbTemplate.get_tpl(tpl)
@@ -168,7 +168,7 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 						<% end %>
 					</tr>
 					<% if tpl.show_head_name %>
-						<tr><td colspan="<%= o.invoice? ? 3 : 4 %>"><%= %><%= tpl.label_head_name %>: <b><%= o.qb_customer.try(:name) %></b></td></tr>
+						<tr><td colspan="<%= o.invoice? ? 3 : 4 %>"><%= %><%= tpl.label_head_name %>: <b><%= o.customer.try(:name) %></b></td></tr>
 					<% end %>
 				</table>
 			</div>
@@ -190,8 +190,8 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 						Make checks payable to: Monroe County Department of Public Health
 					</div>
 					<div id="foot-info">
-						<% if tpl.show_foot_name %><%= tpl.label_foot_name %>: <%= o.qb_customer.try(:name) %><br><% end %>
-						<% if tpl.show_foot_num %><%= tpl.label_foot_num %>: <%= o.qb_customer.try(:account_no) %><br><% end %>
+						<% if tpl.show_foot_name %><%= tpl.label_foot_name %>: <%= o.customer.try(:name) %><br><% end %>
+						<% if tpl.show_foot_num %><%= tpl.label_foot_num %>: <%= o.customer.try(:account_no) %><br><% end %>
 						Invoice #: <%= o.num %><br>
 					</div>
 					<div id="foot-bill">
@@ -278,7 +278,7 @@ th.bv, td.bv, .bv th, .bv td { border-left: 1px solid #000; border-right: 1px so
 	<% if o.invoice? || o.sale? || o.refund? %>
 		<tr><td class="bdr tr big" colspan="<%= colspan %>">Total: <b>$<%= n2 o.amount %></b></td></tr>
 		<% if o.invoice? %>
-			<tr><td class="bdr tr big" colspan="<%= colspan %>">Customer Balance: <b>$<%= n2 o.qb_customer.balance %></b></td></tr>
+			<tr><td class="bdr tr big" colspan="<%= colspan %>">Customer Balance: <b>$<%= n2 o.customer.balance %></b></td></tr>
 		<% end %>
 	<% end %>
 	<% if o.invoice? %>

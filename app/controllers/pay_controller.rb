@@ -45,7 +45,7 @@ class PayController < ApplicationController
 					cc_code: @pay.cc_code,
 					division: @invoices.first.division,
 					qb_template_id: @invoices.first.qb_template_id,
-					qb_customer_id: @invoices.first.qb_customer_id,
+					customer_id: @invoices.first.customer_id,
 					type: 'Payment',
 					cc_option: 'New CC',
 					date: Time.now.to_date,
