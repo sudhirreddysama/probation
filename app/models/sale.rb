@@ -1,4 +1,4 @@
-class Sale < QbRecord
+class Sale < Record
 	
 	def self.can_create? u, *args
 		u.qb_user? || u.qb_admin? || true
@@ -29,9 +29,9 @@ class Sale < QbRecord
 	
 	belongs_to :qb_debit_ledger, class_name: 'QbLedger', foreign_key: :debit_ledger, primary_key: :code
 	belongs_to :qb_credit_ledger, class_name: 'QbLedger', foreign_key: :credit_ledger, primary_key: :code
-	belongs_to :qb_cost_center, foreign_key: :cost_center, primary_key: :code
+	belongs_to :cost_center, foreign_key: :cost_center, primary_key: :code
 	
-	belongs_to :late_qb_cost_center, class_name: 'QbCostCenter', foreign_key: :late_cost_center, primary_key: :code
+	belongs_to :late_cost_center, class_name: 'CostCenter', foreign_key: :late_cost_center, primary_key: :code
 	belongs_to :late_qb_credit_ledger, class_name: 'QbLedger', foreign_key: :late_credit_ledger, primary_key: :code
 	belongs_to :late_shot, class_name: 'Shot', foreign_key: :late_shot_id
 	
@@ -338,7 +338,7 @@ class Sale < QbRecord
 		if @process_form || @process_multi
 			if @process_form
 				self.payment_for = @pay_for if @pay_for
-				QbRecord.update_all_balances
+				Record.update_all_balances
 			end
 			handle_document_generation
 		end
@@ -487,7 +487,7 @@ class Sale < QbRecord
 	after_rollback :handle_after_rollback
 	
 	def handle_after_destroy
-		QbRecord.update_all_balances if !@process_multi
+		Record.update_all_balances if !@process_multi
 	end	
 	after_destroy :handle_after_destroy
 	
@@ -565,7 +565,7 @@ class Sale < QbRecord
 		payment_for.update_all payment_id: nil
 		sale_details.update_all voided: true
 		update_columns voided: true, voided_payeezy_post_id: v&.id
-		QbRecord.update_customer_balance
+		Record.update_customer_balance
 		return true
 	end
 	

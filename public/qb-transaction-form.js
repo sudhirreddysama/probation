@@ -32,7 +32,7 @@ function init_template_select(s) {
 function init_cost_center_select(s) {
 	return init_autocomplete({
 		input: s,
-		url: ROOT_URL + 'qb_cost_centers/autocomplete',
+		url: ROOT_URL + 'cost_centers/autocomplete',
 		params: function(params) {
 			params.division = $('#obj_division :checked').val();
 		},
@@ -236,7 +236,7 @@ function init_invoice_details(rails_data) {
 		});
 		init_autocomplete({
 			input: cost_center,
-			url: ROOT_URL + 'qb_cost_centers/autocomplete',
+			url: ROOT_URL + 'cost_centers/autocomplete',
 			params: function(params) { params.division = $('#obj_division :checked').val(); },
 			item: function(i) { i.label = i.code + ' ' + i.name; i.value = i.code; },
 			minLength: 0
@@ -917,7 +917,7 @@ function init_late_fee_form1(rails_data) {
 		});
 		init_autocomplete({
 			input: cost_center,
-			url: ROOT_URL + 'qb_cost_centers/autocomplete',
+			url: ROOT_URL + 'cost_centers/autocomplete',
 			params: function(params) { params.division = $('#obj_division :checked').val(); },
 			item: function(i) { i.label = i.code + ' ' + i.name; i.value = i.code; },
 			minLength: 0

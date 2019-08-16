@@ -1,4 +1,4 @@
-class QbRecord < ApplicationRecord
+class Record < ApplicationRecord
 	self.abstract_class = true
   
   def self.can_view? u, *args

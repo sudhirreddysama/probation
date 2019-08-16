@@ -1,4 +1,4 @@
-class QbCostCenter < QbRecord
+class CostCenter < Record
 
 	# include DbChange::Track
 	# include DbGroup::HasGroups

@@ -1,4 +1,4 @@
-class QbLedger < QbRecord
+class QbLedger < Record
 	
 	self.inheritance_column = nil
 	

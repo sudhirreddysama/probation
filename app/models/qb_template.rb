@@ -1,4 +1,4 @@
-class QbTemplate < QbRecord
+class QbTemplate < Record
 
 	has_many :qb_transactions
 	
@@ -65,9 +65,9 @@ class QbTemplate < QbRecord
 		address.to_s.gsub /[\n\r]+/, ', '
 	end
 	
-	belongs_to :qb_cost_center, foreign_key: :cost_center, primary_key: :code
+	belongs_to :cost_center, foreign_key: :cost_center, primary_key: :code
 	
-	belongs_to :late_qb_cost_center, class_name: 'QbCostCenter', foreign_key: :late_cost_center, primary_key: :code
+	belongs_to :late_cost_center, class_name: 'CostCenter', foreign_key: :late_cost_center, primary_key: :code
 	belongs_to :late_qb_credit_ledger, class_name: 'QbLedger', foreign_key: :late_credit_ledger, primary_key: :code
 	belongs_to :late_shot, class_name: 'Shot', foreign_key: :late_shot_id
 

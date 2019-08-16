@@ -59,7 +59,7 @@ class PayController < ApplicationController
 					doc_deliver: false
 				})
 				if t.save
-					QbRecord.update_all_balances
+					Record.update_all_balances
 					doc = t.transaction_document
 					Notifier.pay_receipt(@pay.email, t, doc).deliver_now
 					session[:pid] = t.id

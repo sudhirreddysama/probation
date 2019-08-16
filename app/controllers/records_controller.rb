@@ -1,4 +1,4 @@
-class QbRecordsController < CrudController
+class RecordsController < CrudController
 	
 	module HasPath
 		

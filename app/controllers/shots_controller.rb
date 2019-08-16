@@ -1,6 +1,6 @@
-class ShotsController < QbRecordsController
+class ShotsController < RecordsController
 	
-	include QbRecordsController::HasPath
+	include RecordsController::HasPath
 
 	def index
 		session[:context] = nil

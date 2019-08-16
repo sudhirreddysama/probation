@@ -42,7 +42,7 @@
 	
 	init_autocomplete({
 		input: '#obj_cost_center',
-		url: '<%= url_for context: nil, context_id: nil, controller: :qb_cost_centers, action: :autocomplete %>',
+		url: '<%= url_for context: nil, context_id: nil, controller: :cost_centers, action: :autocomplete %>',
 		params: function(params) {
 			params.division = $('#obj_division :checked').val();
 		},

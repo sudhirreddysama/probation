@@ -1,4 +1,4 @@
-class SalesController < QbRecordsController
+class SalesController < RecordsController
 
 	def index
 		session[:context] = params[:context] if params[:context].present?
@@ -32,7 +32,7 @@ class SalesController < QbRecordsController
 		})
 		@cond << 'sales.balance != 0' if @filter.balance_unpaid.to_i == 1
 		@cond << 'sales.due_date < date(now())' if @filter.past_due.to_i == 1
-		@objs = @model.eager_load(:customer, :qb_cost_center, :created_by)
+		@objs = @model.eager_load(:customer, :cost_center, :created_by)
 
 		@objs = @objs.where(division: params["division"]) if params["division"].present?
 		super

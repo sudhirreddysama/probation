@@ -1,4 +1,4 @@
-class Customer < QbRecord
+class Customer < Record
 	
 	def self.can_create? u, *args
 		u.qb_user? || u.qb_admin?
