@@ -1,4 +1,4 @@
-class QbTemplate < Record
+class Template < Record
 
 	has_many :qb_transactions
 	

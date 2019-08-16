@@ -15,7 +15,7 @@ class Sale < Record
 	has_many :sale_details, {autosave: true, dependent: :destroy}, -> { order 'sort' }
 	belongs_to :payeezy_post
 	belongs_to :qb_multi_invoice
-	belongs_to :qb_template
+	belongs_to :template
 	belongs_to :created_by, class_name: 'User'
 	belongs_to :updated_by, class_name: 'User'
 	belongs_to :previous, class_name: 'Sale'
@@ -66,7 +66,7 @@ class Sale < Record
 	# Called on a mock object when switching between transaction types on the form.
 	def set_defaults_for_type
 		ar = customer&.ledger
-		tpl = qb_template
+		tpl = template
 		self.cost_center = tpl&.cost_center
 		self.num = tpl&.num(type)
 		if sale?
@@ -90,7 +90,7 @@ class Sale < Record
 	
 	# This assumes you're creating a refund from a sale, a payment from an invoice, a ar_refund from a payment.
 	def build_transaction typ = nil
-		o = Sale.new(attributes.slice(*%w{division customer_id qb_template_id cost_center}) + {type: typ})
+		o = Sale.new(attributes.slice(*%w{division customer_id template_id cost_center}) + {type: typ})
 		attr = {}
 		if o.refund?
 			attr = {
@@ -118,13 +118,13 @@ class Sale < Record
 		else
 			attr = {}
 		end
-		o.num = o.qb_template&.num(o.type)
+		o.num = o.template&.num(o.type)
 		o.attributes = attr
 		o
 	end
 	
 	def dup
-		o = Sale.new(attributes.slice(*%w{type division customer_id qb_template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
+		o = Sale.new(attributes.slice(*%w{type division customer_id template_id cost_center debit_ledger credit_ledger date due_date memo pay_method amount
 			late_auto late_shot_id late_item_info late_item_name late_item_description late_amount late_cost_center late_credit_ledger late_email}))
 		if o.sale? || o.invoice?
 			o.new_details = new_details.map { |d| 
@@ -135,7 +135,7 @@ class Sale < Record
 		if due_date && date
 			o.due_date = o.date + (due_date - date)
 		end
-		o.num = o.qb_template.try("#{o.type.to_s.downcase.gsub(' ', '')}_num") if !o.type.blank?
+		o.num = o.template.try("#{o.type.to_s.downcase.gsub(' ', '')}_num") if !o.type.blank?
 		o
 	end
 	

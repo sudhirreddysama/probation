@@ -1,7 +1,7 @@
 <% 
 
 o = @obj 
-tpl = o.qb_template
+tpl = o.template
 bill_to = o.customer.try(:bill_to) || ''
 fac = o.customer.try(:facility_address) || ''
 pay_to = tpl&.address.presence || <<~ADR
@@ -31,7 +31,7 @@ else
 	customers = [o.customer]
 end
 
-tpl = QbTemplate.get_tpl(tpl)
+tpl = Template.get_tpl(tpl)
 
 if !o.payment? && !o.ar_refund?
 	colspan = colspan + [tpl.show_item_info, tpl.show_item_name, tpl.show_item_desc, tpl.show_item_quantity, tpl.show_item_price, tpl.show_item_amount].count(true)

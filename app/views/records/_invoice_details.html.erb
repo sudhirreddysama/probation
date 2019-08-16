@@ -2,7 +2,7 @@
 	<dl style="float: none;"><dt>Charges</dt></dl>
 	<table class="sheet wrap">	
 		<tr>
-			<% tpl = @obj.qb_template %>
+			<% tpl = @obj.template %>
 			<th><%= (tpl && tpl.label_item_name).presence || 'Item' %></th>
 			<th><%= (tpl && tpl.label_item_amount).presence || 'Amount' %></th>
 		</tr>

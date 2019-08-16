@@ -19,7 +19,7 @@ function init_customer_select(s) {
 function init_template_select(s) {
 	return init_select2({
 		select: s,
-		url: ROOT_URL + 'qb_templates/autocomplete',
+		url: ROOT_URL + 'templates/autocomplete',
 		params: function(params) {
 			params.division = $('#obj_division input:checked').val();
 		},
@@ -372,7 +372,7 @@ function init_obj_form(rails_data) {
 		$('#balance').hide();
 	});
 	
-	var ts = init_template_select('#obj_qb_template_id');
+	var ts = init_template_select('#obj_template_id');
 	init_template_select_events(ts, type, false);
 	
 	if(type == 'Refund') {
@@ -706,7 +706,7 @@ function init_sale_form(rails_data) {
 		$('#division_type_head').addClass('busy-bg');
 		$.ajax({
 			url: ROOT_URL + 'sales/fields/',
-			data: $('#obj_division input, .obj_type input, #obj_date, #obj_qb_template_id, #obj_num, #obj_customer_id').serialize(),
+			data: $('#obj_division input, .obj_type input, #obj_date, #obj_template_id, #obj_num, #obj_customer_id').serialize(),
 			complete: function(xhr, status) {
 				$('#division_type_head').removeClass('busy-bg');
 			},
@@ -737,7 +737,7 @@ function init_multi_invoice_form(rails_data) {
 	
 	init_invoice_late_fee_fields();
 	
-	var ts = init_template_select('#obj_qb_template_id');
+	var ts = init_template_select('#obj_template_id');
 	init_template_select_events(ts, 'Invoice', true);	
 	init_invoice_details(rails_data);
 	
@@ -766,7 +766,7 @@ function init_multi_invoice_form(rails_data) {
 				$('#customer_load').addClass('busy-bg');
 				$.ajax({
 					url: ROOT_URL + 'qb_multi_invoices/add_group/' + (rails_data.id || ''),
-					data: $('#new_invoices :input, #group_id, #obj_qb_template_id, #obj_debit_ledger').serialize(),
+					data: $('#new_invoices :input, #group_id, #obj_template_id, #obj_debit_ledger').serialize(),
 					success: function(data, status, xhr) {
 						$('#new_invoices').html(data);
 						init_new_invoices();
