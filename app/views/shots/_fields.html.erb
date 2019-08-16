@@ -32,7 +32,7 @@
 		params: function(params) {
 			params.type = 'GL';
 		},
-		url: '<%= url_for context: nil, context_id: nil, controller: :qb_ledgers, action: :autocomplete %>',
+		url: '<%= url_for context: nil, context_id: nil, controller: :hs_ledgers, action: :autocomplete %>',
 		item: function(i) {
 			i.label = i.code + ' ' + i.name;
 			i.value = i.code;

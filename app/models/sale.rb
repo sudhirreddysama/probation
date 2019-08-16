@@ -27,12 +27,12 @@ class Sale < Record
 	has_many :payments, through: :sale_details, source: :payment
 	has_many :sap_lines, through: :sale_details
 	
-	belongs_to :qb_debit_ledger, class_name: 'QbLedger', foreign_key: :debit_ledger, primary_key: :code
-	belongs_to :qb_credit_ledger, class_name: 'QbLedger', foreign_key: :credit_ledger, primary_key: :code
+	belongs_to :qb_debit_ledger, class_name: 'HsLedger', foreign_key: :debit_ledger, primary_key: :code
+	belongs_to :qb_credit_ledger, class_name: 'HsLedger', foreign_key: :credit_ledger, primary_key: :code
 	belongs_to :costcenter, foreign_key: :cost_center, primary_key: :code
 	
 	belongs_to :late_cost_center, class_name: 'Costcenter', foreign_key: :late_cost_center, primary_key: :code
-	belongs_to :late_qb_credit_ledger, class_name: 'QbLedger', foreign_key: :late_credit_ledger, primary_key: :code
+	belongs_to :late_qb_credit_ledger, class_name: 'HsLedger', foreign_key: :late_credit_ledger, primary_key: :code
 	belongs_to :late_shot, class_name: 'Shot', foreign_key: :late_shot_id
 	
 	# DELETE
@@ -71,19 +71,19 @@ class Sale < Record
 		self.num = tpl&.num(type)
 		if sale?
 			self.debit_ledger = nil
-			self.credit_ledger = QbLedger.default_gl
+			self.credit_ledger = HsLedger.default_gl
 		elsif refund?
 			self.debit_ledger = nil
 			self.credit_ledger = nil
 		elsif invoice?
-			self.debit_ledger = ar.presence || QbLedger.default_ar
-			self.credit_ledger = QbLedger.default_gl
+			self.debit_ledger = ar.presence || HsLedger.default_ar
+			self.credit_ledger = HsLedger.default_gl
 			%w{auto shot_id item_info item_name item_description amount cost_center credit_ledger}.each { |f| self.send "late_#{f}=", tpl.send("late_#{f}") } if tpl
 		elsif payment?
 			self.debit_ledger = nil
-			self.credit_ledger = ar.presence || QbLedger.default_ar
+			self.credit_ledger = ar.presence || HsLedger.default_ar
 		elsif ar_refund?
-			self.debit_ledger = ar.presence || QbLedger.default_ar
+			self.debit_ledger = ar.presence || HsLedger.default_ar
 			self.credit_ledger = nil
 		end
 	end
@@ -204,12 +204,12 @@ class Sale < Record
 		details = sale_details
 		if sale? || payment?
 			if pay_method_changed? && pay_method != 'Credit'
-				self.debit_ledger = QbLedger.gl_for_pay_method(pay_method)
+				self.debit_ledger = HsLedger.gl_for_pay_method(pay_method)
 			end
 		end
 		if refund? || ar_refund?
 			if pay_method_changed?
-				self.credit_ledger = QbLedger.gl_for_pay_method(pay_method)
+				self.credit_ledger = HsLedger.gl_for_pay_method(pay_method)
 			end
 		end
 		if refund?

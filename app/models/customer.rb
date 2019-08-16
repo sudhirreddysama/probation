@@ -42,7 +42,7 @@ class Customer < Record
 		[facility_address1, facility_address2, facility_address3, facility_address4].reject(&:blank?) * j
 	end
 	
-	belongs_to :qb_ledger, foreign_key: :ledger, primary_key: :code
+	belongs_to :hs_ledger, foreign_key: :ledger, primary_key: :code
 	
 	def build_transaction typ = nil
 		o = sales.build({type: typ, division: division})

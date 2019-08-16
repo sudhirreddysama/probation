@@ -47,7 +47,7 @@ function init_ledger_select(s, type) {
 		params: function(params) {
 			params.type = type;
 		},
-		url: ROOT_URL + 'qb_ledgers/autocomplete',
+		url: ROOT_URL + 'hs_ledgers/autocomplete',
 		item: function(i) { i.label = i.code + ' ' + i.name; i.value = i.code; },
 		minLength: 0
 	});
@@ -230,7 +230,7 @@ function init_invoice_details(rails_data) {
 		init_autocomplete({
 			input: credit_ledger,
 			params: function(params) { params.type = 'GL'; },
-			url: ROOT_URL + 'qb_ledgers/autocomplete',
+			url: ROOT_URL + 'hs_ledgers/autocomplete',
 			item: function(i) { i.label = i.code + ' ' + i.name; i.value = i.code; },
 			minLength: 0
 		});
@@ -911,7 +911,7 @@ function init_late_fee_form1(rails_data) {
 		init_autocomplete({
 			input: credit_ledger,
 			params: function(params) { params.type = 'GL'; },
-			url: ROOT_URL + 'qb_ledgers/autocomplete',
+			url: ROOT_URL + 'hs_ledgers/autocomplete',
 			item: function(i) { i.label = i.code + ' ' + i.name; i.value = i.code; },
 			minLength: 0
 		});

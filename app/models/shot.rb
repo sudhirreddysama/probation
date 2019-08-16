@@ -8,7 +8,7 @@ class Shot < Record
 
 	def label; name_was; end
 	
-	belongs_to :qb_ledger, foreign_key: :ledger, primary_key: :code
+	belongs_to :hs_ledger, foreign_key: :ledger, primary_key: :code
 	belongs_to :costcenter, foreign_key: :cost_center, primary_key: :code
 	
 	include HasPath

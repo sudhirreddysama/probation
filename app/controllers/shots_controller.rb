@@ -11,7 +11,7 @@ class ShotsController < RecordsController
 			cost_centers: "#{@model.table_name}.cost_center",
 			ledgers: "#{@model.table_name}.ledger",
 		})
-		@objs = @model.eager_load(:qb_ledger)
+		@objs = @model.eager_load(:hs_ledger)
 		super
 	end
 	
