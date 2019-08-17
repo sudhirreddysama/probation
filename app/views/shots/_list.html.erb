@@ -15,7 +15,7 @@
 				<td class="nobr"><%= o.id %></td>
 				<td class="nobr"><%= link_to blank_tag(colon_to_arrow(o.full_path)), controller: :shots, action: :view, id: o.id %></td>
 				<td class="nobr"><%= n2 o.price %></td>
-				<td class="nobr"><%= o.cost_center.try(:code) %></td>
+				<td class="nobr"><%= o.cost_center %></td>
 				<td class="nobr"><%= o.division %></td>
 			</tr>
 		<% } %>
