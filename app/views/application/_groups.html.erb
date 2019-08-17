@@ -1,8 +1,0 @@
-<% if o.respond_to?(:db_groups) && !@groups_once %>
-	<% if !o.db_groups.empty? %>
-		<% @groups_once = true %>	
-		<div class="view dl-inline">
-			<%= dl 'Groups', (o.db_groups.map { |g| link_to g.name, controller: :db_groups, action: :view, id: g.id, context: g.obj_type.underscore} * ', ').html_safe %>
-		</div>
-	<% end %>
-<% end %>

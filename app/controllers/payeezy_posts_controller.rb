@@ -8,6 +8,10 @@ class PayeezyPostsController < CrudController
 		})		
 		super
 	end
+
+  def view
+		session['context'] = "payment_history"
+	end
 	
 	def receipt
 		load_obj

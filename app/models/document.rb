@@ -13,6 +13,7 @@ class Document < ApplicationRecord
 	def self.can_edit? u, *args; u.admin?; end
 	def can_edit? u, *args; u.admin? || u.id == user_id; end
 	def can_destroy? u, *args; can_edit? u, *args; end
+	self.inheritance_column = :sale_doc
 	
 	default_scope { order 'documents.created_at desc' }
 	

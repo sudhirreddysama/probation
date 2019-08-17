@@ -8,7 +8,7 @@
 			<%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
 			<% if !params.popup %>
 				<% if obj.respond_to?(:documents) %>
-					<%= tab 'file-text-o', 'Docs', {controller: :documents, context: controller.singularize, context_id: obj.id}, action: :index %>
+					<%= tab 'file-text-o', 'Docs', {controller: :documents}, action: :index, context: "docs" %>
 				<% end %>
 			<% end %>
 		<% end %>

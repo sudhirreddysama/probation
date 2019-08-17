@@ -190,9 +190,7 @@ class ApplicationController < ActionController::Base
 			end
 		}
 	end
-	
-	
-	
+
 	def get_order_auto
 		return if !@filter
 		sorts = @sorts.is_a?(Hash) ? @sorts.values.flatten(1) : @sorts

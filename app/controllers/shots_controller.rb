@@ -14,6 +14,10 @@ class ShotsController < RecordsController
 		@objs = @model.eager_load(:hs_ledger)
 		super
 	end
+
+	def view
+		session['context'] = "shots"
+	end
 	
 	def default_filter
 		super + {active: ['1']}

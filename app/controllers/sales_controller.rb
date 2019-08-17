@@ -37,25 +37,17 @@ class SalesController < RecordsController
 		@objs = @objs.where(division: params["division"]) if params["division"].present?
 		super
 		report if params[:process] == 'report'
-		late_fee_redirect if params[:process] == 'late_fee'
+	end
+
+	def view
+		session['context'] = "sales"
 	end
 
 	def transaction
 		load_obj
 		transaction_template
 	end
-	
-	def payment_for_ids_fields
-		load_mock_obj
-		render template: 'sales/_payment_for_ids_fields', layout: false, locals: {o: @obj}
-	end
-	
-	def refund_items_fields
-		load_mock_obj
-		render template: 'sales/_refund_items_fields', layout: false, locals: {o: @obj}
-	end
-	
-	
+
 	def new
 		@obj.type = "Sale"
 		if request.post?
@@ -126,35 +118,7 @@ class SalesController < RecordsController
 			redirect_to({action: :view, id: @obj.id}, notice: "#{@obj.type} has been voided.")
 		end
 	end
-	
-# 	def refund
-# 		load_obj
-# 		@refund = Order.new({
-# 			:first_name => @obj.first_name,
-# 			:middle_name => @obj.middle_name,
-# 			:last_name => @obj.last_name,
-# 			:suffix => @obj.suffix,
-# 			:total => @obj.default_refund_total,
-# 			:pay_method => @obj.pay_method == 'online' ? 'credit' : @obj.pay_method,
-# 			:card_process => @obj.pay_method == 'credit' || @obj.pay_method == 'online',
-# 			:refund_method => 'tag-refund'
-# 		})
-# 		@refund.attributes = params[:refund] if params[:refund]
-# 		@refund.http_posted = true
-# 		@refund.http_posted_by = @current_user
-# 		@refund.attributes = {
-# 			:typ => 'refund',
-# 			:original_id => @obj.id,
-# 			:user => @current_user,
-# 			:completed_at => Time.now,
-# 			:cashiered_at => Time.now
-# 		}	
-# 		if request.post? && @refund.save
-# 			flash[:notice] = 'Refund has been saved.'
-# 			redirect_to :action => :view, :id => @refund.id
-# 		end
-# 	end
-	
+
 	private
 	
 	def load_mock_obj
@@ -169,15 +133,7 @@ class SalesController < RecordsController
 		hr = Shellwords.escape Time.now.dt
 		render_pdf html, filename: 'report.pdf', wkhtmltopdf: "-T .4in -B .4in --header-spacing 2 --header-font-size 8 --footer-font-size 8 --header-right #{hr} --header-left #{hl} --footer-right \"[page]/[topage]\""
 	end
-	
-	def late_fee_redirect
-		@objs = @objs.where('sales.type = "Invoice"')
-		File.open("#{Rails.root}/tmp/late-fee-#{request.uuid}.txt", 'w') { |f| f.write @objs.pluck('id') * ',' }
-		url = {context: nil, context_id: nil, controller: :qb_late_fees, action: :new, 'obj[obj_ids_file]' => request.uuid}
-		url['obj[division]'] = @filter.division.first if @filter.division&.size == 1
-		redirect_to url
-	end	
-	
+
 	def build_obj
 		if params.from_transaction
 			@obj = Sale.find(params.from_transaction).build_transaction params.type
@@ -199,11 +155,5 @@ class SalesController < RecordsController
 		html = render_to_string template: 'sales/transaction', layout: false
 		render_pdf html, filename: "Invoice-#{@obj.id}.pdf", path: path
 	end
-	
-	def save_failed_payeezy_post
-		if @obj.payeezy_post && !@obj.payeezy_post.transaction_approved
-			@obj.payeezy_post.dup.save
-		end
-	end
-	
+
 end

@@ -11,7 +11,7 @@
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td><%= o.id %></td>
 				<td>
-          <%= link_to o.label, {action: :download, id: o.id}, class: 'document-download', target: '_blank' %>
+          <%= link_to o.label, {controller: :sales, action: :transaction, id: o.obj_id}, class: 'document-download', target: '_blank' %>
         </td>
 			</tr>
 		<% } %>
