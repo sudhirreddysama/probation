@@ -14,7 +14,7 @@
 	is_user = c.start_with?('users') && ct.blank? || ct.to_s.start_with?('users') 
 	
 	is_qb = (c.start_with?('qb_') || c.to_s.in?(['sap_exports', 'payeezy_posts'])) && ct.blank? || (ct.to_s.start_with?('qb_') || ct.to_s.in?(['sap_export', 'payeezy_post']))
-	other = %w{documents doc_templates doc_bulks saved_filters db_changes doc_deliveries}
+	other = %w{documents doc_templates doc_bulks db_changes doc_deliveries}
 	is_other = ct ? ct.pluralize.in?(other) : c.in?(other)
 	is_permit = is_fd || is_pl || is_tf || is_tr || is_ny
 %>
