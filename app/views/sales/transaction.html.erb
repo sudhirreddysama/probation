@@ -15,7 +15,7 @@ phone = tpl&.phone.presence
 colspan = 0
 colspan += 2 if o.refund?
 
-tpl = Template.get_tpl(tpl)
+tpl = SaleTemplate.get_tpl(tpl)
 
 if !o.payment? && !o.ar_refund?
 	colspan = colspan + [tpl.show_item_info, tpl.show_item_name, tpl.show_item_desc, tpl.show_item_quantity, tpl.show_item_price, tpl.show_item_amount].count(true)
