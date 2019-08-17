@@ -403,7 +403,7 @@ class Sale < QbRecord
 			d ||= documents.build(type: 'SaleDoc', user: updated_by)
 			d.attributes = {
 				regenerate: true,
-				name: "#{type}.pdf",
+				name: "#{type}-#{id}.pdf",
 				generated: true,
 				deliver: doc_deliver,
 				deliver_via: doc_deliver_via, #qb_customer.contact_via.presence || 'Postal',

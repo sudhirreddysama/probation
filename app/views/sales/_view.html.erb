@@ -6,6 +6,9 @@
 		<% else %>
 			<%= form_tag(action: :gendoc, id: o.id ) %><button><i class="fa fa-print"></i> Generate <%= o.type %> PDF</button></form>
 		<% end %>
+    <% if !o.voided %>
+      <%= form_tag(controller: :sales, action: :void, id: o.id ) %><button><i class="fa fa-times"></i> Void <%= o.type %></button></form>
+    <% end %>
 		<% url = {context: nil, controller: :sales, action: :new, from_transaction: o.id} %>
 		<% if o.invoice? %>
 			<%= link_to fa('money', 'Pay Invoice'), url + {type: 'Payment'} %>

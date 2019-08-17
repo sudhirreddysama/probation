@@ -7,7 +7,7 @@
 			<% if @print %>
 				<%= d.name %>
 			<% else %>
-				<%= link_to d.name, {context: d.obj_type.underscore, context_id: d.obj_id, controller: :documents, action: :download, id: d.id}, class: 'document-download', target: '_blank' %>
+				<%= link_to d.name, {controller: :sales, action: :transaction, id: d.obj_id}, class: 'document-download', target: '_blank' %>
 				<% if !d.body.nil? %>
 					<%= link_to 'to Word', {context: d.obj_type.underscore, context_id: d.obj_id, controller: :documents, action: :word, id: d.id}, class: 'tr-hover dim', target: '_blank' %>
 					<%= link_to 'as HTML', {context: d.obj_type.underscore, context_id: d.obj_id, controller: :documents, action: :preview, id: d.id}, class: 'tr-hover dim', target: '_blank' %>
