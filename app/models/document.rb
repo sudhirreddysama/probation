@@ -1,6 +1,6 @@
 class Document < ApplicationRecord
 
-	include DbChange::Track
+	include HsChange::Track
 
 	belongs_to :obj, polymorphic: true
 	belongs_to :user, optional: true

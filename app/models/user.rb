@@ -1,8 +1,5 @@
 class User < ApplicationRecord
 	
-	# include DbGroup::HasGroups
-	# include DbChange::Track
-	
 	scope :valid, -> { where 'users.active = 1 and (users.valid_until is null or valid_until >= date(now()))' }
 	
 	def self.can_create? u, *args; u.admin?; end

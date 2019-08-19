@@ -1,4 +1,4 @@
-class DbChange < ApplicationRecord
+class HsChange < ApplicationRecord
 
 	belongs_to :obj, :polymorphic => true
 	
@@ -14,12 +14,12 @@ class DbChange < ApplicationRecord
 
 		extend ActiveSupport::Concern
 		
-		def save_db_change action, vals = []
+		def save_hs_change action, vals = []
 			vals.reject! { |k, v| 
 				(v[0].blank? && v[1].blank?) || (v[0] == v[1])
 			}
 			return if vals.empty?
-			DbChange.create({
+			HsChange.create({
 				user: current_user,
 				action: action,
 				obj: self,
@@ -28,10 +28,10 @@ class DbChange < ApplicationRecord
 		end
  	
 		included {
-			has_many :db_changes, as: :obj
-			after_create { save_db_change 'new', changes }
-			before_update { save_db_change 'edit', changes }
-			before_destroy { save_db_change 'delete', attributes.transform_values { |v| [v, nil] } }
+			has_many :hs_changes, as: :obj
+			after_create { save_hs_change 'new', changes }
+			before_update { save_hs_change 'edit', changes }
+			before_destroy { save_hs_change 'delete', attributes.transform_values { |v| [v, nil] } }
 		}
 	end
 

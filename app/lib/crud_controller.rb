@@ -48,7 +48,7 @@ class CrudController < ApplicationController
 	end		
 		
 	def new
-		if request.post? && @obj.save
+		if request.post? && @obj.save!
 			after_new
 		end	
 	end

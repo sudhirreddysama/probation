@@ -8,9 +8,6 @@ class SaleDetail < Record
 	
 	def self.can_create? u, *args; false; end
 	
-	# include DbChange::Track
-	#has_many :documents, as: :obj
-
 	def label; "Transaction Detail #{id}"; end
 	
 	belongs_to :sale

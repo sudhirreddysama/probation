@@ -6,10 +6,6 @@ class Customer < Record
 
 	self.inheritance_column = nil
 
-	# include DbChange::Track
-	# include DbGroup::HasGroups
-	# has_many :documents, as: :obj
-
 	def label; name_was; end
 	
 	include HasPath
