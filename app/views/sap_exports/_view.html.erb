@@ -5,7 +5,7 @@
 		<thead>
 			<tr>
 				<th th width="4%">ID</th>
-				<th th width="10%">Cashierd At</th>
+				<th th width="10%">Cashiered At</th>
 				<th th width="5%">Payment</th>
 				<th th width="10%">Division</th>
 				<th th width="15%">Insight EMR-ID</th>
@@ -17,12 +17,12 @@
 			<% @objs.each { |o| %>
 				<tr class="<%= cycle 'odd', 'even' %>">
 					<td align="center"><%= o.id %></td>
-					<td align="center"><%= o.date %></td>
+					<td align="center"><%= o.created_at.to_time.strftime '%m/%d/%Y %I:%M%p' %></td>
 					<td align="center"><%= o.pay_method %></td>
 					<td align="center"><%= o.division %></td>
 					<td align="center"><%= o.num %></td>
 					<td align="center"><%= o.created_by&.username %></td>
-					<td align="center"><%= o.amount.to_f %></td>
+					<td align="center"><%= o.amount && '%.2f' % o.amount %></td>
 					<% amount += o.amount.to_f %>
 				</tr>
 			<% } %>

@@ -28,7 +28,7 @@ class SapExport < ApplicationRecord
 		if false 
 			ftp = Net::FTP.new '10.100.224.234'
 			ftp.login 'sapsp', 'Fall2017'
-			tmp = Tempfile.new('eh-sap-export')
+			tmp = Tempfile.new('hd-sap-export')
 			tmp.write(data)
 			tmp.close
 			ftp.puttextfile(tmp.path, data_file_name)

@@ -1,7 +1,7 @@
 class SalesController < RecordsController
 
 	def index
-		session[:context] ="sales"
+		session[:context] = params[:context] if params[:context].present?
 		@filter = nil if params[:clear]
 		@search_fields ||= {
 			'sales.id' => :left,
