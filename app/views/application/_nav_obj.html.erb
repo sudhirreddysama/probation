@@ -5,10 +5,12 @@
 		<%= tab 'search', 'View', url + {action: :view} %>
 		<% if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
 			<%= tab 'edit', 'Edit', url + {action: :edit} if obj.can_edit? @current_user %>
-			<%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
-			<% if !params.popup %>
-				<% if obj.respond_to?(:documents) %>
-					<%= tab 'file-text-o', 'Docs', {controller: :documents}, action: :index, context: "docs" %>
+			<% if "admin".eql?(@current_user.level) %>
+			  <%= tab 'trash', 'Delete', url + {action: :delete} if obj.can_destroy? @current_user %>
+				<% if !params.popup %>
+					<% if obj.respond_to?(:documents) %>
+						<%= tab 'file-text-o', 'Docs', {controller: :documents}, action: :index, context: "docs" %>
+					<% end %>
 				<% end %>
 			<% end %>
 		<% end %>
