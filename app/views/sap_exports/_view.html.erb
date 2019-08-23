@@ -10,7 +10,7 @@
 				<th th width="10%">Division</th>
 				<th th width="15%">Insight EMR-ID</th>
 				<th th width="10%">Username</th>
-				<th th width="15%">Total Customer</th>
+				<th th width="15%">Amount</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,14 +22,14 @@
 					<td align="center"><%= o.division %></td>
 					<td align="center"><%= o.num %></td>
 					<td align="center"><%= o.created_by&.username %></td>
-					<td align="center"><%= o.amount && '%.2f' % o.amount %></td>
+					<td align="center"><%= number_to_currency(o.amount.to_f) %></td>
 					<% amount += o.amount.to_f %>
 				</tr>
 			<% } %>
 			<tr>
 				<td colspan="5"></td>
 				<td  align="center"> <b>Total Amount:</b></td>
-				<td  align="center"> <%= amount %></td>
+				<td  align="center"> <%= number_to_currency(amount) %></td>
 			</tr>
 		</tbody>
 	</table>
