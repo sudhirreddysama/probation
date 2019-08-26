@@ -147,7 +147,7 @@ class SapExport < ApplicationRecord
 					assignment: (detail.pay_cc? ? 'CLINIC CREDIT' : (detail.pay_check? ? 'CLINIC CHECK' : 'CLINIC CASH')),
 					reference_key3: detail.refund? ? '' : 'Shot',
 					invoice_date: transaction.date,
-					customer: transaction.num
+					customer: nil
 				}
 				if h.amount < 0
 					h[:debit], h[:credit] = h.credit, h.debit
