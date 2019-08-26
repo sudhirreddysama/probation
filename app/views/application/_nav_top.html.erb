@@ -29,7 +29,9 @@
 	
 	<%= top_tab 'usd', 'Shots', Shot %>
 
+<% if "manager".eql?(@current_user.level) || "admin".eql?(@current_user.level) %>
 	<%= tab 'money', 'Payments History', {context: "payment_history", controller: :sales, action: :index}, {}, {class: ((params[:context] =="payment_history" || "payeezy_posts".eql?(c)) ? 'active' : '')} %>
+<% end %>
 	
 	<%= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: "reports", action: :index}, {}, class: ([params[:context], session[:context]].include?('reports') ? 'active' : '') %>
 	
