@@ -69,12 +69,12 @@
 	<% id2 = params.id2.to_i %>
 	<% o.sap_lines.eager_load(:sale_detail, :pay_sale_detail).each { |l| %>
 		<tbody class="<%= cycle 'odd', 'even' %>">
-			<tr id="line-<%= l.id %>"<% if l.id == id2 %> class="invert"<% end %>>
+			<tr>
 				<td ><%= l.cost_center %></td>
 				<td ><%= l.credit %></td>
 				<td ><%= l.reference %></td>
 				<td ><%= l.reference_key1.to_i %></td>
-				<td ><%= l.text %></td>
+				<td ><%= l.text.gsub(" **", "") %></td>
 				<td ><%= l.document_header %></td>
 				<td ><%= l.debit %></td>
 				<td ><%= l.posting_date.d %></td>

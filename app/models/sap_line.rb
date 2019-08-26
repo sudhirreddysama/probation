@@ -21,12 +21,11 @@ class SapLine < ApplicationRecord
 	
 	def to_tab
 		[
-			resent.nil? ? '' : (resent ? '1' : '0'),
 			cost_center, # char 10
 			credit, # char 6
 			reference, #
 			reference_key1,# char 12
-			text.to_s[0, 48], # char 50
+			text.gsub(" **", "").to_s[0, 48], # char 50
 			document_header,
 			debit, # char 6
 			posting_date && posting_date.strftime('%Y-%m-%d'),
