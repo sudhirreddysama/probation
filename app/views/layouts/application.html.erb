@@ -48,6 +48,7 @@
   <%= yield :head %>
 </head>
 <body id="app">
+  
 	<% if !params[:popup] %>
 		<%= partial 'env' %>
 		<%= partial 'nav_top' %>
@@ -59,8 +60,15 @@
 		<%= partial 'errors', errors: [flash[:alert]] %>
 	<% end %>
 	<%= partial 'nav' %>
+  <%if @obj %>
+  	<% (@obj.errors || []).each do |attr, msg| %>
+      <li style="color:red;padding: 10px;margin-left: 50px;">
+        <%= @obj.errors.full_messages_for(attr).first if @obj.errors[attr].first == msg %>
+      </li>
+    <% end %>
+  <% end %>
 	<%= yield %>
-	<% if !params[:popup] %>
+  <% if !params[:popup] %>
 		<div id="pop1" style="display: none;" onclick="_close_popup(); return false;">
 			<div id="popl"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>
 			<div id="pop2"><a href="#" id="popc" class="red" onclick="_close_popup(); return false;"><i class="fa fa-times"></i></a><iframe id="popi" onload="window._popup_load();"></iframe>
