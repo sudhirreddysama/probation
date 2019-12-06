@@ -1,6 +1,0 @@
-<% if @obj.validate_destroy %>
-	<%= partial 'application/delete', o: @obj %>
-<% else %>
-	<p>You cannot delete this item due to the errors below.</p>
-	<%= partial 'errors', errors: @obj.errors.full_messages %>
-<% end %>

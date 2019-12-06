@@ -25,17 +25,17 @@
 <div id="tabs" class="tabs">
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: ([params[:context], session[:context]].include?('home') ? 'active' : '') %>
 
-	<%= tab 'money', "Sales", {controller: :sales, context: "sales", action: :index, process: ""}, {}, {class: ([params[:context], session[:context]].include?("sales") ? 'active' : '')} %>
+	<%#= tab 'money', "Sales", {controller: :sales, context: "sales", action: :index, process: ""}, {}, {class: ([params[:context], session[:context]].include?("sales") ? 'active' : '')} %>
 	
-	<%= top_tab 'usd', 'Shots', Shot %>
+	<%#= top_tab 'usd', 'Shots', Shot %>
 
 <% if "manager".eql?(@current_user.level) || "admin".eql?(@current_user.level) %>
-	<%= tab 'money', 'Payments History', {context: "payment_history", controller: :sales, action: :index}, {}, {class: ((params[:context] =="payment_history" || "payeezy_posts".eql?(c)) ? 'active' : '')} %>
+	<%#= tab 'money', 'Payments History', {context: "payment_history", controller: :sales, action: :index}, {}, {class: ((params[:context] =="payment_history" || "payeezy_posts".eql?(c)) ? 'active' : '')} %>
 <% end %>
 	
-	<%= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: "reports", action: :index}, {}, class: ([params[:context], session[:context]].include?('reports') ? 'active' : '') %>
+	<%#= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: "reports", action: :index}, {}, class: ([params[:context], session[:context]].include?('reports') ? 'active' : '') %>
 	
-	<%= tab 'cloud-upload', 'Sap Exports', {:controller => :sap_exports, context: "sap_exports", action: :index}, {}, class: ([params[:context], session[:context]].include?('sap_exports') ? 'active' : '')%>
+	<%#= tab 'cloud-upload', 'Sap Exports', {:controller => :sap_exports, context: "sap_exports", action: :index}, {}, class: ([params[:context], session[:context]].include?('sap_exports') ? 'active' : '')%>
 	
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
 
