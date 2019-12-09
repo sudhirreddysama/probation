@@ -97,6 +97,12 @@ class User < ApplicationRecord
 		if conn.bind
 			results = conn.search filter: Net::LDAP::Filter.equals('samaccountname', u)			
 			return results.first
+		else
+			conn = Net::LDAP.new(:host => LDAP_HOST, :port => LDAP_PORT, :base => LDAP_BASE, :auth => {:username => "#{u}#{LDAP_DOMAIN2}", :password => p, :method => :simple})
+      if conn.bind
+        results = conn.search :filter => Net::LDAP::Filter.equals('samaccountname', u)
+        return results.first
+      end
 		end
 		return nil
 	rescue Net::LDAP::LdapError => e # Connection errors

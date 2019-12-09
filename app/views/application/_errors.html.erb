@@ -1,0 +1,7 @@
+<% if !errors.empty? %>
+	<div class="errors">
+		<% errors.each { |e| %>
+			<div><%= e.split('^').last %></div>
+		<% } %>
+	</div>
+<% end %>
