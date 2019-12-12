@@ -35,7 +35,7 @@
 	
 	<%#= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: "reports", action: :index}, {}, class: ([params[:context], session[:context]].include?('reports') ? 'active' : '') %>
 	
-	<%= tab 'cloud-upload', 'Add Inventory', {:controller => :inventories, action: :new}, {}, class: ([params[:controller]].include?('inventories') ? 'active' : '')%>
+	<%= tab 'cloud-upload', 'Inventory', {:controller => :inventories, action: :new}, {}, class: ([params[:controller]].include?('inventories') ? 'active' : '')%>
 	
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
 

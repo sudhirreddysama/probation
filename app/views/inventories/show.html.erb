@@ -1,49 +1,16 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Item dec:</strong>
-  <%= @inventory.item_dec %>
-</p>
-
-<p>
-  <strong>Serial num:</strong>
-  <%= @inventory.serial_num %>
-</p>
-
-<p>
-  <strong>Status:</strong>
-  <%= @inventory.status %>
-</p>
-
-<p>
-  <strong>Status date:</strong>
-  <%= @inventory.status_date %>
-</p>
-
-<p>
-  <strong>Agent rec:</strong>
-  <%= @inventory.agent_rec %>
-</p>
-
-<p>
-  <strong>Incident rep:</strong>
-  <%= @inventory.incident_rep %>
-</p>
-
-<p>
-  <strong>Nsn in inventory:</strong>
-  <%= @inventory.nsn_in_inventory %>
-</p>
-
-<p>
-  <strong>Notes:</strong>
-  <%= @inventory.notes %>
-</p>
-
-<p>
-  <strong>Expendable:</strong>
-  <%= @inventory.expendable %>
-</p>
-
-<%= link_to 'Edit', edit_inventory_path(@inventory) %> |
-<%= link_to 'Back', inventories_path %>
+<div class="view">
+  <%= dl 'Item Number', @inventory.id %>
+  <%= dl 'Serial Number', @inventory.serial_num %>
+  <%= dl 'Item Description', @inventory.item_dec  %>
+  <%= dl 'Status', @inventory.status%>
+  <%= dl 'Date',  @inventory.status_date %>
+</div>
+<div class="view">
+  <%= dl 'Notes', @inventory.notes %>
+</div>
+<div class="view btns">
+  <%= link_to 'List of Inventories', inventories_path, class: "fa fa-arrow-left", "aria-hidden": true %>
+  <%= link_to 'Edit', edit_inventory_path(@inventory), class: "fa fa-edit" %>
+</div>
