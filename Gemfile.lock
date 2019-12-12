@@ -55,6 +55,9 @@ GEM
       axlsx (~> 2.0)
     bcrypt (3.1.11)
     bindex (0.5.0)
+    bootstrap_form (4.3.0)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
     builder (3.2.3)
     byebug (9.0.6)
     chronic (0.10.2)
@@ -201,6 +204,7 @@ DEPENDENCIES
   axlsx (~> 2.0.1)
   axlsx_styler (~> 0.1.7)
   bcrypt (~> 3.1.7)
+  bootstrap_form (~> 4.0)
   byebug
   coffee-rails (~> 4.2)
   el_finder (~> 1.1.13)

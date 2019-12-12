@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item_dec: MyString
+  serial_num: MyString
+  status: MyString
+  status_date: 2019-12-12
+  agent_rec: MyString
+  incident_rep: MyString
+  nsn_in_inventory: MyString
+  notes: MyText
+  expendable: MyString
+
+two:
+  item_dec: MyString
+  serial_num: MyString
+  status: MyString
+  status_date: 2019-12-12
+  agent_rec: MyString
+  incident_rep: MyString
+  nsn_in_inventory: MyString
+  notes: MyText
+  expendable: MyString

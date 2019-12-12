@@ -68,3 +68,4 @@ gem "pdfkit"
 gem "wkhtmltopdf"
 gem 'wkhtmltopdf-binary'
 gem 'whenever', require: false
+gem "bootstrap_form", "~> 4.0"

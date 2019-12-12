@@ -1,0 +1,24 @@
+<%= bootstrap_form_for(inventory) do |f| %>
+  <% if inventory.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(inventory.errors.count, "error") %> prohibited this inventory from being saved:</h2>
+
+      <ul>
+      <% inventory.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+    <%= f.text_field :serial_num, label: "Serial Number" %>
+    <%= f.text_field :item_dec, label: "Item Description" %>
+    <%= f.text_area :notes, label: "Notes" %>
+    <%= f.text_field :status, label: "Staus", value: "Inventory", readOnly: true %>
+    <%= f.text_field :status_date, readOnly: true, value: Date.today.strftime("%d/%m/%Y") %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
