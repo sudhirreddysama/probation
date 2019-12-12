@@ -18,7 +18,7 @@ if Rails.env.development?
 	require 'core_ext'
 end
 
-APP_HUMAN_NAME = 'Health Clinic'
+APP_HUMAN_NAME = 'Probation'
 ROOT_PATH = Rails.env.development? ? '/dev/' : '/'
 APP_HOST = 'ehpermits.monroecounty.gov'
 ROOT_URL = 'https://' + APP_HOST + ROOT_PATH
@@ -37,6 +37,8 @@ LDAP_BASE = 'ou=mc,dc=mc,dc=ad,dc=monroecounty,dc=gov'
 LDAP_USER = 'ldaplook'
 LDAP_PASS = 'ldapl00k'
 LDAP_DOMAIN = '@monroecounty.gov'
+LDAP_DOMAIN2 = '@mc.ad.monroecounty.gov'
+LDAP_USER_DN_REGEX = /OU=(ISAD|SHZA|SHZB|SHZC|SHAD),/
 
 require 'net/http'
 require 'mail'
