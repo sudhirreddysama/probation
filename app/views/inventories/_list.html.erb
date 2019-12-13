@@ -1,0 +1,25 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th>Item number</th>
+     	      <th>Serial number</th>
+		      <th>Item description</th>
+		      <th>Status</th>
+		      <th>Date</th>
+		      <th>Notes</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= o.id %></td>
+				<td><%= link_to o.serial_num, :action => :view, :id => o.id %></td>
+				<td class="nobr"><%= o.item_dec %></td>
+				<td class="nobr"><%= o.status %></td>
+				<td class="nobr"><%= o.status_date %></td>
+				<td class="nobr"><%= o.notes %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

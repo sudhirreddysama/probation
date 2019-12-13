@@ -1,0 +1,8 @@
+<style>
+	th { width: 140px; }
+</style>
+<%= f.tr_text_field :serial_num, label: 'Serial Number', req: true, required: true %>
+<%= f.tr_text_field :item_dec, label: 'Item Description' %>
+<%= f.tr_text_area :notes, label: 'Notes' %>
+<%= f.tr_text_field :status, value: "Inventory", readOnly: true %>
+<%= f.tr_text_field :status_date, readOnly: true, value: Date.today.strftime("%d/%m/%Y") %>

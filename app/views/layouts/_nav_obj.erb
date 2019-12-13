@@ -1,0 +1,6 @@
+<div class="tabs" id="objs-tabs">
+	<%= tab 'list', 'List of items with Serial Number', {action: params.action, controller: params.controller} %>
+		<%# if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
+	<%= tab 'list', 'List of items with Non-Serial Number', {action: params.action1, controller: params.controller} %>
+	<div class="clear"></div>
+</div>

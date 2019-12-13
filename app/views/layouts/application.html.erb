@@ -68,7 +68,8 @@
     <% end %>
   <% end %>
 
-  <br>
+    <%#= partial 'layouts/nav_obj' %>
+
 	<%= yield %>
   <% if !params[:popup] %>
 		<div id="pop1" style="display: none;" onclick="_close_popup(); return false;">
