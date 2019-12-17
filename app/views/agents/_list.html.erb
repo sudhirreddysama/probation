@@ -1,0 +1,35 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th class="nobr" width="1%">AgentID</th>
+			<th width="1%">LastName</th>
+			<th width="1%">FirstName</th>
+			<th width="1%">BadgeNumber</th>
+			<th width="1%">Last4SSN</th>
+			<th width="1%">DivisionUnit</th>
+			<th width="1%">Title</th>
+			<th width="1%">Location</th>
+			<th width="1%">Room</th>
+			<th width="1%">OfficePhone</th>
+			<th width="1%">Supervisor</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= o.id %></td>
+				<td><%= link_to o.last_name, :action => :view, :id => o.id %></td>
+				<td class="nobr"><%= o.first_name %></td>
+				<td class="nobr"><%= o.badge_number %></td>
+				<td class="nobr"><%= o.last_4ssn %></td>
+				<td class="nobr"><%= o.division_unit %></td>
+				<td class="nobr"><%= o.title %></td>
+				<td class="nobr"><%= o.location %></td>
+				<td class="nobr"><%= o.room %></td>
+				<td class="nobr"><%= o.office_phone %></td>
+				<td class="nobr"><%= o.supervisor %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

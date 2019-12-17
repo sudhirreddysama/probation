@@ -1,0 +1,23 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th>SuperRecordNumber</th>
+     	    <th>LastName</th>
+		      <th>FirstName</th>
+		      <th>FirstPhone</th>
+		      <th>SecondPhone</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= o.id %></td>
+				<td><%= link_to o.last_name, :action => :view, :id => o.id %></td>
+				<td class="nobr"><%= o.first_name %></td>
+				<td class="nobr"><%= o.first_phone %></td>
+				<td class="nobr"><%= o.second_phone %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

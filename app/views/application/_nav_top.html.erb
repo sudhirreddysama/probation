@@ -38,6 +38,8 @@
 	<%= tab 'cloud-upload', 'Inventory', {controller: :inventories, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
 	
 	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
+	<%= tab 'user', 'Agents', {controller: :agents, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
+	<%= tab 'user', 'Supervisors', {controller: :supervisors, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
 
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>

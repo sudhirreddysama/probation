@@ -1,0 +1,8 @@
+<style>
+	th { width: 140px; }
+</style>
+<% admin = params[:controller] == 'supervisors' %>
+<%= f.tr_text_field :first_name, label: 'First Name', req: true, required: true %>
+<%= f.tr_text_field :last_name, label: 'Last Name', req: true, required: true %>
+<%= f.tr_text_field :first_phone, label: 'First Phone' %>
+<%= f.tr_text_field :second_phone, label: 'Second Phone' %>
