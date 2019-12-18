@@ -5,4 +5,4 @@
 <%= f.tr_text_field :item_dec, label: 'Item Description' %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= f.tr_text_field :status, value: "Inventory", readOnly: true %>
-<%= f.tr_text_field :status_date, readOnly: true, value: Date.today.strftime("%d/%m/%Y") %>
+<%= f.tr_text_field :status_date, readOnly: true, value: Time.now.strftime('%m/%d/%Y') %>
