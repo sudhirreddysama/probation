@@ -1,8 +1,31 @@
 <style>
 	th { width: 140px; }
 </style>
+
+
+<tr>
+   <th style="vertical-align: center;">Item Description:&nbsp;<span class="err">*</span></th>
+   <td><%= select :item_dec, "", Inventory.all.map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%' %></td>
+</tr>
+<%= f.tr_text_field :item_dec, label: "Others" %>
+
 <%= f.tr_text_field :serial_num, label: 'Serial Number', req: true, required: true %>
-<%= f.tr_text_field :item_dec, label: 'Item Description' %>
+<%#= f.tr_text_field :item_dec, label: 'Item Description' %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= f.tr_text_field :status, value: "Inventory", readOnly: true %>
 <%= f.tr_text_field :status_date, readOnly: true, value: Time.now.strftime('%m/%d/%Y') %>
+<script type="text/javascript">
+ 	$(document).ready(function() {
+	 	$("#item_dec_").on("change", function() {
+ 		var item_dec = $(this).val();
+		if(item_dec == "") {
+			$("#obj_item_dec").val("");
+			$("#obj_item_dec").parent().parent().show();
+
+		} else {
+		 	$("#obj_item_dec").val(item_dec);
+		 	$("#obj_item_dec").parent().parent().hide();
+			}
+		})
+	})
+</script>
