@@ -138,7 +138,11 @@ class CrudController < ApplicationController
 	end
 	
 	def load_model
-		@model_class = params.controller.classify.constantize
+		if params.controller == "inventory_non_serial"
+			@model_class = Inventory
+		else
+			@model_class = params.controller.classify.constantize
+		end
 		# if params.context
 		# 	@context_class = params.context.classify.constantize
 		# 	@context_model = @context_class

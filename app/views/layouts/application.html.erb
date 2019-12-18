@@ -59,6 +59,8 @@
 	<% if flash[:alert] %>
 		<%= partial 'errors', errors: [flash[:alert]] %>
 	<% end %>
+  <%= partial 'layouts/nav_obj' %>
+
 	<%= partial 'nav' %>
   <%if @obj %>
   	<% (@obj.errors || []).each do |attr, msg| %>
@@ -68,7 +70,6 @@
     <% end %>
   <% end %>
 
-    <%#= partial 'layouts/nav_obj' %>
 
 	<%= yield %>
   <% if !params[:popup] %>

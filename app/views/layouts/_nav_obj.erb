@@ -1,6 +1,8 @@
-<div class="tabs" id="objs-tabs">
-	<%= tab 'list', 'List of items with Serial Number', {action: params.action, controller: params.controller} %>
-		<%# if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
-	<%= tab 'list', 'List of items with Non-Serial Number', {action: params.action1, controller: params.controller} %>
-	<div class="clear"></div>
-</div>
+<%if ["inventories", "inventory_non_serial"].include?(params.controller) %>
+	<div class="tabs" id="objs-tabs">
+		<%= tab 'list', 'With Serial Number', {action: "index", controller: "inventories"}, {}, class: ("inventories" == params.controller ? 'active' : '') %>
+			<%# if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
+		<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "inventory_non_serial"}, {}, class: ("inventory_non_serial" == params.controller ? 'active' : '') %>
+		<div class="clear"></div>
+	</div>
+<%end%>
