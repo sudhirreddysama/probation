@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191216022838) do
+ActiveRecord::Schema.define(version: 20191219022838) do
 
   create_table "agents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string   "first_name"
@@ -366,6 +366,13 @@ ActiveRecord::Schema.define(version: 20191216022838) do
     t.string  "cost_center"
     t.index ["division"], name: "idx_division", using: :btree
     t.index ["qb_account_id"], name: "idx_qb_account_id", using: :btree
+  end
+
+  create_table "status", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string   "status"
+    t.string   "status_description"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "supervisors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
