@@ -13,10 +13,8 @@
 <%= f.tr_text_field :office_phone, label: 'Office Phone' %>
 <%= f.tr_text_field :pager_phone, label: 'Pager Phone' %>
 <%= f.tr_text_field :cell_phone, label: 'Cell Phone' %>
-<div class="data">
-	<th>Supervisor <span class="req">*</span></th>
-</div>
 
-<%#= select_tag "Supervisor", options_for_select([['sudhir', 1], ['reddy', 2]]), class: 'data', style: 'width: 100%;' %>
-	
-	
+<tr>
+	<th>Supervisor <span class="req">*</span></th>
+   	<td><%= f.select :supervisor, Supervisor.all.map(&:id), {prompt: true}, {class: 'data', style: 'width: 100%;border-radius: 5px;'} %></td>
+</tr>

@@ -5,7 +5,7 @@
 
 <tr>
    <th style="vertical-align: center;">Item Description:&nbsp;<span class="err">*</span></th>
-   <td><%= select :item_dec, "", Inventory.all.map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%' %></td>
+   <td><%= select :item_dec, "", Inventory.all.map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 <%= f.tr_text_field :item_dec, label: "Others" %>
 
