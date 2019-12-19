@@ -6,7 +6,7 @@
    <th style="vertical-align: center;">Item Description:&nbsp;<span class="err">*</span></th>
    <td><%= select :item_dec, "", Inventory.all.map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%' %></td>
 </tr>
-<%= f.tr_text_field :item_dec, label: "Others" %>
+<%= f.tr_text_field :item_dec, label: "New Items" %>
 <%= f.tr_text_field :incident_rep, label: 'Quality to add', value: 0 %>
 <tr>
    <th>Current Inventory</th>
