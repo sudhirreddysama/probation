@@ -1,0 +1,6 @@
+<style>
+	th { width: 140px; }
+</style>
+<% admin = params[:controller] == 'status' %>
+<%= f.tr_text_field :status, label: 'Status', req: true, required: true %>
+<%= f.tr_text_field :status_description, label: 'Status Description', req: true, required: true %>
