@@ -11,11 +11,11 @@
 	</thead>
 	<tbody>
 		<% reset_cycle %>
-		<% objs.each { |o| %>
+		<% objs.where("nsn_in_inventory is null").each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td class="nobr"><%= o.id %></td>
-				<td><%= link_to o.serial_num, :action => :view, :id => o.id %></td>
-				<td class="nobr"><%= o.item_dec %></td>
+				<td class="nobr"><%= o.serial_num %></td>
+				<td class="nobr"><%=link_to o.item_dec, :action => :view, :id => o.id %></td>
 				<td class="nobr"><%= o.status %></td>
 				<td class="nobr"><%= o.status_date %></td>
 				<td class="nobr"><%= o.notes %></td>
