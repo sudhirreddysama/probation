@@ -13,6 +13,8 @@
    <td><%= text_field :incident_rep, "", readOnly: true, value: (o.nsn_in_inventory || 0) %></td>
 </tr>
 
+<%= f.hidden_field :expendable, value: false%>
+
 <%= hidden_field_tag :nsn_in_inventory_cache, "", id: "nsn_in_inventory_cache", value: o.nsn_in_inventory %>
 <%= f.hidden_field :nsn_in_inventory, value: (o.nsn_in_inventory || 0) %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
@@ -23,10 +25,12 @@
 	 	$("#item_dec_").on("change", function() {
 	 		var item_dec = $(this).val();
 			if(item_dec == "") {
+				$("#obj_expendable").val(false);
 				$("#obj_item_dec").val("");
 				$("#obj_item_dec").parent().parent().show();
 
 			} else {
+				$("#obj_expendable").val(true);
 			 	$("#obj_item_dec").val(item_dec);
 			 	$("#obj_item_dec").parent().parent().hide();
 				

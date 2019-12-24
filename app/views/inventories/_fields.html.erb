@@ -8,9 +8,8 @@
    <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 <%= f.tr_text_field :item_dec, label: "Others" %>
-
+<%= f.hidden_field :expendable%>
 <%= f.tr_text_field :serial_num, label: 'Serial Number', required: true %>
-<%#= f.tr_text_field :item_dec, label: 'Item Description' %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= f.tr_text_field :status, value: "Inventory", readOnly: true %>
 <%= f.tr_text_field :status_date, readOnly: true, value: (o.new_record? ? Time.now.strftime('%m/%d/%Y') : o.status_date) %>
@@ -23,6 +22,7 @@
 			$("#obj_item_dec").parent().parent().show();
 
 		} else {
+		 	$("#obj_expendable").val(true);
 		 	$("#obj_item_dec").val(item_dec);
 		 	$("#obj_item_dec").parent().parent().hide();
 			}

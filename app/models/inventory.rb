@@ -14,10 +14,14 @@ class Inventory < ApplicationRecord
 	end
 
 	def uniqe_item_dec
-		if(nsn_in_inventory)
-			Inventory.where(item_dec: item_dec).where("nsn_in_inventory is not null").length > 0
+		if(expendable == "true")
+			false
 		else
-			Inventory.where(item_dec: item_dec).where("nsn_in_inventory is null").length > 0
+			if(nsn_in_inventory)
+				Inventory.where(item_dec: item_dec).where("nsn_in_inventory is not null").length > 0
+			else
+				Inventory.where(item_dec: item_dec).where("nsn_in_inventory is null").length > 0
+			end
 		end
 	end
 end
