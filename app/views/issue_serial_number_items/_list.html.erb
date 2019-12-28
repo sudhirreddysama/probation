@@ -1,0 +1,23 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th>Description</th>
+		      <th>NSN in Inventory</th>
+		      <th>Status</th>
+		      <th>Date</th>
+		      <th>Notes</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% objs.where("nsn_in_inventory is null and status = 'Issued'").each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td><%= link_to o.item_dec, :action => :view, :id => o.id  %></td>
+				<td class="nobr"><%= o.nsn_in_inventory %></td>
+				<td class="nobr"><%= o.status %></td>
+				<td class="nobr"><%= o.status_date %></td>
+				<td class="nobr"><%= o.notes %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -1,0 +1,82 @@
+<style>
+	th { width: 140px; }
+</style>
+
+<tr>
+   <th style="vertical-align: center;">Issue Serial Number Item<span class="err">*</span></th>
+   <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+
+<tr>
+   <th style="vertical-align: center;">Select from Inventory<span class="err">*</span></th>
+   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+
+<tr>
+   <th style="vertical-align: center;">Select Serial Number<span class="err">*</span></th>
+   <td><%= select :serial_number, "", "", {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+<tr><th></th></tr>
+<tr><th></th></tr>
+<tr>
+	<th></th>
+	<td>
+		<%= link_to "Not In Inventory", "javascript:void(0)", id: "not_in_inventory" %>
+	</td>
+</tr>
+<tr><th></th></tr>
+<tr><th></th></tr>
+
+<%= f.tr_text_area :notes, label: 'Notes' %>
+<%= f.hidden_field :expendable, value: true %>
+<%= f.tr_text_field :serial_num, label: 'Serial Number', readOnly: true %>
+<%= f.tr_text_field :item_dec, label: "Item Description", readOnly: true %>
+
+<%= f.tr_text_field :status, value: "Issued", readOnly: true %>
+<%= f.tr_text_field :status_date, readOnly: true, value: (o.new_record? ? Time.now.strftime('%m/%d/%Y') : o.status_date) %>
+ <script type="text/javascript">
+ 	$(document).ready(function() {
+ 		$("#not_in_inventory").on("click", function(){
+ 			$("#obj_item_dec").val("");
+			$("#obj_serial_num").val("");
+			$("#obj_item_dec").attr("readonly", false);
+			$("#obj_serial_num").attr("readonly", false);
+			$(this).hide();
+ 		})
+	 	$("#serial_number_").on("change", function() {
+	 		var serial_number = $(this).val();
+			if(serial_number == "") {
+				$("#obj_item_dec").val("");
+				$("#obj_serial_num").val("");
+
+			} else {
+			 	$("#obj_item_dec").val($("#item_dec_").val());
+			 	$("#obj_serial_num").val(serial_number);
+			}
+	 	})
+
+	 	$("#item_dec_").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_serail_numbers_from_serial_inventory %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(values) {
+				        $('#serial_number_').empty();
+			            $('#serial_number_').append($('<option>Please Select</option>'));
+
+				        if (values.length > 0) {
+				    	      $.each(values, function(i, item) {
+				            	$('#serial_number_').append($('<option></option>').attr('value', item).text(item));
+				          	});
+				      	}
+				  	}
+				})
+			}
+		})
+	})
+ </script>

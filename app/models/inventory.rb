@@ -18,9 +18,9 @@ class Inventory < ApplicationRecord
 			false
 		else
 			if(nsn_in_inventory)
-				Inventory.where(item_dec: item_dec).where("nsn_in_inventory is not null").length > 0
+				Inventory.where(item_dec: item_dec, status: "Inventory").where("nsn_in_inventory is not null").length > 0
 			else
-				Inventory.where(item_dec: item_dec).where("nsn_in_inventory is null").length > 0
+				Inventory.where(item_dec: item_dec, status: "Inventory").where("nsn_in_inventory is null").length > 0
 			end
 		end
 	end

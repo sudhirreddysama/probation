@@ -9,7 +9,7 @@ class InventoryNonSerialController < CrudController
   end
 
   def get_nsn_in_inventory
-  	invenoty = Inventory.where(item_dec: params["data"]).last
+  	invenoty = Inventory.where(item_dec: params["data"], status: "Inventory").where("nsn_in_inventory is not null").last
   	render text: invenoty.nsn_in_inventory
   end
 end

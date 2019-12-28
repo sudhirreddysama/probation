@@ -138,7 +138,7 @@ class CrudController < ApplicationController
 	end
 	
 	def load_model
-		if params.controller == "inventory_non_serial"
+		if(["inventory_non_serial", "issue_serial_number_items"].include?(params.controller))
 			@model_class = Inventory
 		else
 			@model_class = params.controller.classify.constantize
@@ -169,11 +169,17 @@ class CrudController < ApplicationController
 	end
 
 	def build_obj
-		@obj = @model.new
-		@obj.attributes = flash[:obj] if flash[:obj]
-		@obj.attributes = params.obj if params.obj
-		@obj.current_user = @current_user
-		@obj.current_request = request
+		if(["issue_serial_number_items"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"], serial_num: params.obj["serial_num"]).last)
+			@obj.current_user = @current_user
+			@obj.attributes = params.obj
+			@obj.save!
+		else
+			@obj = @model.new
+			@obj.attributes = flash[:obj] if flash[:obj]
+			@obj.attributes = params.obj if params.obj
+			@obj.current_user = @current_user
+			@obj.current_request = request
+		end
 	end
 	
 	def require_model_can_create?; require_check @model_class.can_create?(@current_user, @context_obj || @context_model); end
