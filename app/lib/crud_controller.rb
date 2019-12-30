@@ -138,9 +138,12 @@ class CrudController < ApplicationController
 	end
 	
 	def load_model
-		if(["inventory_non_serial", "issue_serial_number_items"].include?(params.controller))
+		if(["inventory_non_serial", "issue_serial_number_items", "issue_non_serial_number_items"].include?(params.controller))
+			@model_class = Inventory
+		elsif(["change_status_serial", "change_status_non_serial"].include?(params.controller))
 			@model_class = Inventory
 		else
+
 			@model_class = params.controller.classify.constantize
 		end
 		# if params.context

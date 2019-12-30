@@ -3,7 +3,7 @@
 </style>
 
 <tr>
-   <th style="vertical-align: center;">Issue Serial Number Item<span class="err">*</span></th>
+   <th style="vertical-align: center;">Select Agent<span class="err">*</span></th>
    <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
