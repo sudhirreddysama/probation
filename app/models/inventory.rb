@@ -1,6 +1,6 @@
 class Inventory < ApplicationRecord
 	validates_presence_of :item_dec
-	validates_uniqueness_of :item_dec, message: "Please enter Description", if: :uniqe_item_dec
+	validates_uniqueness_of :item_dec, message: "has already been taken ", if: :uniqe_item_dec
 	validates_format_of :incident_rep, :with => /\A[0-9][0-9_]*\Z/, message: "Please enter numbers only", if: :is_non_seriral?
 
 	def is_non_seriral?
