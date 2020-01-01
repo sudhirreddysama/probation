@@ -7,7 +7,6 @@
    <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
-
 <tr>
    <th style="vertical-align: center;">Select from Inventory<span class="err">*</span></th>
    <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
@@ -19,26 +18,28 @@
    <td><%= select :serial_number, "", "", {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
-<tr><th></th></tr>
-<tr><th></th></tr>
-<tr>
-	<th></th>
-	<td>
-		<%= link_to "Not In Inventory", "javascript:void(0)", id: "not_in_inventory" %>
-	</td>
-</tr>
-<tr><th></th></tr>
-<tr><th></th></tr>
+	<tr><th></th></tr>
+	<tr><th></th></tr>
+	<tr>
+		<th></th>
+		<td>
+			<%= link_to "Not In Inventory", "javascript:void(0)", id: "not_in_inventory" %>
+			<%= link_to "Cancel", "javascript:void(0)", id: "cancel_issue", style:"float:right" %>
+		</td>
+	</tr>
+	<tr><th></th></tr>
+	<tr><th></th></tr>
 
-<%= f.tr_text_area :notes, label: 'Notes' %>
-<%= f.hidden_field :expendable, value: true %>
-<%= f.tr_text_field :serial_num, label: 'Serial Number', readOnly: true %>
-<%= f.tr_text_field :item_dec, label: "Item Description", readOnly: true %>
+	<%= f.tr_text_area :notes, label: 'Notes' %>
+	<%= f.hidden_field :expendable, value: true %>
+	<%= f.tr_text_field :serial_num, label: 'Serial Number', readOnly: true %>
+	<%= f.tr_text_field :item_dec, label: "Item Description", readOnly: true %>
 
-<%= f.tr_text_field :status, value: "Issued", readOnly: true %>
-<%= f.tr_text_field :status_date, readOnly: true, value: (o.new_record? ? Time.now.strftime('%m/%d/%Y') : o.status_date) %>
+	<%= f.tr_text_field :status, value: "Issued", readOnly: true %>
+	<%= f.tr_text_field :status_date, readOnly: true, value: (o.new_record? ? Time.now.strftime('%m/%d/%Y') : o.status_date) %>
  <script type="text/javascript">
  	$(document).ready(function() {
+ 		$("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().hide();
  		$("#not_in_inventory").on("click", function(){
  			$("#obj_item_dec").val("");
 			$("#obj_serial_num").val("");
@@ -76,6 +77,18 @@
 				      	}
 				  	}
 				})
+			}
+		})
+
+		$("#cancel_issue").on("click", function(){
+			window.location.reload();
+		});
+
+		$("#obj_agent_rec").on("change", function(){
+			if($(this).val()) {
+				$("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().show();
+			} else {
+				$("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().hide();
 			}
 		})
 	})

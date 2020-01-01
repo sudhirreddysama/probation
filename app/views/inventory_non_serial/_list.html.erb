@@ -10,7 +10,7 @@
 	</thead>
 	<tbody>
 		<% reset_cycle %>
-		<% objs.where("nsn_in_inventory is not null").each { |o| %>
+		<% objs.where("nsn_in_inventory is not null and status = 'Inventory'").each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td><%= link_to o.item_dec, :action => :view, :id => o.id  %></td>
 				<td class="nobr"><%= o.nsn_in_inventory %></td>
