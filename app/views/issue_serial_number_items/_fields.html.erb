@@ -9,7 +9,7 @@
 
 <tr>
    <th style="vertical-align: center;">Select from Inventory<span class="err">*</span></th>
-   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null and status != 'Issued'").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
 
@@ -20,13 +20,7 @@
 
 	<tr><th></th></tr>
 	<tr><th></th></tr>
-	<tr>
-		<th></th>
-		<td>
-			<%= link_to "Not In Inventory", "javascript:void(0)", id: "not_in_inventory" %>
-			<%= link_to "Cancel", "javascript:void(0)", id: "cancel_issue", style:"float:right" %>
-		</td>
-	</tr>
+	
 	<tr><th></th></tr>
 	<tr><th></th></tr>
 
@@ -37,25 +31,31 @@
 
 	<%= f.tr_text_field :status, value: "Issued", readOnly: true %>
 	<%= f.tr_text_field :status_date, readOnly: true, value: (o.new_record? ? Time.now.strftime('%m/%d/%Y') : o.status_date) %>
+
+
  <script type="text/javascript">
  	$(document).ready(function() {
- 		$("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().hide();
+ 		$("tr input, tr textarea").parent().parent().hide();
+ 		$("#not_in_inventory").hide();
+
  		$("#not_in_inventory").on("click", function(){
  			$("#obj_item_dec").val("");
 			$("#obj_serial_num").val("");
 			$("#obj_item_dec").attr("readonly", false);
 			$("#obj_serial_num").attr("readonly", false);
 			$(this).hide();
+			show();
  		})
 	 	$("#serial_number_").on("change", function() {
 	 		var serial_number = $(this).val();
 			if(serial_number == "") {
 				$("#obj_item_dec").val("");
 				$("#obj_serial_num").val("");
-
+				hide();
 			} else {
 			 	$("#obj_item_dec").val($("#item_dec_").val());
 			 	$("#obj_serial_num").val(serial_number);
+			 	show();
 			}
 	 	})
 
@@ -84,11 +84,21 @@
 			window.location.reload();
 		});
 
+		function show() {
+			$("tr input, tr textarea").parent().parent().show();
+		}
+
+		function hide() {
+			$("tr input, tr textarea").parent().parent().hide();
+		}
+		
 		$("#obj_agent_rec").on("change", function(){
 			if($(this).val()) {
-				$("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().show();
+				$("#not_in_inventory").show();
+				// $("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().show();
 			} else {
-				$("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().hide();
+				$("#not_in_inventory").hide();
+				// $("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().hide();
 			}
 		})
 	})

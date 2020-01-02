@@ -6,6 +6,10 @@
 		<th></th>
 		<td class="btns">
 			<button type="submit"><i class="fa fa-save"></i> Save Changes</button>
+			<%if params.controller == "issue_serial_number_items"%>
+				<%= link_to "Not In Inventory", "javascript:void(0)", id: "not_in_inventory", class: "btn btn-primary" %>
+				<%= link_to "Cancel", "javascript:void(0)", id: "cancel_issue", style:"float:right", class: "btn btn-primary" %>
+			<%end%>
 		</td>
 	</tr>	
 <% } %>

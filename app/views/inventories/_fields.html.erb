@@ -5,10 +5,10 @@
 
 <tr>
    <th style="vertical-align: center;">Item Description:&nbsp;<span class="err">*</span></th>
-   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%;border-radius: 5px;' %></td>
+   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null and status = 'Inventory'").map(&:item_dec).uniq, {:include_blank => "others"}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 <%= f.tr_text_field :item_dec, label: "Others" %>
-<%= f.hidden_field :expendable%>
+<%= f.hidden_field :expendable, value: false%>
 <%= f.tr_text_field :serial_num, label: 'Serial Number', required: true %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
 <%= f.tr_text_field :status, value: "Inventory", readOnly: true %>
@@ -18,9 +18,9 @@
 	 	$("#item_dec_").on("change", function() {
  		var item_dec = $(this).val();
 		if(item_dec == "") {
+			$("#obj_expendable").val(false);
 			$("#obj_item_dec").val("");
 			$("#obj_item_dec").parent().parent().show();
-
 		} else {
 		 	$("#obj_expendable").val(true);
 		 	$("#obj_item_dec").val(item_dec);

@@ -172,7 +172,7 @@ class CrudController < ApplicationController
 	end
 
 	def build_obj
-		if(["issue_serial_number_items"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"], serial_num: params.obj["serial_num"]).last)
+		if(["issue_serial_number_items"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"], serial_num: params.obj["serial_num"], status: 'Inventory').last)
 			@obj.current_user = @current_user
 			@obj.attributes = params.obj
 			@obj.save!
