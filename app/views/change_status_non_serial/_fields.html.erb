@@ -1,0 +1,19 @@
+<style>
+	th { width: 140px; }
+</style>
+
+<tr>
+   <th style="vertical-align: center;">Description<span class="req">*</span></th>
+   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+
+<tr>
+   <th style="vertical-align: center;">Assigned to:<span class="req">*</span></th>
+   <td><%= select :serial_number, "", "", {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+<tr>
+   <th style="vertical-align: center;">Status<span class="req">*</span></th>
+   <td><%= select :serial_number, "", "", {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>

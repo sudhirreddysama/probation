@@ -1,0 +1,6 @@
+<style>
+	th { width: 140px; }
+</style>
+<% admin = params[:controller] == 'summary' %>
+<%= f.tr_text_field :item_summary_name, label: 'Item Summary Name', req: true, required: true %>
+<%= f.tr_text_field :item_description, label: 'Item Description', req: true, required: true %>
