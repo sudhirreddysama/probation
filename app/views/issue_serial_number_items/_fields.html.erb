@@ -86,10 +86,12 @@
 
 		function show() {
 			$("tr input, tr textarea").parent().parent().show();
+			$("#not_in_inventory").show();
 		}
 
 		function hide() {
 			$("tr input, tr textarea").parent().parent().hide();
+			$("#not_in_inventory").hide();
 		}
 		
 		$("#obj_agent_rec").on("change", function(){

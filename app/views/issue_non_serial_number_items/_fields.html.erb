@@ -1,0 +1,101 @@
+<style>
+	th { width: 140px; }
+</style>
+
+<tr>
+   <th style="vertical-align: center;">Select Agent<span class="err">*</span></th>
+   <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+<tr>
+   <th style="vertical-align: center;">Select from Inventory<span class="err">*</span></th>
+   <td><%= f.select :item_dec, Inventory.where("nsn_in_inventory is not null and status = 'Inventory'").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+<tr>
+   <th>Current Inventory</th>
+   <td><%= text_field_tag :nsn_in_inventory_cache, "", readOnly: true, value: (o.nsn_in_inventory || 0), id: "nsn_in_inventory_cache_" %></td>
+</tr>
+
+<%= hidden_field_tag :nsn_in_inventory_value, "", value: 0, id: "nsn_in_inventory_value" %>
+
+<%= f.tr_text_field :incident_rep, label: 'Quality to Issue' %>
+<%#= f.tr_text_field :quality_to_issue, label: 'Quality to Issue' %>
+<%= f.hidden_field :expendable, value: true %>
+
+<%= f.hidden_field :nsn_in_inventory, value: (o.nsn_in_inventory || 0) %>
+<%= f.tr_text_area :notes, label: 'Notes' %>
+
+<%= f.hidden_field :status, value: "Issued" %>
+<%= f.hidden_field :status_date, value: (o.new_record? ? Time.now.strftime('%m/%d/%Y') : o.status_date) %>
+
+
+
+ <script type="text/javascript">
+ 	$(document).ready(function() {
+ 		<% if(o.new_record?) %>
+ 			$("tr input, tr textarea").parent().parent().hide();
+ 			$("#nsn_in_inventory_cache_").hide()
+ 		<%end%>
+ 		$("#obj_incident_rep").on("keyup", function() {
+ 			var nsn = parseInt($('#nsn_in_inventory_cache_').val());
+ 			var quality = parseInt($(this).val());
+
+ 			if(nsn >= quality) {
+        		$('#obj_nsn_in_inventory').val(nsn - quality);
+        	} else {
+        		$(this).val(0);
+        		alert("Please enter the value which should be lessthan or equal to current Inventory");
+
+        	}
+ 		})
+
+	 	$("#obj_item_dec").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_nsn_from_serial_inventory %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(value) {
+				  		show();
+				  		var value = parseInt(value)
+				        $('#obj_nsn_in_inventory').val(0);
+				        $('#nsn_in_inventory_cache_').val(0);
+				        $("#obj_incident_rep").val(0)
+				        if (value > 0 ) {
+				        	$('#nsn_in_inventory_cache_').val(value);
+				        	$("#obj_incident_rep").val(1)
+				        	$('#obj_nsn_in_inventory').val(value-1);
+				        	$("#nsn_in_inventory_value").val(value);
+				      	}
+				  	}
+				})
+			}
+		})
+
+		// $("#cancel_issue").on("click", function(){
+		// 	window.location.reload();
+		// });
+
+		function show() {
+			$("tr input, tr textarea").parent().parent().show();
+ 			$("#nsn_in_inventory_cache_").show()
+		}
+
+		// function hide() {
+		// 	$("tr input, tr textarea").parent().parent().hide();
+		// 	$("#not_in_inventory").hide();
+		// }
+		
+		// $("#obj_agent_rec").on("change", function(){
+		// 	if($(this).val()) {
+		// 		$("#not_in_inventory").show();
+		// 		// $("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().show();
+		// 	} else {
+		// 		$("#not_in_inventory").hide();
+		// 		// $("tr input, tr textarea, #not_in_inventory, #cancel_issue").parent().parent().hide();
+		// 	}
+		// })
+	})
+ </script>
