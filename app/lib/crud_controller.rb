@@ -183,6 +183,9 @@ class CrudController < ApplicationController
 			@obj.attributes = params.obj if params.obj
 			@obj.current_user = @current_user
 			@obj.save!
+		elsif(["inventory_non_serial"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"], nsn_in_inventory: params.nsn_in_inventory_cache, status: 'Inventory').last)
+			@obj.expendable = "true"
+			@obj.update_attributes!(nsn_in_inventory: params.obj["nsn_in_inventory"])
 		else
 			@obj = @model.new
 			@obj.attributes = flash[:obj] if flash[:obj]
