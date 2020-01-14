@@ -138,19 +138,13 @@ class CrudController < ApplicationController
 	end
 	
 	def load_model
-		if(["inventory_non_serial", "issue_serial_number_items", "issue_non_serial_number_items"].include?(params.controller))
+		if(["inventory_non_serial", "issue_serial_number_items", "issue_non_serial_number_items", "change_status_serial", "change_status_non_serial", "reportes"].include?(params.controller))
 			@model_class = Inventory
-		elsif(["change_status_serial", "change_status_non_serial", "reportes"].include?(params.controller))
-			@model_class = Inventory
+		elsif(["Status"].include?(params.controller))
+			@model_class = Status
 		else
-
 			@model_class = params.controller.classify.constantize
 		end
-		# if params.context
-		# 	@context_class = params.context.classify.constantize
-		# 	@context_model = @context_class
-		# 	@context_obj = @context_model.find params.context_id if params.context_id
-		# end
 		@model = @model_class
 		if @context_obj && @context_obj.respond_to?(params.controller)
 			@model =  @context_obj.send(params.controller)
@@ -173,6 +167,10 @@ class CrudController < ApplicationController
 
 	def build_obj
 		if(["issue_serial_number_items"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"], serial_num: params.obj["serial_num"], status: 'Inventory').where("nsn_in_inventory is null").last)
+			@obj.current_user = @current_user
+			@obj.attributes = params.obj
+			@obj.save!
+		elsif(["change_status_serial"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"], serial_num: params.obj["serial_num"], status: params['status']).where("nsn_in_inventory is null").last)
 			@obj.current_user = @current_user
 			@obj.attributes = params.obj
 			@obj.save!

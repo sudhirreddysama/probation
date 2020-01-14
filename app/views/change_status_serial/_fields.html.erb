@@ -4,25 +4,108 @@
 
 <tr>
    <th style="vertical-align: center;">Description<span class="req">*</span></th>
-   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+   <td><%= f.select :item_dec, Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
 
 <tr>
    <th style="vertical-align: center;">Serial Number<span class="req">*</span></th>
-   <td><%= select :serial_number, "", "", {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+   <td><%= f.select :serial_num, [o.serial_num], {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
-<%= f.tr_text_field :item_dec, label: "Current Status" %>
-<%= f.tr_text_field :item_dec, label: "Assigned to" %>
 
 <tr>
-   <th style="vertical-align: center;">Change Status to:<span class="req">*</span></th>
-   <td><%= select :serial_number, "", "", {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+   <th style="vertical-align: center;">Current Status</th>
+   <td><%= text_field_tag :status, "", readonly: true %></td>
 </tr>
 
-<%= f.tr_text_field :item_dec, label: "Incident Report#" %>
-<%= f.tr_text_field :item_dec, label: "Incident Report Date" %>
 
+<tr>
+   <th style="vertical-align: center;">As of:</th>
+   <td><%= text_field_tag :status_date, "", readonly: true %></td>
+</tr>
+
+
+
+<tr>
+   <th style="vertical-align: center;">Assigned to</th>
+   <td><%= text_field_tag :assigned_to, "", readonly: true %></td>
+</tr>
+
+<tr id="statuses">
+   <th style="vertical-align: center;">Change Status to:<span class="req">*</span></th>
+   <td><%= f.select :status, Status.all.map(&:status).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+</tr>
+
+<%= f.tr_text_field :inc_rep, label: "Incident Report#" %>
+<%= f.tr_text_field :inc_rep_date, label: "Incident Report Date" %>
 <%= f.tr_text_area :notes, label: 'Notes' %>
-<%= f.tr_text_field :item_dec, label: "Item Description" %>
+
+<script type="text/javascript">
+ 	$(document).ready(function() {
+ 		<% if(o.new_record?) %>
+ 			$("tr input, tr textarea").parent().parent().hide();
+ 			$("#statuses").hide();
+ 		<%end%>
+
+ 		$("#obj_item_dec").on("change", function() {
+	 		hide();
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_data_from_item_dec %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(values) {
+				        $('#obj_serial_num').empty();
+			            $('#obj_serial_num').append($('<option>Please Select</option>'));
+
+				        if (values.length > 0) {
+				    	      $.each(values, function(i, item) {
+				            	$('#obj_serial_num').append($('<option></option>').attr('value', item).text(item));
+				          	});
+				      	}
+				  	}
+				})
+			}
+		})
+
+
+		$("#obj_serial_num").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_data_from_serial_inventory %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(values) {
+				  		if(values.status == "Inventory") {
+				  			hide();
+				  			$('#status').val("");
+				        	$('#status_date').val("");
+				        	$('#assigned_to').val("");
+				  		} else {
+				  			show();
+				  			$('#status').val(values.status);
+				        	$('#status_date').val(values.status_date);
+				        	$('#assigned_to').val(values.agent);
+				        }
+				        
+				  	}
+				})
+			}
+		})
+
+		function show() {
+			$("tr input, tr textarea").parent().parent().show();
+	 		$("#statuses, #status, #status_date, #assigned_to").show();
+
+		}
+
+		function hide() {
+			$("tr input, tr textarea").parent().parent().hide();
+	 		$("#statuses, #status, #status_date, #assigned_to").hide();
+		}
+		
+	})
+</script>
