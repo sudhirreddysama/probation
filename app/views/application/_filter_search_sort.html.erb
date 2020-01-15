@@ -4,11 +4,11 @@
 	</style>
 	<tr>
 	   <th style="vertical-align: center;">Search For Status<span class="req">*</span></th>
-	   <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+	   <td><%= f.select :status, options_from_collection_for_select(Status.all, :id, "change_status"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 	</tr>
 	<tr>
-	   <th style="vertical-align: center;">Search For Assigned To<span class="req">*</span></th>
-	   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+	   <th style="vertical-align: center;">Search For Assign To<span class="req">*</span></th>
+	   <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 	</tr>
 	<tr>
 	   <th style="vertical-align: center;">Search For Item Description<span class="req">*</span></th>
