@@ -79,13 +79,13 @@
 				  	type: 'GET',
 				  	data: {"data":item_dec},
 				  	success: function(values) {
+				  		show();
 				  		if(values.status == "Inventory") {
-				  			hide();
+				  			$("#status, #status_date, #assigned_to").parent().parent().hide();
 				  			$('#status').val("");
 				        	$('#status_date').val("");
 				        	$('#assigned_to').val("");
 				  		} else {
-				  			show();
 				  			$('#status').val(values.status);
 				        	$('#status_date').val(values.status_date);
 				        	$('#assigned_to').val(values.agent);
@@ -98,13 +98,21 @@
 
 		function show() {
 			$("tr input, tr textarea").parent().parent().show();
-	 		$("#statuses, #status, #status_date, #assigned_to").show();
+	 		statusShow();
 
+		}
+
+		function statusHide() {
+			$("#statuses, #status, #status_date, #assigned_to").hide();
+		}
+
+		function statusShow() {
+			$("#statuses, #status, #status_date, #assigned_to").show();
 		}
 
 		function hide() {
 			$("tr input, tr textarea").parent().parent().hide();
-	 		$("#statuses, #status, #status_date, #assigned_to").hide();
+	 		statusHide();
 		}
 		
 	})
