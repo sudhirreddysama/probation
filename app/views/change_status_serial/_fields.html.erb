@@ -47,7 +47,14 @@
  			$("tr input, tr textarea").parent().parent().hide();
  			$("#statuses").hide();
  		<%end%>
-
+ 		$("button[type=submit]").on("click", function(){
+ 			var cs = $("#status").val();
+ 			var s = $("#obj_status").val();
+ 			if(cs == s || !s) {
+ 				alert("Please select the Proper Status");
+ 				return false;
+ 			}
+ 		})
  		$("#obj_item_dec").on("change", function() {
 	 		hide();
 	 		var item_dec = $(this).val();
