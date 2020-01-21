@@ -174,6 +174,10 @@ class CrudController < ApplicationController
 			@obj.current_user = @current_user
 			@obj.attributes = params.obj
 			@obj.save!
+		elsif(["change_status_non_serial"].include?(params.controller) && params.obj && @obj = @model.where(item_dec: params.obj["item_dec"]).where("nsn_in_inventory is null").last)
+			@obj.current_user = @current_user
+			@obj.attributes = params.obj
+			@obj.save!
 		elsif(["issue_non_serial_number_items"].include?(params.controller) && params.obj && obj = @model.where(item_dec: params.obj["item_dec"], nsn_in_inventory: params.nsn_in_inventory_value, status: 'Inventory').last)
 			obj.expendable = "true"
 			obj.update_attributes!(nsn_in_inventory: params.obj["nsn_in_inventory"])
