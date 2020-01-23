@@ -1,7 +1,6 @@
 <table class="data">
 	<thead>
 		<tr>
-			<th>Qty</th>
 		      <th>Description</th>
 		      <th>Assigned to:</th>
 		      <th>Status</th>
@@ -9,11 +8,10 @@
 	</thead>
 	<tbody>
 		<% reset_cycle %>
-		<% objs.where("nsn_in_inventory is not null and status = 'Inventory'").each { |o| %>
+		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td><%= link_to o.item_dec, :action => :view, :id => o.id  %></td>
-				<td class="nobr"><%= o.nsn_in_inventory %></td>
-				<td class="nobr"><%= o.status %></td>
+				<td class="nobr"><%= Agent.find(o.agent_rec).full_name %></td>
 				<td class="nobr"><%= o.status %></td>
 			</tr>
 		<% } %>

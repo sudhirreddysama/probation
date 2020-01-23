@@ -19,7 +19,24 @@ class ChangeStatusNonSerialController < CrudController
   		agent = Agent.find(inv.agent_rec) if inv.agent_rec
   		status = inv.status
   	end
-	names = agent.first_name + " - " + agent.last_name	if agent.present?
+	  names = agent.first_name + " - " + agent.last_name	if agent.present?
   	render json: {status: status, agent: names, agentid: agentid}
+  end
+
+  def get_agents_from_status
+      inv = Inventory.where(status: params["data"]).where("agent_rec is not null")
+      agents = []
+      if inv
+        (inv || []).each do |x|
+          agent = Agent.find(x.agent_rec)
+          agents.push({id: agent.id, name: agent.full_name})
+        end
+      end
+      render json: agents.uniq
+  end
+
+  def get_items_from_agent_rec
+      items = Inventory.where(agent_rec: params["data"], status: params["status"])
+      render json: items.map(&:item_dec)
   end
 end

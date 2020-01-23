@@ -4,7 +4,7 @@
 	</style>
 	<tr>
 	   <th style="vertical-align: center;">Search For Status<span class="req">*</span></th>
-	   <td><%= f.select :status, options_from_collection_for_select(Status.all, :id, "change_status"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+	   <td><%= f.select :status, options_from_collection_for_select(Status.all, :status, :status), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 	</tr>
 	<tr>
 	   <th style="vertical-align: center;">Search For Assign To<span class="req">*</span></th>
@@ -12,7 +12,7 @@
 	</tr>
 	<tr>
 	   <th style="vertical-align: center;">Search For Item Description<span class="req">*</span></th>
-	   <td><%= select :item_dec, "", Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+	   <td><%= f.select :item_dec, Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 	</tr>
 
 <% else%>
@@ -24,3 +24,49 @@
 		</td>
 	</tr>
 <% end %>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#filter_status").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_agents_from_status %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(values) {
+				        $('#filter_agent_rec').empty();
+			            $('#filter_agent_rec').append($('<option>Please Select</option>'));
+
+				        if (values.length > 0) {
+				    	      $.each(values, function(i, item) {
+				            	$('#filter_agent_rec').append($('<option></option>').attr('value', item.id).text(item.name));
+				          	});
+				      	}
+				  	}
+				})
+			}
+		})
+
+		$("#filter_agent_rec").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_items_from_agent_rec %>',
+				  	type: 'GET',
+				  	data: {"status": $("#filter_status").val(), "data":item_dec},
+				  	success: function(values) {
+				        $('#filter_item_dec').empty();
+			            $('#filter_item_dec').append($('<option>Please Select</option>'));
+
+				        if (values.length > 0) {
+				    	      $.each(values, function(i, item) {
+				            	$('#filter_item_dec').append($('<option></option>').attr('value', item).text(item));
+				          	});
+				      	}
+				  	}
+				})
+			}
+		})
+	})
+</script>

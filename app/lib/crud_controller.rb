@@ -13,6 +13,11 @@ class CrudController < ApplicationController
 		o = get_order_auto
 		@objs = @objs.reorder(o) if o
 		@objs = @objs.where(id: params.list_ids.split(',')) if !params.list_ids.blank?
+		if(params.controller == "change_status_non_serial")
+			@objs = @objs.where(status: @filter["status"]) if(@filter["status"])
+			@objs = @objs.where(agent_rec: @filter["agent_rec"]) if(@filter["agent_rec"])
+			@objs = @objs.where(item_dec: @filter["item_dec"]) if(@filter["item_dec"])
+		end
 		if params[:print]
 			print_objs
 		else
@@ -220,9 +225,11 @@ class CrudController < ApplicationController
 	def generic_filter_setup txt = []
 		@filter ||= default_filter
 		@text_types ||= auto_text_types(@model, @model_columns) + txt
-		@search_fields ||= {
-			"#{@model.table_name}.#{@model.primary_key}" => :left
-		} + @text_types.first(15).map { |t| [t[1], :like] }.to_h
+		# if(params.controller == "change_status_non_serial")
+			# @search_fields ||= {"#{@model.table_name}.#{@model.primary_key}" => :left} + @text_types.first(15).map { |t| [t[1], :eq] }.to_h
+		# else
+			@search_fields ||= {"#{@model.table_name}.#{@model.primary_key}" => :left} + @text_types.first(15).map { |t| [t[1], :like] }.to_h
+		# end
 		@cond = search_filter(@filter.search, @search_fields)
 		@cond << parse_advanced_filter
 		parse_group_filter
@@ -247,7 +254,6 @@ class CrudController < ApplicationController
 		flash[:obj] = {obj_ids_file: request.uuid, obj_type: params.controller.classify}
 		redirect_to context: nil, context_id: nil, controller: :doc_bulks, action: :new
 	end
-	
 	attr :obj, true
 	attr :print_all, true
 	attr_writer :print
