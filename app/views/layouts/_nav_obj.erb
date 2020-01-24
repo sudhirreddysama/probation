@@ -20,8 +20,6 @@
 	</div>
 <% elsif ["reportes"].include?(params.controller) %>
 	<div class="tabs" id="objs-tabs">
-		<%= tab 'list', 'Serial Number Inventory Report', {action: "index", controller: "reportes", context: "sn_report"}, {}, class: ([params[:context], session[:context]].include?('sn_report') ? 'active' : '') %>
-		<%= tab 'list', 'Non-Serial Number Inventory Report', {action: "index", controller: "reportes", context: "nsn_report"}, {}, class: ([params[:context], session[:context]].include?('nsn_report') ? 'active' : '') %>
 		<%= tab 'list', 'Report Equipment By Agent', {action: "index", controller: "reportes", context: "agent_report"}, {}, class: ([params[:context], session[:context]].include?('agent_report') ? 'active' : '') %>
 		<%= tab 'list', 'Inventory Assigned To Agent', {action: "index", controller: "reportes", context: "Inv_assign_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_assign_report') ? 'active' : '') %>
 		<%= tab 'list', 'Inventory List By Item Type', {action: "index", controller: "reportes", context: "Inv_list_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_list_report') ? 'active' : '') %>
