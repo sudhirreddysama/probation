@@ -11,7 +11,11 @@
 		<% objs.each { |o| %>
 			<tr class="<%= cycle 'odd', 'even' %>">
 				<td><%= link_to o.item_dec, :action => :view, :id => o.id  %></td>
-				<td class="nobr"><%= Agent.find(o.agent_rec).full_name %></td>
+				<%if o.agent_rec %>
+					<td class="nobr"><%= Agent.find(o.agent_rec).full_name %></td>
+				<%else%>
+				<td></td>
+				<% end %>
 				<td class="nobr"><%= o.status %></td>
 			</tr>
 		<% } %>
