@@ -1,0 +1,5 @@
+<div class="view">
+  <%= dl 'Item Description', o.item_dec  %>
+  <%= dl 'Status', o.status%>
+  <%= dl 'Assigned to', o.agent_rec ? Agent.find(o.agent_rec).full_name : ""%>
+</div>

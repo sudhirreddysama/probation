@@ -12,6 +12,7 @@
    <th style="vertical-align: center;">Assigned to:<span class="req">*</span></th>
    <td><%=text_field_tag :agent_rec, "" %></td>
 </tr>
+<%= hidden_field_tag :status, "" %>
 <%= f.hidden_field :agent_rec %>
 <tr>
    <th style="vertical-align: center;">Status<span class="req">*</span></th>
@@ -20,6 +21,16 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
+
+		$("button[type=submit]").on("click", function() {
+ 			var cs = $("#status").val();
+ 			var s = $("#obj_status").val();
+ 			if(cs == s || !s) {
+ 				alert("Please change the Status");
+ 				return false;
+ 			}
+ 		})
+
 		$("#obj_item_dec").on("change", function() {
 	 		var item_dec = $(this).val();
 			if(item_dec != "") {
@@ -37,6 +48,7 @@
 				        	$('#obj_agent_rec').val("");
 				        	$('#agent_record').hide();
 				        }
+				        $("#status").val(result.status)
 				        $("#obj_status").val(result.status)
 				  	}
 				})

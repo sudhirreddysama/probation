@@ -47,7 +47,7 @@
  			$("tr input, tr textarea").parent().parent().hide();
  			$("#statuses").hide();
  		<%end%>
- 		$("button[type=submit]").on("click", function(){
+ 		$("button[type=submit]").on("click", function() {
  			var cs = $("#status").val();
  			var s = $("#obj_status").val();
  			if(cs == s || !s) {
@@ -88,16 +88,14 @@
 				  	success: function(values) {
 				  		show();
 				  		if(values.status == "Inventory") {
-				  			$("#status, #status_date, #assigned_to").parent().parent().hide();
-				  			$('#status').val("");
+				  			$("#status_date, #assigned_to").parent().parent().hide();
 				        	$('#status_date').val("");
 				        	$('#assigned_to').val("");
 				  		} else {
-				  			$('#status').val(values.status);
 				        	$('#status_date').val(values.status_date);
 				        	$('#assigned_to').val(values.agent);
 				        }
-				        
+			  			$('#status').val(values.status);
 				  	}
 				})
 			}
