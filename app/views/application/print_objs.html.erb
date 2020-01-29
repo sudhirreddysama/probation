@@ -1,4 +1,5 @@
-<% @objs.each_with_index { |o, i| %>
-	<h1 id="print-title" style="<% if i > 0 %>page-break-before: always;<% end %>"><%= o.label %></h1>
-	<%= partial 'print', o: o %>
-<% } %>
+<%# @objs.each_with_index { |o, i| %>
+	<!-- <h1 id="print-title" style="<%# if i > 0 %>page-break-before: always;<%# end %>"><%#= o.label %></h1> -->
+	<%#= partial 'print', o: o %>
+<%# } %>
+<%= partial 'list', objs: @objs %>

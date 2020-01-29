@@ -6,6 +6,9 @@
 <% elsif (params[:context] == "payment_history" || session[:context] == "payment_history") && "sales".eql?(params[:controller]) %>
 	<%= partial 'list2', objs: @objs %>
 <%else%>
+	<div class="btns right" style="margin-top: 4px;">
+		<%= tab 'print', 'Print PDF', {action: :index, print: true}, {}, target: '_blank' %>
+	</div>
 	<%= partial 'list', objs: @objs %>
 <% end %>
 <%= pages %>

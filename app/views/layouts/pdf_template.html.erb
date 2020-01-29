@@ -1,1 +1,18 @@
-<%= yield %>
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+  	table {
+  		width: 100%;
+  	}
+  	table th, table td {
+  		text-align: center;
+  	}
+  </style>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <%= yield %>
+</body>
+</html>
