@@ -24,22 +24,8 @@
 <% if params.action != "print" %>
 <div id="tabs" class="tabs">
 	<%= tab 'home', 'Home', {controller: :home, context: nil}, {}, class: ([params[:context]].include?('home') ? 'active' : '') %>
-
-	<%#= tab 'money', "Sales", {controller: :sales, context: "sales", action: :index, process: ""}, {}, {class: ([params[:context], session[:context]].include?("sales") ? 'active' : '')} %>
-	
-	<%#= top_tab 'usd', 'Shots', Shot %>
-
-<% if "manager".eql?(@current_user.level) || "admin".eql?(@current_user.level) %>
-	<%#= tab 'money', 'Payments History', {context: "payment_history", controller: :sales, action: :index}, {}, {class: ((params[:context] =="payment_history" || "payeezy_posts".eql?(c)) ? 'active' : '')} %>
-<% end %>
-	
-	<%#= tab 'cloud-upload', 'Reports', {controller: :sap_exports, context: "reports", action: :index}, {}, class: ([params[:context], session[:context]].include?('reports') ? 'active' : '') %>
-	
 	<%= tab 'cloud-upload', 'Inventory', {controller: :inventories, context: nil}, {}, class: ([params.controller, params[:context]].include?('inventory_non_serial') ? 'active' : '') %>
-	
 	<%= tab 'cloud-upload', 'IssueItem', {controller: :issue_serial_number_items, context: nil}, {}, class: ([params.controller, params[:context]].include?('issue_non_serial_number_items') ? 'active' : '') %>
-
-
 
 	<%= tab 'cloud-upload', 'ChangeStatus', {controller: :change_status_serial, context: nil}, {}, class: ([params.controller, params[:context]].include?('change_status_non_serial') ? 'active' : '') %>
 	
@@ -48,7 +34,7 @@
 	<%= tab 'user', 'Supervisors', {controller: :supervisors, context: nil}, {}, class: ([params[:context], session[:context]].include?('supervisor') ? 'active' : '') %>
 	<%= tab 'user', 'Status', {controller: :status, context: nil}, {}, class: ([params[:context], session[:context]].include?('status') ? 'active' : '') %>
 	<%= tab 'user', 'Summary', {controller: :summary, context: nil}, {}, class: ([params[:context], session[:context]].include?('summary') ? 'active' : '') %>
-	<%= tab 'cloud-upload', 'Reports', {controller: :reportes, context: nil, action: :index}, {}, class: ([params[:context], session[:context]].include?('reportes') ? 'active' : '') %>
+	<%= tab 'cloud-upload', 'Reports', {controller: :reportes, context: "agent_report", action: :index}, {}, class: ([params[:context], "reportes".eql?(params.controller)] ? 'active' : '') %>
 
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>

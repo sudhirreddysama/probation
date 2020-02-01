@@ -8,6 +8,7 @@ class CrudController < ApplicationController
 	def self.tab_label; to_s[0..-11].pluralize.titleize; end
 	
 	def index
+		session["report"] = nil if(params.controller != "reportes")
 		@model ||= params.controller.classify.constantize
 		@objs = (@objs || @model).includes(@inc).references(@ref).where(get_where(@cond))
 		o = get_order_auto

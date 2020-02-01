@@ -1,0 +1,5 @@
+<% if session["report"] && "agent_records".eql?(session["report"][:type]) %>
+<% @agents = Inventory.where(agent_rec: session["report"][:data]) %>
+<%= render "agent_records" %>
+<%end%>
+<% session["report"] = nil %>

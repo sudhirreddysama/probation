@@ -1,18 +1,46 @@
 <% if @filter %>
 	<%= form_for(:filter, html: {class: 'filter', id: 'filter-form'}, builder: TableFormBuilder) { |f| %>
 		<table class="form">
-			<% if @date_types.present? && params[:controller] == "sap_exports" %>
-				<%= partial 'filter_dates', f: f, o: @filter, date_preset_name: 'filter[date_preset]', date_preset_value: @filter.date_preset %>
-			<%else%>
-				<%= partial 'filter_search_sort', f: f %>
+			<% if("reportes".eql?(params[:controller]) && "agent_report".eql?(params[:context])) %>
+				<tr>
+				   <th style="vertical-align: center;">Search For Assign To<span class="req">*</span></th>
+				   <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+				</tr>
+			<% elsif("reportes".eql?(params[:controller]) && "agent_report1".eql?(params[:context])) %>
+			<% elsif("reportes".eql?(params[:controller]) && "agent_report2".eql?(params[:context])) %>
+			<% else %>
+				
+					<% if @date_types.present? && params[:controller] == "sap_exports" %>
+						<%= partial 'filter_dates', f: f, o: @filter, date_preset_name: 'filter[date_preset]', date_preset_value: @filter.date_preset %>
+					<%else%>
+						<%= partial 'filter_search_sort', f: f %>
+					<% end %>
+					<tr>
+						<th></th>
+						<td class="btns">
+							<%= partial 'filter_buttons', f: f %>
+							<%= hidden_field_tag 'list_ids' %>
+						</td>
+					</tr>
 			<% end %>
-			<tr>
-				<th></th>
-				<td class="btns">
-					<%= partial 'filter_buttons', f: f %>
-					<%= hidden_field_tag 'list_ids' %>
-				</td>
-			</tr>
 		</table>
 	<% } %>
+	
 <% end %>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#filter_agent_rec").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_items_from_agent_rec %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(result) {
+				        $('#data').html(result);
+				  	}
+				})
+			}
+		})
+	})
+</script>
