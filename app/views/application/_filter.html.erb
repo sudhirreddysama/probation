@@ -6,7 +6,11 @@
 				   <th style="vertical-align: center;">Search For Assign To<span class="req">*</span></th>
 				   <td><%= f.select :agent_rec, options_from_collection_for_select(Agent.all, :id, "full_name"), {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 				</tr>
-			<% elsif("reportes".eql?(params[:controller]) && "agent_report1".eql?(params[:context])) %>
+			<% elsif("reportes".eql?(params[:controller]) && "Inv_assign_report".eql?(params[:context])) %>
+				<tr>
+				   <th style="vertical-align: center;">Search For ItemGroup<span class="req">*</span></th>
+				   <td><%= f.select :item_dec, Inventory.all.map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
+				</tr>
 			<% elsif("reportes".eql?(params[:controller]) && "agent_report2".eql?(params[:context])) %>
 			<% else %>
 				
@@ -37,6 +41,22 @@
 				  	type: 'GET',
 				  	data: {"data":item_dec},
 				  	success: function(result) {
+				  		$("table.data").hide();
+				        $('#data').html(result);
+				  	}
+				})
+			}
+		})
+
+		$("#filter_item_dec").on("change", function() {
+	 		var item_dec = $(this).val();
+			if(item_dec != "") {
+			 	$.ajax({
+				  	url: '<%= url_for :action => :get_items_from_item_dec %>',
+				  	type: 'GET',
+				  	data: {"data":item_dec},
+				  	success: function(result) {
+				  		$("table.data").hide();
 				        $('#data').html(result);
 				  	}
 				})

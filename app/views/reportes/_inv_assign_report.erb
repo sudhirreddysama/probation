@@ -1,0 +1,21 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th>Item Description</th>
+			<th>Status</th>
+			<th>Status Date</th>
+     		<th>Notes</th>    
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% @items.each { |o| %>
+			<tr class="<%= cycle 'odd', 'even' %>">
+				<td class="nobr"><%= o.item_dec %></td>
+				<td class="nobr"><%= o.status %></td>
+				<td class="nobr"><%= o.status_date %></td>
+				<td class="nobr"><%= o.notes %></td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

@@ -20,9 +20,11 @@
 	</div>
 <% elsif ["reportes"].include?(params.controller) %>
 	<div class="tabs" id="objs-tabs">
-		<%= tab 'list', 'Report Equipment By Agent', {action: "index", controller: "reportes", context: "agent_report"}, {}, class: ([params[:context], session[:context]].include?('agent_report') ? 'active' : '') %>
-		<%= tab 'list', 'Inventory Assigned To Agent', {action: "index", controller: "reportes", context: "Inv_assign_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_assign_report') ? 'active' : '') %>
-		<%= tab 'list', 'Inventory List By Item Type', {action: "index", controller: "reportes", context: "Inv_list_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_list_report') ? 'active' : '') %>
+		<%= tab 'list', 'Inventory Assigned To Agent', {action: "index", controller: "reportes", context: "agent_report"}, {}, class: ([params[:context], session[:context]].include?('agent_report') ? 'active' : '') %>
+
+		<%= tab 'list', 'Report Equipment By Agent', {action: "index", controller: "reportes", context: "Inv_list_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_list_report') ? 'active' : '') %>
+
+		<%= tab 'list', 'Inventory List By Item Type', {action: "index", controller: "reportes", context: "Inv_assign_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_assign_report') ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
 

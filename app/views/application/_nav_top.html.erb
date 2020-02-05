@@ -34,7 +34,7 @@
 	<%= tab 'user', 'Supervisors', {controller: :supervisors, context: nil}, {}, class: ([params[:context], session[:context]].include?('supervisor') ? 'active' : '') %>
 	<%= tab 'user', 'Status', {controller: :status, context: nil}, {}, class: ([params[:context], session[:context]].include?('status') ? 'active' : '') %>
 	<%= tab 'user', 'Summary', {controller: :summary, context: nil}, {}, class: ([params[:context], session[:context]].include?('summary') ? 'active' : '') %>
-	<%= tab 'cloud-upload', 'Reports', {controller: :reportes, context: "agent_report", action: :index}, {}, class: ([params[:context], "reportes".eql?(params.controller)] ? 'active' : '') %>
+	<%= tab 'cloud-upload', 'Reports', {controller: :reportes, context: "agent_report", action: :index}, {}, class: ("reportes".eql?(params.controller) ? 'active' : '') %>
 
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>
