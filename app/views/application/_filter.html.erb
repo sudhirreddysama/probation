@@ -11,7 +11,7 @@
 				   <th style="vertical-align: center;">Search For ItemGroup<span class="req">*</span></th>
 				   <td><%= f.select :item_dec, Inventory.all.map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 				</tr>
-			<% elsif("reportes".eql?(params[:controller]) && "agent_report2".eql?(params[:context])) %>
+			<% elsif("reportes".eql?(params[:controller]) && "Inv_list_report".eql?(params[:context])) %>
 			<% else %>
 				
 					<% if @date_types.present? && params[:controller] == "sap_exports" %>

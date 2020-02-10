@@ -2,4 +2,8 @@
 	<!-- <h1 id="print-title" style="<%# if i > 0 %>page-break-before: always;<%# end %>"><%#= o.label %></h1> -->
 	<%#= partial 'print', o: o %>
 <%# } %>
-<%= partial 'list', objs: @objs %>
+<% if "reportes".eql?(params.controller) && "true".eql?(params.print) && !session["report"] %>
+	<%= partial "inv_list_report" %>
+<% else %>
+	<%= partial 'list', objs: @objs %>
+<%end%>

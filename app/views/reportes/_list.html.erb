@@ -4,5 +4,7 @@
 <% elsif session["report"] && "Inv_assign_report".eql?(session["report"][:type]) %>
 	<% @items = Inventory.where(item_dec: session["report"][:data]) %>
 	<%= render "inv_assign_report" %>
+<% elsif session["report"] && "Inv_list_report".eql?(session["report"][:type]) %>
+	<%= render "inv_list_report" %>
 <%end%>
 <% session["report"] = nil %>

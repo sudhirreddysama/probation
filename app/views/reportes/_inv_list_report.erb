@@ -1,0 +1,26 @@
+<table class="data">
+	<thead>
+		<tr>
+			<th>Item Description</th>
+			<th>Status</th>
+			<th>Status Date</th>
+     		<th>Notes</th>    
+		</tr>
+	</thead>
+	<tbody>
+		<% reset_cycle %>
+		<% Inventory.where("agent_rec is not null").group_by(&:agent_rec).each do |agent, records| %>
+			<tr>
+				<th colspan="5" style="font-size: 20px;font-weight: bold;text-transform: capitalize;text-align: center"> <%= Agent.find(agent).full_name%></th>
+			</tr>
+			<% records.each do |o| %>
+				<tr class="<%= cycle 'odd', 'even' %>">
+					<td class="nobr"><%= o.item_dec %></td>
+					<td class="nobr"><%= o.status %></td>
+					<td class="nobr"><%= o.status_date %></td>
+					<td class="nobr"><%= o.notes %></td>
+				</tr>
+			<%end%>
+		<%end%>
+	</tbody>
+</table>

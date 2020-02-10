@@ -5,6 +5,7 @@ class ReportesController < CrudController
     generic_filter_setup
     @cond << 'reportes.active = 1' if @filter.show == 'active'
     @cond << 'reportes.active = 0' if @filter.show == 'inactive' 
+    session["report"] = {type: "Inv_list_report", data: params[:data]} if "Inv_list_report".eql?(session[:context])
     super
   end
 
