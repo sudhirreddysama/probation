@@ -29,13 +29,7 @@
 
 	<%= tab 'cloud-upload', 'ChangeStatus', {controller: :change_status_serial, context: nil}, {}, class: ([params.controller, params[:context]].include?('change_status_non_serial') ? 'active' : '') %>
 	
-	<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
-	<%= tab 'user', 'Agents', {controller: :agents, context: nil}, {}, class: ([params[:context], session[:context]].include?('agent') ? 'active' : '') %>
-	<%= tab 'user', 'Supervisors', {controller: :supervisors, context: nil}, {}, class: ([params[:context], session[:context]].include?('supervisor') ? 'active' : '') %>
-	<%= tab 'user', 'Status', {controller: :status, context: nil}, {}, class: ([params[:context], session[:context]].include?('status') ? 'active' : '') %>
-	<%= tab 'user', 'Summary', {controller: :summary, context: nil}, {}, class: ([params[:context], session[:context]].include?('summary') ? 'active' : '') %>
-	<%= tab 'cloud-upload', 'Reports', {controller: :reportes, context: "agent_report", action: :index}, {}, class: ("reportes".eql?(params.controller) ? 'active' : '') %>
-
+	<%= tab 'cloud-upload', 'others', {controller: :users, context: nil}, {}, class: (["users", "supervisors", "agents", "status", "summary", "reportes"].include?(params.controller) ? 'active' : '') %>
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>
 		<%= tab 'sign-out', 'Logout', db: nil, context: nil, controller: :account, action: :logout %>

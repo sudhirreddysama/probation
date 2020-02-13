@@ -1,31 +1,43 @@
-<%if ["inventories", "inventory_non_serial"].include?(params.controller) %>
-	<div class="tabs" id="objs-tabs">
-		<%= tab 'list', 'With Serial Number', {action: "index", controller: "inventories"}, {}, class: ("inventories" == params.controller ? 'active' : '') %>
-			<%# if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
-		<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "inventory_non_serial"}, {}, class: ("inventory_non_serial" == params.controller ? 'active' : '') %>
+<% if ["users", "agents", "status", "summary","supervisors", "reportes"].include?(params.controller) %>
+	<div id="tabs" class="tabs">
+
+		<%= tab 'user', 'Users', {controller: :users, context: nil}, {}, class: ([params[:context], session[:context]].include?('user') ? 'active' : '') %>
+		<%= tab 'user', 'Agents', {controller: :agents, context: nil}, {}, class: ([params[:context], session[:context]].include?('agent') ? 'active' : '') %>
+		<%= tab 'user', 'Supervisors', {controller: :supervisors, context: nil}, {}, class: ([params[:context], session[:context]].include?('supervisor') ? 'active' : '') %>
+		<%= tab 'user', 'Status', {controller: :status, context: nil}, {}, class: ([params[:context], session[:context]].include?('status') ? 'active' : '') %>
+		<%= tab 'user', 'Summary', {controller: :summary, context: nil}, {}, class: ([params[:context], session[:context]].include?('summary') ? 'active' : '') %>
+		<%= tab 'cloud-upload', 'Reports', {controller: :reportes, context: "agent_report", action: :index}, {}, class: ("reportes".eql?(params.controller) ? 'active' : '') %>
 		<div class="clear"></div>
 	</div>
-
-<% elsif ["change_status_serial", "change_status_non_serial"].include?(params.controller) %>
-	<div class="tabs" id="objs-tabs">
-		<%= tab 'list', 'With Serial Number', {action: "index", controller: "change_status_serial"}, {}, class: ("change_status_serial" == params.controller ? 'active' : '') %>
-		<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "change_status_non_serial"}, {}, class: ("change_status_non_serial" == params.controller ? 'active' : '') %>
-		<div class="clear"></div>
-	</div>
-<% elsif ["issue_serial_number_items", "issue_non_serial_number_items"].include?(params.controller) %>
-	<div class="tabs" id="objs-tabs">
-		<%= tab 'list', 'With Serial Number', {action: "index", controller: "issue_serial_number_items"}, {}, class: ("issue_serial_number_items" == params.controller ? 'active' : '') %>
-		<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "issue_non_serial_number_items"}, {}, class: ("issue_non_serial_number_items" == params.controller ? 'active' : '') %>
-		<div class="clear"></div>
-	</div>
-<% elsif ["reportes"].include?(params.controller) %>
-	<div class="tabs" id="objs-tabs">
-		<%= tab 'list', 'Inventory Assigned To Agent', {action: "index", controller: "reportes", context: "agent_report"}, {}, class: ([params[:context], session[:context]].include?('agent_report') ? 'active' : '') %>
-
-		<%= tab 'list', 'Report Equipment By Agent', {action: "index", controller: "reportes", context: "Inv_list_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_list_report') ? 'active' : '') %>
-
-		<%= tab 'list', 'Inventory List By Item Type', {action: "index", controller: "reportes", context: "Inv_assign_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_assign_report') ? 'active' : '') %>
-		<div class="clear"></div>
-	</div>
-
 <%end%>
+
+	<%if ["inventories", "inventory_non_serial"].include?(params.controller) %>
+		<div class="tabs" id="objs-tabs">
+			<%= tab 'list', 'With Serial Number', {action: "index", controller: "inventories"}, {}, class: ("inventories" == params.controller ? 'active' : '') %>
+				<%# if @current_user.ve_user? || @current_user.ve_admin? || @current_user.admin? %>
+			<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "inventory_non_serial"}, {}, class: ("inventory_non_serial" == params.controller ? 'active' : '') %>
+			<div class="clear"></div>
+		</div>
+
+	<% elsif ["change_status_serial", "change_status_non_serial"].include?(params.controller) %>
+		<div class="tabs" id="objs-tabs">
+			<%= tab 'list', 'With Serial Number', {action: "index", controller: "change_status_serial"}, {}, class: ("change_status_serial" == params.controller ? 'active' : '') %>
+			<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "change_status_non_serial"}, {}, class: ("change_status_non_serial" == params.controller ? 'active' : '') %>
+			<div class="clear"></div>
+		</div>
+	<% elsif ["issue_serial_number_items", "issue_non_serial_number_items"].include?(params.controller) %>
+		<div class="tabs" id="objs-tabs">
+			<%= tab 'list', 'With Serial Number', {action: "index", controller: "issue_serial_number_items"}, {}, class: ("issue_serial_number_items" == params.controller ? 'active' : '') %>
+			<%= tab 'list', 'With Non-Serial Number', {action: "index", controller: "issue_non_serial_number_items"}, {}, class: ("issue_non_serial_number_items" == params.controller ? 'active' : '') %>
+			<div class="clear"></div>
+		</div>
+	<% elsif ["reportes"].include?(params.controller) %>
+		<div class="tabs" id="objs-tabs">
+			<%= tab 'list', 'Inventory Assigned To Agent', {action: "index", controller: "reportes", context: "agent_report"}, {}, class: ([params[:context], session[:context]].include?('agent_report') ? 'active' : '') %>
+
+			<%= tab 'list', 'Report Equipment By Agent', {action: "index", controller: "reportes", context: "Inv_list_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_list_report') ? 'active' : '') %>
+
+			<%= tab 'list', 'Inventory List By Item Type', {action: "index", controller: "reportes", context: "Inv_assign_report"}, {}, class: ([params[:context], session[:context]].include?('Inv_assign_report') ? 'active' : '') %>
+			<div class="clear"></div>
+		</div>
+	<%end%>
