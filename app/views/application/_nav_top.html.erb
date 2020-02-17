@@ -29,7 +29,7 @@
 
 	<%= tab 'cloud-upload', 'ChangeStatus', {controller: :change_status_serial, context: nil}, {}, class: ([params.controller, params[:context]].include?('change_status_non_serial') ? 'active' : '') %>
 	
-	<%= tab 'cloud-upload', 'others', {controller: :users, context: nil}, {}, class: (["users", "supervisors", "agents", "status", "summary", "reportes"].include?(params.controller) ? 'active' : '') %>
+	<%= tab 'cloud-upload', 'Others', {controller: :users, context: nil}, {}, class: (["users", "supervisors", "agents", "status", "summary", "reportes"].include?(params.controller) ? 'active' : '') %>
 	<div class="right">
 		<%= tab 'user', @current_user.username, {controller: :account}, {action: :edit} %>
 		<%= tab 'sign-out', 'Logout', db: nil, context: nil, controller: :account, action: :logout %>

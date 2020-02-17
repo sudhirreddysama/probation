@@ -1,5 +1,5 @@
 <style>
-	th { width: 140px; }
+	table {width: 400px;}
 </style>
 
 <tr>
@@ -7,25 +7,20 @@
    <td><%= f.select :item_dec, Inventory.where("nsn_in_inventory is null").map(&:item_dec).uniq, {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
 
-
 <tr>
    <th style="vertical-align: center;">Serial Number<span class="req">*</span></th>
    <td><%= f.select :serial_num, [o.serial_num], {prompt: true}, :style => 'width: 100%;border-radius: 5px;' %></td>
 </tr>
-
 
 <tr>
    <th style="vertical-align: center;">Current Status</th>
    <td><%= text_field_tag :status, "", readonly: true %></td>
 </tr>
 
-
 <tr>
    <th style="vertical-align: center;">As of:</th>
    <td><%= text_field_tag :status_date, "", readonly: true %></td>
 </tr>
-
-
 
 <tr>
    <th style="vertical-align: center;">Assigned to</th>
