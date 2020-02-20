@@ -1,0 +1,43 @@
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<div class="container">
+  <div class="row">
+        <h2> Project enter: latitude, longitude, and customer name</h2>
+        <div class="form-group col-xs-10 col-sm-4 col-md-4 col-lg-4">
+            <%= label_tag :latitude %>
+            <%= text_field :latitude, "", id: :latitude, class: "form-control", required: true %>
+        </div>
+        <div class="form-group col-xs-10 col-sm-4 col-md-4 col-lg-4">
+            <%= label_tag :longitude %>
+            <%= text_field :longitude, "", id: :longitude, class: "form-control", required: true %>
+        </div>
+        <div class="form-group col-xs-10 col-sm-4 col-md-4 col-lg-4">
+            <%= label_tag :customer_name %>
+            <%= text_field :customer_name, "", id: :customer_name, class: "form-control", required: true %>
+        </div>
+
+        <div class="form-group col-xs-10 col-sm-4 col-md-4 col-lg-4">
+            <%= button_tag :submit, id: :submit, url: url_for(controller: :googlemaps, action: :google_map_result)%>
+        </div>
+    </div>
+</div>
+<div id="data">
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#submit").on("click", function() {
+            $.ajax({
+                url: $(this).attr("url"),
+                type: 'GET',
+                data: {"latitude": $("#latitude").val(),"longitude": $("#longitude").val(),"customer_name": $("#customer_name").val()},
+                success: function(result) {
+                    $('#data').html("");
+                    $('#data').html(result);
+                }
+            })
+        })
+    })
+</script>
